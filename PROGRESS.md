@@ -18,37 +18,64 @@
 
 ```
 --- PROGRESS.md PATCH ---
-SECTION: ## 📍 CURRENT POSITION
-CHANGE: Advancing from Phase 0 to Phase 3.
+## 📍 CURRENT POSITION
 
-OLD:
-
-PHASE:   0 — Pre-Setup
-STEP:    0.0 — Not started
-STATUS:  NOT STARTED
-NEW:
-
-PHASE:   3 — REAL SERVICE INTEGRATION
-STEP:    3.1 — Replacing mock handlers with real chain calls
+\`\`\`
+PHASE:   4 — REAL SERVICE IMPLEMENTATIONS
+STEP:    4.1 — Replacing LI.FI and Circle stubs with SDKs
 STATUS:  IN PROGRESS
 
-Dev 1: Replacing mock tool handlers with real viem (Base/Celo/ETH) and Stellar SDK calls.
-Dev 2: Starting Frontend scaffold and design system.
+Dev 1 (Jadon): Completed Backend Logic Layer. All 9 tools wired to services. 
+Verified 429/500/Timeout error handling. npx tsc --noEmit is green. 
 
-Last update: 2026-04-06
-Next sync checkpoint: Real Balance Fetching working.
+Next: Integration of @lifi/sdk and @circle-fin/cctp-sdk into service files. 
+\`\`\`
 
+---
 
-SECTION: ## PHASE 0 — CHECKLIST to ## PHASE 2 — AGENT CORE
-CHANGE: Marking all completed setup, scaffold, and brain logic tasks as complete.
+## ✅ COMPLETED PHASES
 
-NEW STATUS:
+### PHASE 0 — ACCOUNTS & INFRASTRUCTURE
+- [x] GitHub repository initialized (Automata-V2). 
+- [x] Google AI Studio key obtained (Gemini 2.5 Flash). 
+- [x] PostgreSQL installed and running (Postgres 16). 
+- [x] P1000 Auth error fixed (md5 configuration applied). 
+- [x] Prisma migration \`init\` succeeded; Client generated. 
 
-[x] Phase 0 (Setup): All accounts created, P1000 Auth error fixed (md5 config), testnet funds received.
+### PHASE 1 — MONOREPO SETUP & SCAFFOLD
+- [x] Monorepo structure created (backend, frontend, shared). 
+- [x] Backend dependencies installed (viem, stellar-sdk, generative-ai). 
+- [x] Shared Types defined in \`shared/types/Action.ts\`. 
+- [x] tsconfig.json updated for ES2022 compatibility. 
 
-[x] Phase 1 (Scaffold): Monorepo structure live, Prisma migration init succeeded, Shared Types defined.
+### PHASE 2 — AI AGENT BRAIN
+- [x] System prompts and 9 tool declarations created. 
+- [x] Full Reason-Act loop built in \`agent.ts\`. 
+- [x] Conversation history & \`sanitizeHistory\` implemented to prevent crashes. 
+- [x] Tool-use loop confirms \`functionCalls\` and feeds results back to Gemini. 
 
-[x] Phase 2 (Agent Brain): System prompts created, Full Reason-Act loop built with conversation history, tool-use loop confirmed working with Gemini 2.5 Flash.
+### PHASE 3 — BACKEND LOGIC LAYER
+- [x] **Service Orchestration:** All 9 service stubs created in \`backend/src/services/\`. 
+- [x] **Tool Executor:** Switchboard built to route Agent calls to real/mock services. 
+- [x] **Real Data Integration:** \`balanceService.ts\` uses viem/Stellar for real-time reads. 
+- [x] **API Endpoint:** \`POST /api/chat\` handles messaging, sessions, and unsignedTxs. 
+- [x] **Session Logic:** In-memory session store; auto-deletes on transaction generation. 
+- [x] **Error Handling:** Robust handling for 429 (Rate Limit), 401 (API Key), and Timeouts. 
+
+---
+
+## 🚀 UPCOMING: PHASE 4 — REAL SERVICE IMPLEMENTATIONS
+- [ ] **Step 4.1:** Replace \`routeService.ts\` mock with real \`@lifi/sdk\` calls. 
+- [ ] **Step 4.2:** Replace \`bridgeService.ts\` mock with real Circle CCTP V2 SDK. 
+- [ ] **Step 4.3:** Implement real Aave/Mento yield reads in \`yieldService.ts\`. 
+- [ ] **Step 4.4:** Move in-memory sessions to Prisma/PostgreSQL. 
+
+---
+
+## 🏗️ ARCHITECTURE NOTES
+- **Endpoint:** Use \`POST /api/chat\` (replaces original \`/agent/execute\`). 
+- **Execution:** Agent returns \`unsignedTxs\` for Frontend/Privy to sign. 
+- **Safety:** \`sanitizeHistory\` ensures stable multi-turn AI conversations. 
 
 ```
 

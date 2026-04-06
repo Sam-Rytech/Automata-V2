@@ -10,6 +10,14 @@ export interface ConversationMessage {
   parts: Part[];
 }
 
+function sanitizeHistory(history: ConversationMessage[]): Content[] {
+  return history.filter(msg =>
+    msg.parts.every(part =>
+      !('functionCall' in part) && !('functionResponse' in part)
+    )
+  ) as Content[];
+}
+
 export async function runAgent(
   userMessage: string,
   apiKey: string,
@@ -20,12 +28,12 @@ export async function runAgent(
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       systemInstruction: SYSTEM_PROMPT,
       tools: AGENT_TOOLS,
     });
 
-    const chat = model.startChat({ history: history as Content[] });
+    const chat = model.startChat({ history: sanitizeHistory(history) });
 
     const updatedHistory: ConversationMessage[] = [
       ...history,
@@ -80,7 +88,15 @@ export async function runAgent(
 
     if (message.includes('API_KEY_INVALID') || message.includes('API key')) {
       return {
-        reply: "I couldn't connect to the AI — the API key looks invalid. Please check your Gemini API key and try again.",
+        reply: "I couldn't connect to the AI — the API key looks invalid. Please check your Gemini API key in settings.",
+        updatedHistory: history,
+        unsignedTxs: [],
+      };
+    }
+
+    if (message.includes('429') || message.includes('quota') || message.includes('Too Many Requests')) {
+      return {
+        reply: "I'm getting rate limited by the AI provider. Please wait a moment and try again.",
         updatedHistory: history,
         unsignedTxs: [],
       };

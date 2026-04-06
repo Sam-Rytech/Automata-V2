@@ -31,7 +31,12 @@ app.post('/api/chat', async (req, res) => {
     walletAddress
   );
 
-  sessions.set(sessionId, updatedHistory);
+  if (unsignedTxs.length > 0) {
+    sessions.delete(sessionId);
+  } else {
+    sessions.set(sessionId, updatedHistory);
+  }
+
   return res.json({ reply, sessionId, unsignedTxs });
 });
 

@@ -18,16 +18,38 @@
 
 ```
 --- PROGRESS.md PATCH ---
-SECTION: [exact section heading]
-CHANGE: [what changed]
+SECTION: ## 📍 CURRENT POSITION
+CHANGE: Advancing from Phase 0 to Phase 3.
 
 OLD:
-- [ ] Task description
 
+PHASE:   0 — Pre-Setup
+STEP:    0.0 — Not started
+STATUS:  NOT STARTED
 NEW:
-- [x] Task description
-     STATUS: Complete
-     DETAILS: What was built, what file, what decisions were made, any gotchas
+
+PHASE:   3 — REAL SERVICE INTEGRATION
+STEP:    3.1 — Replacing mock handlers with real chain calls
+STATUS:  IN PROGRESS
+
+Dev 1: Replacing mock tool handlers with real viem (Base/Celo/ETH) and Stellar SDK calls.
+Dev 2: Starting Frontend scaffold and design system.
+
+Last update: 2026-04-06
+Next sync checkpoint: Real Balance Fetching working.
+
+
+SECTION: ## PHASE 0 — CHECKLIST to ## PHASE 2 — AGENT CORE
+CHANGE: Marking all completed setup, scaffold, and brain logic tasks as complete.
+
+NEW STATUS:
+
+[x] Phase 0 (Setup): All accounts created, P1000 Auth error fixed (md5 config), testnet funds received.
+
+[x] Phase 1 (Scaffold): Monorepo structure live, Prisma migration init succeeded, Shared Types defined.
+
+[x] Phase 2 (Agent Brain): System prompts created, Full Reason-Act loop built with conversation history, tool-use loop confirmed working with Gemini 2.5 Flash.
+
 ```
 
 ### If you are a developer updating this file:
@@ -44,9 +66,11 @@ Automata is a **cross-chain AI agent platform**. It lets any user — from a fir
 
 The AI agent (powered by Google Gemini Flash) handles all the complexity: finding the best route, estimating fees, sequencing the steps, and executing transactions. The user just confirms and signs.
 
+
 **The blockchain is invisible to the user. They think in money outcomes, not technology.**
 
 ### The three things a user can do:
+- **Send** — Send tokens to another User or MultiSend (e.g. USDC → XLM, USDC → cKES)
 - **Swap** — exchange one token for another (e.g. USDC → XLM, USDC → cKES)
 - **Bridge** — move assets from one blockchain to another (e.g. USDC on Base → USDC on Stellar)
 - **Stake/Earn** — deposit into a yield protocol to earn returns (e.g. USDC into Aave on Base)
@@ -299,7 +323,8 @@ These are free. Do them all now.
   - Free tier: 300M compute units/month — plenty for development
 
 - [ ] **MiniPay Developer Access** — https://docs.minipay.xyz
-  - Read the Mini Apps documentation completely before Dev 2 starts Phase 3
+  - Read the Mini Apps documentation completely bef
+ore Dev 2 starts Phase 3
   - Note any specific requirements for Mini App submission here: `MINIPAY NOTES: ___________`
 
 ```

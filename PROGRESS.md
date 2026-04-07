@@ -64,20 +64,64 @@ Next: Integration of @lifi/sdk and @circle-fin/cctp-sdk into service files.
 
 ---
 
-## 🚀 UPCOMING: PHASE 4 — REAL SERVICE IMPLEMENTATIONS
-- [ ] **Step 4.1:** Replace \`routeService.ts\` mock with real \`@lifi/sdk\` calls. 
-- [ ] **Step 4.2:** Replace \`bridgeService.ts\` mock with real Circle CCTP V2 SDK. 
-- [ ] **Step 4.3:** Implement real Aave/Mento yield reads in \`yieldService.ts\`. 
-- [ ] **Step 4.4:** Move in-memory sessions to Prisma/PostgreSQL. 
+You are continuing development on Automata — a cross-chain AI agent platform.
+Read PROGRESS.md first, then this entire prompt before writing any code.
 
----
+PROGRESS.md location: /Automata-V2/PROGRESS.md
+Architecture doc: /Automata-V2/AutomataArchitecture_v2.docx
 
-## 🏗️ ARCHITECTURE NOTES
+--- WHAT WAS COMPLETED THIS SESSION (Dev 1) ---
+
+Phase 3 Steps 3.2–3.4 are complete:
+
+[x] Created backend/src/services/routeService.ts — LI.FI-ready route stub
+[x] Created backend/src/services/swapService.ts — LI.FI swap tx stub
+[x] Created backend/src/services/bridgeService.ts — Circle CCTP TokenMessenger stub
+[x] Created backend/src/services/balanceService.ts — real EVM + Stellar balance fetcher
+[x] Created backend/src/services/yieldService.ts — mock yield rates stub
+[x] Created backend/src/services/stakeService.ts — stake tx stub
+[x] Created backend/src/services/transferService.ts — USDC transfer with real calldata
+[x] Created backend/src/services/feeService.ts — fee estimator stub
+[x] Created backend/src/services/resolverService.ts — ENS/phone resolver stub
+[x] Updated backend/src/agent/toolExecutor.ts — all 9 tools wired to services
+[x] Updated backend/src/agent/tools.ts — all 9 tool definitions for Gemini
+[x] Updated backend/src/agent/agent.ts — replaced Dev 2's inline handlers with
+    toolExecutor, added walletAddress param, added sanitizeHistory to prevent
+    functionResponse crash on multi-turn conversations
+[x] Updated backend/src/index.ts — passes walletAddress, returns unsignedTxs,
+    injects wallet address as context into message
+[x] Updated backend/tsconfig.json — target/lib ES2022 + DOM to satisfy viem/ox deps
+[x] End-to-end test passed — "Move 10 USDC from Base to Celo" returns valid
+    unsignedTx with CCTP TokenMessenger address and plain English confirmation
+
+--- PENDING BEFORE CLOSING THIS PHASE ---
+
+
+
+--- KEY FILES ---
+
+backend/src/agent/agent.ts       — Gemini reason-act loop
+backend/src/agent/toolExecutor.ts — routes tool calls to services
+backend/src/agent/tools.ts        — 9 tool definitions
+backend/src/agent/prompts.ts      — system prompt (untouched)
+backend/src/services/             — 9 service files (stubs, real in Phase 4)
+backend/src/adapters/evm.ts       — real EVM balance/tx helpers (Dev 2)
+backend/src/adapters/stellar.ts   — real Stellar helpers (Dev 2)
+backend/src/utils/rpc.ts          — viem public clients (Dev 2)
+backend/src/index.ts              — Express server, /api/chat route
+
+--- ARCHITECTURE NOTES ---
 - **Endpoint:** Use \`POST /api/chat\` (replaces original \`/agent/execute\`). 
 - **Execution:** Agent returns \`unsignedTxs\` for Frontend/Privy to sign. 
 - **Safety:** \`sanitizeHistory\` ensures stable multi-turn AI conversations. 
+- Dev 2 owns frontend, adapters, and utils. Do not overwrite those files.
+- Session store is in-memory (Map). Phase 3 TODO: move to Prisma.
+- walletAddress defaults to zero address if not provided — frontend must always send it.
+- unsignedTxs are returned to frontend for Privy to sign. Backend never signs.
+- API endpoint is POST /api/chat (not /agent/execute — that was the original spec,
+  Dev 2 implemented /api/chat instead).
+---
 
-```
 
 ### If you are a developer updating this file:
 1. Apply the patch to the relevant section
@@ -1853,7 +1897,7 @@ DONE WHEN: POST /agent/execute with a test message returns a real response from 
 
 # ════════════════════════════════════════════════════════
 # PHASE 3 — FRONTEND BUILD
-# Dev 2 leads · Dev 1 replaces service stubs in parallel
+# 
 # ════════════════════════════════════════════════════════
 
 > **Goal:** A complete, polished frontend. All pages built. Wallet connects. Chat interface talks to the backend agent. Flow builder works. Status panel shows real-time updates.

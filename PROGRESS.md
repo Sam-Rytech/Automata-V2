@@ -20,16 +20,14 @@
 --- PROGRESS.md PATCH ---
 ## 📍 CURRENT POSITION
 
-\`\`\`
 PHASE:   4 — REAL SERVICE IMPLEMENTATIONS
-STEP:    4.1 — Replacing LI.FI and Circle stubs with SDKs
+STEP:    4.2 — Replacing Circle CCTP bridge stub with real SDK
 STATUS:  IN PROGRESS
 
-Dev 1 (Jadon): Completed Backend Logic Layer. All 9 tools wired to services. 
-Verified 429/500/Timeout error handling. npx tsc --noEmit is green. 
+Dev 1: Phase 4 Step 4.1 complete. routeService.ts and swapService.ts now use real @lifi/sdk.
+Live route fetching and unsigned tx building verified with local script bypass.
 
-Next: Integration of @lifi/sdk and @circle-fin/cctp-sdk into service files. 
-\`\`\`
+Next: Replace bridgeService.ts stub with real Circle CCTP V2 SDK calls. 
 
 ---
 

@@ -22,10 +22,10 @@ export async function executeTool(
         return { data: await getRoute(args) };
 
       case 'get_yield_rates':
-        return { data: await getYieldRates(args.chain, args.token) };
+        return { data: await getYieldRates({ chain: args.chain, token: args.token }) };
 
       case 'build_bridge_tx': {
-        const result = await buildBridgeTx(args);
+        const result = await buildBridgeTx(args as { fromChain: string; toChain: string; amount: string; walletAddress: string; recipientAddress: string });
         return { data: result.description, unsignedTx: result.unsignedTx };
       }
 
@@ -35,7 +35,7 @@ export async function executeTool(
       }
 
       case 'build_stake_tx': {
-        const result = await buildStakeTx(args);
+        const result = await buildStakeTx(args as { chain: string; protocol: string; token: string; amount: string; walletAddress: string });
         return { data: result.description, unsignedTx: result.unsignedTx };
       }
 

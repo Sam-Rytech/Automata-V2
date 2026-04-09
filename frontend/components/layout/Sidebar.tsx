@@ -28,10 +28,12 @@ export function Sidebar({ activeMode, executionMode = 'assisted', setExecutionMo
     <aside className="w-[260px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto custom-scrollbar">
       {/* Brand Header */}
       <div className="mb-8 mt-4 md:mt-0">
+        <Link href="/">
         <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase mb-6 flex items-center gap-2">
           Automata
           <span className="bg-[#E91E8C] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-none">V1.0</span>
-        </h1>
+          </h1>
+        </Link>
 
         {/* Connected Wallet */}
         <div className="bg-[#1A1A2E] p-3 flex items-center gap-3 border-l-2 border-[#E91E8C]">

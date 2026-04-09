@@ -15,8 +15,8 @@ export function LandingNav() {
         {/* Action */}
         <div className="flex items-center gap-4">
           <Button 
-            variant="outline" 
-            className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-mono text-xs md:text-sm uppercase tracking-widest h-10 px-6 md:px-8 relative"
+            variant="outline"
+            className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-base uppercase tracking-wider h-11 px-8 relative"
           >
             <span className="tech-corners-extra" />
             Launch App

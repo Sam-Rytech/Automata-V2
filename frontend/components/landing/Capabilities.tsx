@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, ArrowLeftRight, Network, TrendingUp } from "lucide-react";
+import { PaperAirplaneIcon, ArrowsRightLeftIcon, GlobeAltIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 
 export function Capabilities() {
   // SWAP Card Live Ticker State
@@ -32,22 +32,21 @@ export function Capabilities() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        {/* CARD 1: SEND */}
-        <div className="p-8 relative overflow-hidden group transition-all duration-500 border border-[var(--accent-pink)]/20 bg-[var(--accent-pink)]/[0.02] hover:bg-[var(--accent-pink)]/[0.05] hover:border-[var(--accent-pink)]/60 hover:shadow-[0_0_40px_rgba(233,30,140,0.15)] rounded-xl">
-          {/* Faint Watermark Icon */}
-          <Send
-            strokeWidth={0.5}
-            className="absolute -bottom-12 -right-12 w-64 h-64 text-[var(--accent-pink)] opacity-[0.03] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.08] group-hover:-rotate-6 pointer-events-none z-0"
+        {/* CARD 1: SEND (Pink - #E91E8C) */}
+        <div className="p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#E91E8C]/40 bg-[#E91E8C]/[0.04] hover:bg-[#E91E8C]/[0.08] hover:border-[#E91E8C]/80 hover:shadow-[0_0_30px_rgba(233,30,140,0.15)]">
+          {/* Filled Heroicon Watermark */}
+          <PaperAirplaneIcon
+            className="absolute -bottom-8 -right-8 w-64 h-64 text-[#E91E8C] opacity-[0.05] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] group-hover:-rotate-6 pointer-events-none z-0"
           />
 
           <div className="relative z-10">
-            <h3 className="font-syne text-2xl font-bold text-white mb-4 uppercase tracking-wider">SEND</h3>
+            <h3 className="font-syne text-2xl font-bold text-[#E91E8C] mb-4 uppercase tracking-wider drop-shadow-[0_0_8px_rgba(233,30,140,0.4)]">SEND</h3>
             <p className="font-mono text-sm text-white/60 mb-8 max-w-sm leading-relaxed">
               Transfer USDC to any wallet on any network. Pay network costs directly in USDC.
             </p>
 
-            <div className="glassmorphism p-4 border-[var(--accent-pink)]/20 flex flex-col gap-3 backdrop-blur-md">
-              <div className="h-10 bg-[var(--bg-primary)] border border-white/10 px-3 flex items-center font-mono text-xs text-white/40 overflow-hidden relative">
+            <div className="bg-[#0F0F1A]/80 p-4 border border-[#E91E8C]/20 flex flex-col gap-3 backdrop-blur-md rounded-none">
+              <div className="h-10 bg-[#0F0F1A] border border-white/10 px-3 flex items-center font-mono text-xs text-white/40 overflow-hidden relative rounded-none">
                 <motion.span
                   animate={{ opacity: [0, 1, 1, 0], x: [-10, 0, 0, 10] }}
                   transition={{ duration: 4, repeat: Infinity, times: [0, 0.1, 0.8, 1] }}
@@ -56,7 +55,7 @@ export function Capabilities() {
                 </motion.span>
               </div>
               <div className="flex gap-2">
-                <div className="h-10 bg-[var(--bg-primary)] border border-white/10 px-3 flex items-center font-mono text-xs text-white flex-1 relative overflow-hidden">
+                <div className="h-10 bg-[#0F0F1A] border border-white/10 px-3 flex items-center font-mono text-xs text-white flex-1 relative overflow-hidden rounded-none">
                   <span className="text-white/40 mr-2">$</span>
                   <motion.span
                     animate={{ opacity: [0, 1, 1, 0], y: [10, 0, 0, -10] }}
@@ -67,11 +66,11 @@ export function Capabilities() {
                 </div>
                 <motion.button
                   animate={{
-                    backgroundColor: ['rgba(233,30,140,0.1)', 'rgba(233,30,140,1)', 'rgba(22,33,62,1)', 'rgba(233,30,140,0.1)'],
+                    backgroundColor: ['rgba(233,30,140,0.1)', 'rgba(233,30,140,1)', 'rgba(15,15,26,1)', 'rgba(233,30,140,0.1)'],
                     color: ['#E91E8C', '#FFF', '#888', '#E91E8C']
                   }}
                   transition={{ duration: 4, repeat: Infinity, times: [0, 0.4, 0.5, 1] }}
-                  className="px-4 h-10 border border-[var(--accent-pink)]/50 tech-button font-mono text-xs uppercase tracking-widest"
+                  className="px-4 h-10 border border-[#E91E8C]/50 tech-button font-mono text-xs uppercase tracking-widest bg-transparent rounded-none"
                 >
                   <span className="tech-corners-extra" />
                   Send
@@ -80,27 +79,26 @@ export function Capabilities() {
               <motion.div
                 animate={{ height: ['0%', '0%', '2px', '0%'], opacity: [0, 0, 1, 0] }}
                 transition={{ duration: 4, repeat: Infinity, times: [0, 0.5, 0.6, 1] }}
-                className="absolute bottom-0 left-0 w-full bg-[var(--success)]"
+                className="absolute bottom-0 left-0 w-full bg-[#E91E8C]"
               />
             </div>
           </div>
         </div>
 
-        {/* CARD 2: SWAP */}
-        <div className="p-8 relative overflow-hidden group transition-all duration-500 border border-[var(--accent-purple)]/20 bg-[var(--accent-purple)]/[0.02] hover:bg-[var(--accent-purple)]/[0.05] hover:border-[var(--accent-purple)]/60 hover:shadow-[0_0_40px_rgba(106,13,173,0.2)] rounded-xl">
-          {/* Faint Watermark Icon */}
-          <ArrowLeftRight
-            strokeWidth={0.5}
-            className="absolute -bottom-10 -right-10 w-72 h-72 text-[var(--accent-purple)] opacity-[0.03] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.08] pointer-events-none z-0"
+        {/* CARD 2: SWAP (Purple - #6A0DAD) */}
+        <div className="p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#6A0DAD]/40 bg-[#6A0DAD]/[0.04] hover:bg-[#6A0DAD]/[0.08] hover:border-[#6A0DAD]/80 hover:shadow-[0_0_30px_rgba(106,13,173,0.15)]">
+          {/* Filled Heroicon Watermark */}
+          <ArrowsRightLeftIcon
+            className="absolute -bottom-8 -right-8 w-64 h-64 text-[#6A0DAD] opacity-[0.05] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] pointer-events-none z-0"
           />
 
           <div className="relative z-10">
-            <h3 className="font-syne text-2xl font-bold text-white mb-4 uppercase tracking-wider">SWAP</h3>
+            <h3 className="font-syne text-2xl font-bold text-[#6A0DAD] mb-4 uppercase tracking-wider drop-shadow-[0_0_8px_rgba(106,13,173,0.4)]">SWAP</h3>
             <p className="font-mono text-sm text-white/60 mb-8 max-w-sm leading-relaxed">
               Exchange tokens at the best rate, automatically. Liquidity sourced across all markets.
             </p>
 
-            <div className="glassmorphism p-4 border-[var(--accent-purple)]/20 flex flex-col gap-1 relative h-[104px] backdrop-blur-md">
+            <div className="bg-[#0F0F1A]/80 p-4 border border-[#6A0DAD]/20 flex flex-col gap-1 relative h-[104px] backdrop-blur-md rounded-none">
               <AnimatePresence mode="popLayout">
                 <motion.div
                   key={`swap-${swapState}`}
@@ -123,7 +121,7 @@ export function Capabilities() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[var(--accent-purple)] text-xs bg-[#0F0F1A] w-6 h-6 rounded-full flex items-center justify-center border border-[var(--accent-purple)]/30 z-20 shadow-[0_0_10px_rgba(106,13,173,0.3)]"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#6A0DAD] text-xs bg-[#0F0F1A] w-6 h-6 rounded-none flex items-center justify-center border border-[#6A0DAD]/50 z-20 shadow-[0_0_10px_rgba(106,13,173,0.3)]"
               >
                 ↓
               </motion.div>
@@ -131,58 +129,56 @@ export function Capabilities() {
           </div>
         </div>
 
-        {/* CARD 3: BRIDGE */}
-        <div className="p-8 relative overflow-hidden group transition-all duration-500 border border-[var(--accent-pink)]/20 bg-[var(--accent-pink)]/[0.02] hover:bg-[var(--accent-pink)]/[0.05] hover:border-[var(--accent-pink)]/60 hover:shadow-[0_0_40px_rgba(233,30,140,0.15)] rounded-xl">
-          {/* Faint Watermark Icon */}
-          <Network
-            strokeWidth={0.5}
-            className="absolute -bottom-10 -right-12 w-64 h-64 text-[var(--accent-pink)] opacity-[0.03] transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.08] pointer-events-none z-0"
+        {/* CARD 3: BRIDGE (Orange - #F59E0B) */}
+        <div className="p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#F59E0B]/40 bg-[#F59E0B]/[0.04] hover:bg-[#F59E0B]/[0.08] hover:border-[#F59E0B]/80 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)]">
+          {/* Filled Heroicon Watermark */}
+          <GlobeAltIcon
+            className="absolute -bottom-8 -right-8 w-64 h-64 text-[#F59E0B] opacity-[0.05] transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] pointer-events-none z-0"
           />
 
           <div className="relative z-10">
-            <h3 className="font-syne text-2xl font-bold text-white mb-4 uppercase tracking-wider">BRIDGE</h3>
+            <h3 className="font-syne text-2xl font-bold text-[#F59E0B] mb-4 uppercase tracking-wider drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]">BRIDGE</h3>
             <p className="font-mono text-sm text-white/60 mb-8 max-w-sm leading-relaxed">
               Move assets across Base, Celo, Ethereum, Stellar. Powered by automated routing.
             </p>
 
-            <div className="glassmorphism p-4 border-[var(--accent-pink)]/20 flex items-center justify-between backdrop-blur-md">
-              <div className="bg-[var(--bg-primary)] border border-white/10 px-4 py-2 font-mono text-xs text-white z-10">BASE</div>
+            <div className="bg-[#0F0F1A]/80 p-4 border border-[#F59E0B]/20 flex items-center justify-between backdrop-blur-md rounded-none">
+              <div className="bg-[#0F0F1A] border border-white/10 px-4 py-2 font-mono text-xs text-white z-10 rounded-none">BASE</div>
 
-              <div className="flex-1 h-[1px] border-t border-dashed border-white/20 mx-4 relative flex items-center">
+              <div className="flex-1 h-[1px] border-t border-dashed border-[#F59E0B]/40 mx-4 relative flex items-center">
                 <motion.div
                   animate={{ left: ['0%', '100%', '0%'] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute w-2 h-2 rounded-full bg-[var(--accent-pink)] shadow-[0_0_15px_var(--accent-pink)]"
+                  className="absolute w-2 h-2 rounded-none bg-[#F59E0B] shadow-[0_0_15px_#F59E0B]"
                   style={{ transform: 'translateX(-50%)' }}
                 />
               </div>
 
-              <div className="bg-[var(--bg-primary)] border border-white/10 px-4 py-2 font-mono text-xs text-white z-10">STELLAR</div>
+              <div className="bg-[#0F0F1A] border border-white/10 px-4 py-2 font-mono text-xs text-white z-10 rounded-none">STELLAR</div>
             </div>
           </div>
         </div>
 
-        {/* CARD 4: EARN */}
-        <div className="p-8 relative overflow-hidden group transition-all duration-500 border border-[var(--accent-purple)]/20 bg-[var(--accent-purple)]/[0.02] hover:bg-[var(--accent-purple)]/[0.05] hover:border-[var(--accent-purple)]/60 hover:shadow-[0_0_40px_rgba(106,13,173,0.2)] rounded-xl">
-          {/* Faint Watermark Icon */}
-          <TrendingUp
-            strokeWidth={0.5}
-            className="absolute -bottom-8 -right-8 w-64 h-64 text-[var(--accent-purple)] opacity-[0.03] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.08] group-hover:-rotate-6 pointer-events-none z-0"
+        {/* CARD 4: EARN (Green - #22C55E) */}
+        <div className="p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#22C55E]/40 bg-[#22C55E]/[0.04] hover:bg-[#22C55E]/[0.08] hover:border-[#22C55E]/80 hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+          {/* Filled Heroicon Watermark */}
+          <ChartBarIcon
+            className="absolute -bottom-8 -right-8 w-64 h-64 text-[#22C55E] opacity-[0.05] transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] pointer-events-none z-0"
           />
 
           <div className="relative z-10">
-            <h3 className="font-syne text-2xl font-bold text-white mb-4 uppercase tracking-wider">EARN</h3>
+            <h3 className="font-syne text-2xl font-bold text-[#22C55E] mb-4 uppercase tracking-wider drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]">EARN</h3>
             <p className="font-mono text-sm text-white/60 mb-8 max-w-sm leading-relaxed">
               Deposit into yield protocols. Your money works for you while you sleep.
             </p>
 
-            <div className="glassmorphism p-4 border-[var(--accent-purple)]/20 flex items-end justify-between h-24 backdrop-blur-md">
+            <div className="bg-[#0F0F1A]/80 p-4 border border-[#22C55E]/20 flex items-end justify-between h-24 backdrop-blur-md rounded-none">
               <div className="font-mono text-sm h-full flex flex-col justify-end">
                 <div className="text-white/50 text-[10px] tracking-widest mb-1 uppercase">USDC on Aave</div>
                 <motion.div
-                  animate={{ opacity: [0.7, 1, 0.7], textShadow: ["0px 0px 0px transparent", "0px 0px 10px var(--success)", "0px 0px 0px transparent"] }}
+                  animate={{ opacity: [0.7, 1, 0.7], textShadow: ["0px 0px 0px transparent", "0px 0px 15px #22C55E", "0px 0px 0px transparent"] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="text-[var(--success)] font-bold text-lg"
+                  className="text-[#22C55E] font-bold text-lg"
                 >
                   APY 4.2%
                 </motion.div>
@@ -193,8 +189,8 @@ export function Capabilities() {
                     key={i}
                     animate={{ height: [`${baseHeight * 100}%`, `${(baseHeight + 0.1) * 100}%`, `${baseHeight * 100}%`] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
-                    className="w-4 bg-[var(--accent-purple)]"
-                    style={{ opacity: baseHeight + 0.1 }}
+                    className="w-4 bg-[#22C55E] rounded-none shadow-[0_0_10px_rgba(34,197,94,0.3)]"
+                    style={{ opacity: baseHeight + 0.2 }}
                   />
                 ))}
               </div>

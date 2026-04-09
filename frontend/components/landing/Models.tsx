@@ -28,7 +28,7 @@ export function Models() {
             className="flex items-center gap-3 group cursor-pointer"
           >
             {/* Using mask-image because the SVG is black; this allows us to "tint" it any color */}
-            <div 
+            <div
               className="w-7 h-7 shrink-0 transition-all duration-500 bg-white/30 group-hover:bg-[#10A37F] filter brightness-75 contrast-125 group-hover:filter-none"
               style={{
                 maskImage: 'url("/openai-2.svg")',
@@ -42,7 +42,7 @@ export function Models() {
               }}
             />
             <span className="font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#10A37F] group-hover:drop-shadow-[0_0_15px_rgba(16,163,127,0.4)]">
-              GPT-
+              GPT
             </span>
           </motion.div>
 
@@ -51,8 +51,8 @@ export function Models() {
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2 group cursor-pointer"
           >
-            <img 
-              src="/claude-logo.svg" 
+            <img
+              src="/claude-logo.svg"
               alt="Claude"
               className="w-8 h-8 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
             />
@@ -66,13 +66,13 @@ export function Models() {
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2 group cursor-pointer"
           >
-            <img 
-              src="/gemini-icon-logo.svg" 
+            <img
+              src="/gemini-icon-logo.svg"
               alt="Gemini"
               className="w-7 h-7 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
             />
             <span className="font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#5684D1] group-hover:drop-shadow-[0_0_15px_rgba(86,132,209,0.4)]">
-              GEMINI-
+              GEMINI
             </span>
           </motion.div>
 

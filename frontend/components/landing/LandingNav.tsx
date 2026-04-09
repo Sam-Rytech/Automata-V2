@@ -2,25 +2,34 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
 
-  // Once Privy finishes authenticating, redirect to /build
+  // Track whether the user explicitly clicked "Launch App" in this session.
+  // Without this flag, the useEffect fires on every page load for already-
+  // authenticated users — causing the logo "back to landing" link to
+  // immediately redirect them to /build before they can click anything.
+  const loginIntentRef = useRef(false);
+
   useEffect(() => {
-    if (ready && authenticated) {
+    // Only redirect if the user just went through the login flow here.
+    // If they were already authenticated when they loaded the landing page,
+    // leave them alone — they're browsing the landing page intentionally.
+    if (ready && authenticated && loginIntentRef.current) {
       router.push('/build');
     }
   }, [ready, authenticated, router]);
 
   const handleLaunch = () => {
     if (authenticated) {
-      // Already logged in — go straight to /build
+      // Already logged in — go straight to /build immediately
       router.push('/build');
     } else {
-      // Open Privy modal — useEffect above handles the redirect on success
+      // Mark that login was user-initiated before opening the modal
+      loginIntentRef.current = true;
       login();
     }
   };

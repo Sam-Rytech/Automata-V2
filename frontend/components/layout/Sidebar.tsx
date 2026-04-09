@@ -18,18 +18,19 @@ interface SidebarProps {
 
 export function Sidebar({ activeMode, executionMode = 'assisted', setExecutionMode }: SidebarProps) {
   const navItems = [
-    { name: 'Chat', icon: ChatBubbleLeftRightIcon, href: '/chat', id: 'chat' },
-    { name: 'Builder', icon: SquaresPlusIcon, href: '/build', id: 'build' },
-    { name: 'History', icon: ClockIcon, href: '/history', id: 'history' },
-    { name: 'Settings', icon: Cog6ToothIcon, href: '/settings', id: 'settings' },
+    { name: 'Chat',     icon: ChatBubbleLeftRightIcon, href: '/chat',     id: 'chat'     },
+    { name: 'Builder',  icon: SquaresPlusIcon,         href: '/build',    id: 'build'    },
+    { name: 'History',  icon: ClockIcon,               href: '/history',  id: 'history'  },
+    { name: 'Settings', icon: Cog6ToothIcon,           href: '/settings', id: 'settings' },
   ];
 
   return (
     <aside className="w-[260px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto custom-scrollbar">
       {/* Brand Header */}
       <div className="mb-8 mt-4 md:mt-0">
+        {/* Logo links to / (landing page) — not /build */}
         <Link href="/">
-          <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase mb-6 flex items-center gap-2">
+          <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase mb-6 flex items-center gap-2 hover:text-white/80 transition-colors">
             Automata
             <span className="bg-[#E91E8C] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-none">V1.0</span>
           </h1>
@@ -65,9 +66,9 @@ export function Sidebar({ activeMode, executionMode = 'assisted', setExecutionMo
             <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">03 —— Balances</div>
             <div className="space-y-3">
               {[
-                { t: 'USDC (Base)', v: '1,240.50' },
-                { t: 'USDC (Celo)', v: '45.00' },
-                { t: 'XLM (Stellar)', v: '892.12' }
+                { t: 'USDC (Base)',    v: '1,240.50' },
+                { t: 'USDC (Celo)',    v: '45.00'    },
+                { t: 'XLM (Stellar)',  v: '892.12'   }
               ].map((b, i) => (
                 <div key={i} className="flex justify-between font-mono text-[11px] uppercase">
                   <span className="text-white/40">{b.t}</span>
@@ -84,16 +85,18 @@ export function Sidebar({ activeMode, executionMode = 'assisted', setExecutionMo
                 <button
                   onClick={() => setExecutionMode('assisted')}
                   className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
-                    ${executionMode === 'assisted' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
-                  `}
+                    ${executionMode === 'assisted'
+                      ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]'
+                      : 'text-white/30'}`}
                 >
                   Assisted
                 </button>
                 <button
                   onClick={() => setExecutionMode('autonomous')}
                   className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
-                    ${executionMode === 'autonomous' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
-                  `}
+                    ${executionMode === 'autonomous'
+                      ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]'
+                      : 'text-white/30'}`}
                 >
                   Autonomous
                 </button>
@@ -109,7 +112,11 @@ export function Sidebar({ activeMode, executionMode = 'assisted', setExecutionMo
           const isActive = activeMode === item.id;
           return (
             <Link key={item.name} href={item.href}>
-              <button className={`w-full flex items-center gap-4 px-4 py-3 font-syne text-[13px] uppercase font-bold transition-all ${isActive ? 'bg-[#E91E8C]/10 text-[#E91E8C] border-l-2 border-[#E91E8C]' : 'text-white/40 hover:text-white hover:bg-white/5 border-l-2 border-transparent'}`}>
+              <button className={`w-full flex items-center gap-4 px-4 py-3 font-syne text-[13px] uppercase font-bold transition-all ${
+                isActive
+                  ? 'bg-[#E91E8C]/10 text-[#E91E8C] border-l-2 border-[#E91E8C]'
+                  : 'text-white/40 hover:text-white hover:bg-white/5 border-l-2 border-transparent'
+              }`}>
                 <item.icon className="w-5 h-5" />
                 {item.name}
               </button>

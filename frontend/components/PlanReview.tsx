@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { AlertTriangle, Clock, DollarSign, ChevronRight } from 'lucide-react';
-// import { PlanReviewProps } from '@/types/status';
+
 
 export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: PlanReviewProps) {
   return (

@@ -45,9 +45,15 @@ export function HowItWorks() {
                 </ul>
               </div>
 
-              <div className="flex gap-2">
-                <Button size="sm" className="bg-[#E91E8C] text-white hover:bg-[#E91E8C]/80">Confirm & Sign</Button>
-                <Button size="sm" variant="ghost">Cancel</Button>
+              <div className="flex gap-4">
+                <Button variant="outline" size="sm" className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5">
+                  <span className="tech-corners-extra" />
+                  Confirm & Sign
+                </Button>
+                <Button variant="outline" size="sm" className="text-white/50 border-white/10 tech-button bg-transparent hover:text-white hover:bg-white/5">
+                  <span className="tech-corners-extra" />
+                  Cancel
+                </Button>
               </div>
             </div>
 
@@ -60,7 +66,10 @@ export function HowItWorks() {
           {/* Input Bar */}
           <div className="h-16 border-t border-white/10 bg-[#0F0F1A]/80 px-4 flex items-center">
             <div className="flex-1 font-mono text-sm text-white/30 truncate pr-4">Type a command...</div>
-            <Button size="icon-sm" className="bg-[#E91E8C]">↑</Button>
+            <Button variant="outline" size="icon" className="text-[var(--accent-pink)] border-[var(--accent-pink)]/50 tech-button bg-transparent hover:bg-[var(--accent-pink)]/10">
+              <span className="tech-corners-extra" />
+              ↑
+            </Button>
           </div>
         </div>
 
@@ -109,8 +118,14 @@ export function HowItWorks() {
               <span className="text-white">Ready to execute</span> · Est. fee $1.20
             </div>
             <div className="flex gap-4">
-              <Button variant="outline" className="text-white border-white/20">Simulate</Button>
-              <Button className="bg-[#E91E8C] text-white w-32">Execute</Button>
+              <Button variant="outline" className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5">
+                <span className="tech-corners-extra" />
+                Simulate
+              </Button>
+              <Button variant="outline" className="text-[var(--accent-pink)] border-[var(--accent-pink)]/50 tech-button bg-[var(--accent-pink)]/10 hover:bg-[var(--accent-pink)]/20 w-32">
+                <span className="tech-corners-extra" />
+                Execute
+              </Button>
             </div>
           </div>
         </div>

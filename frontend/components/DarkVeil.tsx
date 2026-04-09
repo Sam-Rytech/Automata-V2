@@ -99,10 +99,25 @@ export default function DarkVeil({
     const canvas = ref.current as HTMLCanvasElement;
     const parent = canvas.parentElement as HTMLElement;
 
-    const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
-      canvas
-    });
+    // Check if WebGL is available before attempting to create the renderer
+    const testCtx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!testCtx) {
+      console.warn('DarkVeil: WebGL not supported in this environment. Skipping animation.');
+      return;
+    }
+
+    let renderer: InstanceType<typeof Renderer>;
+    let frame = 0;
+
+    try {
+      renderer = new Renderer({
+        dpr: Math.min(window.devicePixelRatio, 2),
+        canvas
+      });
+    } catch (e) {
+      console.warn('DarkVeil: Failed to create WebGL renderer.', e);
+      return;
+    }
 
     const gl = renderer.gl;
     const geometry = new Triangle(gl);
@@ -134,7 +149,6 @@ export default function DarkVeil({
     resize();
 
     const start = performance.now();
-    let frame = 0;
 
     const loop = () => {
       program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;

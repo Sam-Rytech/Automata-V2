@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChatSidebar } from '@/components/chat/ChatSidebar';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { StatusPanel } from '@/components/StatusPanel';
 import { PlanReview } from '@/components/PlanReview';
 import { StatusState, AgentPlan } from '@/types/status';
@@ -20,7 +20,7 @@ export default function ChatPage() {
   const [activePlan, setActivePlan] = useState<AgentPlan | null>(null);
   const [executionMode, setExecutionMode] = useState<'assisted' | 'autonomous'>('assisted');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logic: Scrolls to the absolute bottom of the content whenever it changes
@@ -64,13 +64,13 @@ export default function ChatPage() {
   const executePlan = () => {
     setActivePlan(null);
     setStatus('executing');
-    
+
     setTimeout(() => {
       setStatus('success');
-      const agentMsg: Message = { 
-        id: (Date.now() + 1).toString(), 
-        role: 'agent', 
-        content: 'Sequence completed. 100 USDC has been successfully bridged and swapped. Verification hash: 0x74a...82f' 
+      const agentMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'agent',
+        content: 'Sequence completed. 100 USDC has been successfully bridged and swapped. Verification hash: 0x74a...82f'
       };
       setMessages(prev => [...prev, agentMsg]);
       setTimeout(() => setStatus('idle'), 4000);
@@ -79,9 +79,9 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden relative">
-      
+
       {/* Mobile Sidebar Toggle */}
-      <button 
+      <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="md:hidden absolute top-6 left-6 z-50 p-2 bg-[#1A1A2E] border border-white/10"
       >
@@ -93,19 +93,21 @@ export default function ChatPage() {
         fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 md:relative md:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <ChatSidebar 
-          executionMode={executionMode} 
-          setExecutionMode={setExecutionMode} 
+
+        <Sidebar
+          activeMode="chat"
+          executionMode={executionMode}
+          setExecutionMode={setExecutionMode}
         />
       </div>
 
       {/* Main Container - FLEX COL is key here */}
       <main className="flex-1 flex flex-col min-w-0">
-        
+
         {/* CHAT AREA: flex-1 ensures it takes all space ABOVE the input bar */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 custom-scrollbar">
           <div className="max-w-4xl mx-auto space-y-10 pb-10">
-            
+
             {messages.length === 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-16 md:mt-0">
                 <h2 className="font-syne text-[2.5rem] sm:text-[3.5rem] font-black uppercase leading-none mb-12 tracking-tighter">
@@ -133,8 +135,8 @@ export default function ChatPage() {
                   </div>
                   <div className={`
                     p-5 sm:p-6 max-w-[95%] sm:max-w-[80%] font-mono text-xs sm:text-sm shadow-xl rounded-none
-                    ${m.role === 'user' 
-                      ? 'bg-[#E91E8C]/[0.06] border border-[#E91E8C]/40 text-white shadow-[0_0_20px_rgba(233,30,140,0.1)]' 
+                    ${m.role === 'user'
+                      ? 'bg-[#E91E8C]/[0.06] border border-[#E91E8C]/40 text-white shadow-[0_0_20px_rgba(233,30,140,0.1)]'
                       : 'bg-[#1A1A2E] border border-white/5 text-white/90'}
                   `}>
                     {m.content}
@@ -172,16 +174,16 @@ export default function ChatPage() {
         <div className="w-full p-4 sm:p-8 md:p-12 border-t border-white/5 bg-[#0F0F1A]">
           <div className="max-w-4xl mx-auto">
             <div className="bg-[#1A1A2E]/95 border border-white/10 p-1 flex items-center shadow-2xl rounded-none">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Ask Automata..."
                 className="flex-1 bg-transparent border-none outline-none px-4 sm:px-6 font-mono text-xs sm:text-sm text-white placeholder:text-white/20"
               />
-              <button 
-                onClick={() => handleSend()} 
+              <button
+                onClick={() => handleSend()}
                 className="bg-[#E91E8C] text-white px-6 sm:px-10 py-3 sm:py-4 font-syne font-bold uppercase text-[10px] sm:text-xs tracking-[0.3em] hover:bg-[#E91E8C]/80 transition-colors rounded-none"
               >
                 Execute

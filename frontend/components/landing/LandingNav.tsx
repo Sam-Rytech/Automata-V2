@@ -11,14 +11,14 @@ export function LandingNav() {
       <nav className="glassmorphism rounded-xs flex items-center justify-between gap-8 px-8 py-3 w-full md:w-3/4 crosshair-corners relative overflow-hidden">
         {/* Branding */}
         <div className="flex items-center cursor-pointer">
-          <span className="text-white font-syne font-bold text-lg md:text-xl tracking-[0.3em] uppercase">
+          <span className="font-mono text-2xl font-black text-white tracking-tighter uppercase">
             Automata
           </span>
         </div>
 
         {/* Action */}
         <div className="flex items-center gap-4">
-          <Button 
+          <Button
             variant="outline"
             className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-base uppercase tracking-wider h-11 px-8 relative"
             onClick={() => router.push('/build')}

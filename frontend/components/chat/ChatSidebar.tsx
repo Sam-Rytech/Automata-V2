@@ -17,9 +17,8 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
 
   return (
     <aside className="w-[300px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
-      <div className="flex items-center gap-2 mb-12 mt-10 md:mt-0">
-        <h1 className="font-syne text-2xl font-black text-white tracking-tighter uppercase">Automata</h1>
-        <span className="bg-[#E91E8C] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-none">V1.0</span>
+      <div className="mb-12 mt-10 md:mt-0">
+        <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase">Automata</h1>
       </div>
 
       <div className="mb-10">
@@ -65,7 +64,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
       <div className="mb-12">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">04 —— Execution</div>
         <div className="flex border border-white/10 p-1">
-          <button 
+          <button
             onClick={() => setExecutionMode('assisted')}
             className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
               ${executionMode === 'assisted' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
@@ -73,7 +72,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           >
             Assisted
           </button>
-          <button 
+          <button
             onClick={() => setExecutionMode('autonomous')}
             className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
               ${executionMode === 'autonomous' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}

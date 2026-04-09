@@ -4,14 +4,14 @@ import './globals.css';
 import { Providers } from './providers';
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const syne = Syne({ 
-  subsets: ['latin'], 
+const syne = Syne({
+  subsets: ['latin'],
   variable: '--font-syne',
   weight: ['400', '500', '600', '700', '800'],
 });
 
-const plexMono = IBM_Plex_Mono({ 
-  subsets: ['latin'], 
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
   variable: '--font-plex-mono',
   weight: ['400', '500', '600', '700'],
 });

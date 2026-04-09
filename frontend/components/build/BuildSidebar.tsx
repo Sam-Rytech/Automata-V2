@@ -14,16 +14,21 @@ export function BuildSidebar() {
     <aside className="w-[260px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
       {/* Brand Header */}
       <div className="mb-12 mt-4 md:mt-0">
-        <h1 className="font-syne text-2xl font-black text-white tracking-tighter uppercase mb-8">Automata</h1>
-        
+        <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase mb-8">Automata</h1>
+
         {/* Connected Wallet Snippet */}
-        <div className="bg-[#1A1A2E] p-3 flex items-center gap-3 border border-white/5">
-          <div className="w-8 h-8 bg-[#E91E8C] flex items-center justify-center shrink-0">
-            <WalletIcon className="w-4 h-4 text-white" />
-          </div>
-          <div className="min-w-0">
-            <div className="font-mono text-[9px] text-white/40 tracking-[0.2em] uppercase mb-0.5">Connected</div>
-            <div className="font-mono text-[11px] text-white font-bold uppercase truncate">0x71c...4f2</div>
+        <div className="mb-10">
+          <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">01 —— Connected Wallet</div>
+          <div className="bg-[#1A1A2E] p-4 flex items-center gap-3 border-l-2 border-[#E91E8C]">
+            <div className="w-8 h-8 bg-[#E91E8C] flex items-center justify-center shrink-0">
+              <WalletIcon className="w-4 h-4 text-white" />
+            </div>
+            <div className="min-w-0">
+              <div className="font-mono text-[11px] text-white font-bold uppercase truncate">0x1a2b...3c4d</div>
+              <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#22C55E] uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full" /> Connected
+              </div>
+            </div>
           </div>
         </div>
       </div>

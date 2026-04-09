@@ -264,3 +264,19 @@
     animation: slow-bob 4s ease-in-out infinite;
   }
 }
+
+@layer utilities {
+
+  /* This ensures the WebGL canvas stretches to fill the wrapper we give it */
+  .darkveil-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* The Dot Grid Pattern */
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}

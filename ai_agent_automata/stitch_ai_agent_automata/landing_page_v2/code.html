@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ff88b8",
+                    "on-error-container": "#ffb2b9",
+                    "on-secondary-fixed": "#500087",
+                    "on-tertiary-container": "#525168",
+                    "error": "#ff6e84",
+                    "on-surface": "#e9e6f7",
+                    "error-dim": "#d73357",
+                    "inverse-primary": "#b9006c",
+                    "tertiary-fixed-dim": "#d7d4f0",
+                    "tertiary-fixed": "#e5e2ff",
+                    "secondary-fixed": "#e6c5ff",
+                    "primary-container": "#ff6ead",
+                    "primary-fixed": "#ff6ead",
+                    "on-surface-variant": "#aba9b9",
+                    "surface-container": "#181826",
+                    "on-tertiary-fixed-variant": "#5c5b72",
+                    "surface-bright": "#2b2a3c",
+                    "surface-variant": "#242434",
+                    "primary-dim": "#ff68ab",
+                    "on-secondary-fixed-variant": "#741fb7",
+                    "on-primary-fixed": "#000000",
+                    "secondary": "#c37fff",
+                    "secondary-fixed-dim": "#ddb3ff",
+                    "secondary-container": "#690bac",
+                    "tertiary": "#f5f2ff",
+                    "inverse-on-surface": "#555461",
+                    "on-primary-container": "#4b0029",
+                    "surface-container-low": "#12121e",
+                    "surface-dim": "#0d0d18",
+                    "on-primary": "#600036",
+                    "outline": "#757482",
+                    "on-primary-fixed-variant": "#5c0033",
+                    "background": "#0d0d18",
+                    "primary-fixed-dim": "#ff4da2",
+                    "error-container": "#a70138",
+                    "surface": "#0d0d18",
+                    "surface-tint": "#ff88b8",
+                    "on-tertiary-fixed": "#3f3f55",
+                    "tertiary-container": "#e5e2ff",
+                    "surface-container-highest": "#242434",
+                    "surface-container-high": "#1e1e2d",
+                    "inverse-surface": "#fcf8ff",
+                    "on-tertiary": "#5a5a71",
+                    "on-error": "#490013",
+                    "outline-variant": "#474754",
+                    "on-secondary-container": "#e5c3ff",
+                    "on-secondary": "#330059",
+                    "secondary-dim": "#c37fff",
+                    "surface-container-lowest": "#000000",
+                    "tertiary-dim": "#d7d4f0",
+                    "on-background": "#e9e6f7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Manrope"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0F0F1A;
+            background-image: radial-gradient(rgba(171, 169, 185, 0.05) 1px, transparent 0);
+            background-size: 12px 12px;
+            font-family: 'Manrope', sans-serif;
+            color: #e9e6f7;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .kinetic-glow-pink {
+            filter: blur(80px);
+            background: radial-gradient(circle, rgba(255, 136, 184, 0.15) 0%, transparent 70%);
+        }
+        .kinetic-glow-purple {
+            filter: blur(100px);
+            background: radial-gradient(circle, rgba(195, 127, 255, 0.12) 0%, transparent 70%);
+        }
+        .glass-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(71, 71, 84, 0.2);
+        }
+        .bracket-cta::before { content: "[ "; color: #ff88b8; }
+        .bracket-cta::after { content: " ]"; color: #ff88b8; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-[100] bg-[#1A1A2E]/80 backdrop-blur-xl border-b border-[#c37fff]/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/10 px-6 py-4 flex justify-between items-center max-w-full">
+<div class="text-xl font-bold tracking-[0.2em] text-[#ff88b8] drop-shadow-[0_0_8px_rgba(255,136,184,0.4)] font-['Space_Grotesk'] uppercase">
+            [ AUTOMATA ]
+        </div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-[#ff88b8] border-b-2 border-[#ff88b8] pb-1 font-['Space_Grotesk'] tracking-tight uppercase text-sm" href="#">Network</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 font-['Space_Grotesk'] tracking-tight uppercase text-sm" href="#">Agents</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 font-['Space_Grotesk'] tracking-tight uppercase text-sm" href="#">Bridge</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 font-['Space_Grotesk'] tracking-tight uppercase text-sm" href="#">Governance</a>
+</nav>
+<div class="flex items-center space-x-6">
+<div class="hidden md:flex items-center space-x-4">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-[#ff88b8] transition-colors">hub</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-[#ff88b8] transition-colors">settings</span>
+</div>
+<button class="bracket-cta px-4 py-2 font-['Space_Grotesk'] text-sm font-bold tracking-widest uppercase hover:opacity-80 transition-all scale-95 active:opacity-80">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<!-- SideNavBar (Desktop Only) -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-64 bg-[#0F0F1A] border-r border-[#c37fff]/10 shadow-[10px_0_30px_rgba(0,0,0,0.3)] z-40 hidden lg:flex flex-col pt-24 pb-8">
+<div class="px-6 mb-12">
+<div class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest text-[#c37fff]">OPERATOR_01</div>
+<div class="font-['Space_Grotesk'] text-[9px] text-slate-500 tracking-tighter mt-1">[ STATUS: SYNCED ]</div>
+</div>
+<div class="flex-grow flex flex-col space-y-2">
+<a class="flex items-center space-x-4 bg-[#ff88b8]/10 text-[#ff88b8] border-r-4 border-[#ff88b8] py-4 px-6 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest">Terminal</span>
+</a>
+<a class="flex items-center space-x-4 text-slate-500 py-4 px-6 hover:bg-white/5 hover:text-white transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest">Neural Nets</span>
+</a>
+<a class="flex items-center space-x-4 text-slate-500 py-4 px-6 hover:bg-white/5 hover:text-white transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">lan</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest">Cross-Chain</span>
+</a>
+<a class="flex items-center space-x-4 text-slate-500 py-4 px-6 hover:bg-white/5 hover:text-white transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest">Vault</span>
+</a>
+<a class="flex items-center space-x-4 text-slate-500 py-4 px-6 hover:bg-white/5 hover:text-white transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest">System Logs</span>
+</a>
+</div>
+<div class="mt-auto px-6 space-y-4">
+<a class="flex items-center space-x-3 text-slate-500 text-[10px] uppercase font-bold tracking-widest hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">description</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center space-x-3 text-slate-500 text-[10px] uppercase font-bold tracking-widest hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<main class="lg:ml-64 pt-20">
+<!-- HERO SECTION -->
+<section class="relative min-h-[921px] flex flex-col items-center justify-center text-center px-6 py-20 overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="kinetic-glow-pink absolute top-1/4 left-1/4 w-[500px] h-[500px]"></div>
+<div class="kinetic-glow-purple absolute bottom-1/4 right-1/4 w-[600px] h-[600px]"></div>
+</div>
+<div class="relative z-10 max-w-5xl mx-auto">
+<h1 class="font-headline text-5xl md:text-8xl font-bold tracking-tighter leading-none mb-8">
+                    Your money moves.<br/>
+<span class="text-primary drop-shadow-[0_0_20px_rgba(255,136,184,0.3)]">Every chain.</span><br/>
+                    One command.
+                </h1>
+<!-- AI Orb & Chain Logic -->
+<div class="relative w-full h-[400px] flex items-center justify-center my-12">
+<!-- Central Orb -->
+<div class="relative w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-primary via-secondary to-surface-container-high p-1 shadow-[0_0_60px_rgba(255,136,184,0.2)]">
+<div class="w-full h-full rounded-full bg-surface-dim flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="Abstract 3D glowing neon neural network sphere with pulsing pink and purple data streams and geometric wireframe structures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCU_be0ASuBbcIAiAYuFNwK2wREVx069q4G5Eet0lo_jx5sbhD9FDzstHr0tOs2KFGVAJ-jUDl6yrFZY11MDQCbldK6XtOGI0w_fyNYi6i2tDYLc_EYr4-9wDV-Xy0A2G2GXpPHJYH53M5WlVb-rNPOIjZ13_MJApcEUN-4seMrdMqo1WDhLzDG3-lGALvDfy1WlLQnE4e1Lsvqah-xKndZpyIkOy5dWMPuIcCdv4wsz2tIwxvQmdP6EozecKCtYTqaC2OvNUkn7Zl"/>
+</div>
+</div>
+<!-- Floating Chains -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Top Left (Base) -->
+<div class="absolute top-[10%] left-[25%] flex flex-col items-center">
+<div class="w-12 h-12 bg-surface-container-high border border-primary/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">token</span>
+</div>
+<span class="text-[10px] font-label font-black mt-2 text-primary uppercase tracking-[0.2em]">BASE</span>
+</div>
+<!-- Top Right (ETH) -->
+<div class="absolute top-[10%] right-[25%] flex flex-col items-center">
+<div class="w-12 h-12 bg-surface-container-high border border-secondary/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">database</span>
+</div>
+<span class="text-[10px] font-label font-black mt-2 text-secondary uppercase tracking-[0.2em]">ETHEREUM</span>
+</div>
+<!-- Bottom Left (Stellar) -->
+<div class="absolute bottom-[20%] left-[20%] flex flex-col items-center">
+<div class="w-12 h-12 bg-surface-container-high border border-primary/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">star</span>
+</div>
+<span class="text-[10px] font-label font-black mt-2 text-primary uppercase tracking-[0.2em]">STELLAR</span>
+</div>
+<!-- Bottom Right (Celo) -->
+<div class="absolute bottom-[20%] right-[20%] flex flex-col items-center">
+<div class="w-12 h-12 bg-surface-container-high border border-secondary/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">wifi_tethering</span>
+</div>
+<span class="text-[10px] font-label font-black mt-2 text-secondary uppercase tracking-[0.2em]">CELO</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row items-center justify-center gap-6 mt-12">
+<button class="bracket-cta px-10 py-5 bg-primary text-on-primary font-headline font-black text-lg tracking-[0.3em] uppercase hover:shadow-[0_0_20px_rgba(255,136,184,0.4)] transition-all">
+                        ENTER TERMINAL
+                    </button>
+<button class="bracket-cta px-10 py-5 border border-outline-variant text-on-surface font-headline font-black text-lg tracking-[0.3em] uppercase hover:bg-white/5 transition-all">
+                        VIEW DOCS
+                    </button>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS (01) -->
+<section class="py-32 px-6 max-w-7xl mx-auto">
+<div class="flex flex-col lg:flex-row gap-16 items-center">
+<div class="w-full lg:w-1/2 order-2 lg:order-1">
+<div class="relative">
+<!-- UI Mockup 1 -->
+<div class="relative z-20 transform -rotate-6 translate-x-4 translate-y-4 shadow-2xl ring-1 ring-primary/20 bg-surface-container-high">
+<img class="w-full h-auto" data-alt="Dark professional UI dashboard showing real-time token transaction charts, bridge progress bars, and high-tech terminal command interface with purple accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCby3zRBii3KCMHEntJTQ18Qwxla2rqgR6ALwFxP6kMqW4Nbs6QKHrQ7zRpUrkuKjFOF4BBpBdEE2ZMgYBSJ9kfYxO5RJabekW-qNu-jCbw9Xd_kPRZacutH8w04Dt9q6HdqTdDGK7S4f6MLsai6mfB3mAffDyIfSmPTrphMcVOyZTOvTb9Aw_0FIhF0YpCcaxQTnUUGCFRJfH1u3gcsoJVyAhcB288s3wGAdm8ySRQb6bIj1dkvqhuUGBp5aknmPbvIqsTF5WiYcir"/>
+<div class="absolute top-0 right-0 p-2 font-label text-[10px] text-primary bg-surface-dim/80">[ OPERATIONAL_LOG_v4 ]</div>
+</div>
+<!-- UI Mockup 2 -->
+<div class="absolute top-0 left-0 z-10 transform rotate-3 -translate-x-8 -translate-y-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 shadow-2xl border border-secondary/20 bg-surface-container">
+<img class="w-full h-auto" data-alt="Sophisticated wallet interface showing multi-chain asset balances, visual connectivity lines, and sleek dark mode data visualizations" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQQTKnkwCtT5DVJWRil59W_03vsdNOLP3kO0R7faBKH5u70Q7umRcHk7CznBL3AEdND5EvESUt7Uz8zFIl_ulSe8cc5p36fZKZgP294jAjgCJuvCHmEJN7Dk8PWdlS8qnFuWk2IdOcod9ceDnH4W8OKpuBS2xcZDDKpRUyIKuWn4VVXXXmgUMo_zJ9DZb9kSS05LfrmvlxdAXEiKhOCW-s5gZ6m_IXgZ4FngcyfPYoeyi34qbHwyCRsqtlV3hme09LHJuL-zfojuxc"/>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2 order-1 lg:order-2 space-y-12">
+<div class="space-y-4">
+<span class="font-label text-primary text-sm font-black tracking-widest uppercase">SECTION_01 // WORKFLOW</span>
+<h2 class="font-headline text-4xl md:text-6xl font-bold uppercase tracking-tight">The Kinetic Flow</h2>
+</div>
+<div class="space-y-8">
+<div class="flex items-start gap-6 group">
+<div class="font-headline text-4xl font-black text-outline/20 group-hover:text-primary transition-colors">01</div>
+<div>
+<h3 class="font-headline text-xl font-bold uppercase tracking-widest text-primary mb-2">COMMAND</h3>
+<p class="text-on-surface-variant font-body leading-relaxed">Speak or type your intent. Automata's neural engine interprets complex multi-step financial goals instantly.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 group">
+<div class="font-headline text-4xl font-black text-outline/20 group-hover:text-secondary transition-colors">02</div>
+<div>
+<h3 class="font-headline text-xl font-bold uppercase tracking-widest text-secondary mb-2">EXECUTE</h3>
+<p class="text-on-surface-variant font-body leading-relaxed">Our agents navigate cross-chain liquidity pools, gas fees, and bridge protocols to find the optimal path.</p>
+</div>
+</div>
+<div class="flex items-start gap-6 group">
+<div class="font-headline text-4xl font-black text-outline/20 group-hover:text-primary transition-colors">03</div>
+<div>
+<h3 class="font-headline text-xl font-bold uppercase tracking-widest text-primary mb-2">CONFIRM</h3>
+<p class="text-on-surface-variant font-body leading-relaxed">Verify the proposed transaction stack and authorize. Your assets move with institutional precision.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CAPABILITIES (02) -->
+<section class="py-32 px-6 max-w-7xl mx-auto">
+<div class="text-center mb-24">
+<span class="font-label text-secondary text-sm font-black tracking-widest uppercase">SECTION_02 // SYSTEM_CORE</span>
+<h2 class="font-headline text-4xl md:text-6xl font-bold uppercase tracking-tighter mt-4">Omni-Chain Capabilities</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Card 1: SEND -->
+<div class="glass-card p-12 relative group overflow-hidden">
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary/40"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/40"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/40"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary/40"></div>
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-5xl text-primary drop-shadow-[0_0_10px_rgba(255,136,184,0.3)]">send</span>
+<span class="font-label text-[10px] text-outline-variant uppercase">ID: CMD_SEND_0X</span>
+</div>
+<h3 class="font-headline text-3xl font-black uppercase tracking-widest mb-4">SEND</h3>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed">Instant asset transfers across any connected network with a single signature.</p>
+<div class="mt-8 pt-8 border-t border-outline-variant/20 flex gap-4">
+<span class="text-[9px] font-label text-primary font-bold tracking-widest px-2 py-1 bg-primary/5">0.02s LATENCY</span>
+<span class="text-[9px] font-label text-secondary font-bold tracking-widest px-2 py-1 bg-secondary/5">ZERO SLIPPAGE</span>
+</div>
+</div>
+<!-- Card 2: SWAP -->
+<div class="glass-card p-12 relative group overflow-hidden">
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-secondary/40"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-secondary/40"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-secondary/40"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-secondary/40"></div>
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-5xl text-secondary drop-shadow-[0_0_10px_rgba(195,127,255,0.3)]">swap_horiz</span>
+<span class="font-label text-[10px] text-outline-variant uppercase">ID: CMD_SWAP_0X</span>
+</div>
+<h3 class="font-headline text-3xl font-black uppercase tracking-widest mb-4">SWAP</h3>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed">Aggregated liquidity from 40+ DEXs ensuring you always get the best execution price.</p>
+<div class="mt-8 pt-8 border-t border-outline-variant/20 flex gap-4">
+<span class="text-[9px] font-label text-primary font-bold tracking-widest px-2 py-1 bg-primary/5">MULTI-DEX</span>
+<span class="text-[9px] font-label text-secondary font-bold tracking-widest px-2 py-1 bg-secondary/5">GAS OPTIMIZED</span>
+</div>
+</div>
+<!-- Card 3: BRIDGE -->
+<div class="glass-card p-12 relative group overflow-hidden">
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary/40"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/40"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/40"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary/40"></div>
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-5xl text-primary drop-shadow-[0_0_10px_rgba(255,136,184,0.3)]">link</span>
+<span class="font-label text-[10px] text-outline-variant uppercase">ID: CMD_BRIDGE_0X</span>
+</div>
+<h3 class="font-headline text-3xl font-black uppercase tracking-widest mb-4">BRIDGE</h3>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed">Frictionless movement between L1s and L2s without manual management.</p>
+<div class="mt-8 pt-8 border-t border-outline-variant/20 flex gap-4">
+<span class="text-[9px] font-label text-primary font-bold tracking-widest px-2 py-1 bg-primary/5">ONE-CLICK</span>
+<span class="text-[9px] font-label text-secondary font-bold tracking-widest px-2 py-1 bg-secondary/5">SECURE_TUNNEL</span>
+</div>
+</div>
+<!-- Card 4: EARN -->
+<div class="glass-card p-12 relative group overflow-hidden">
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-secondary/40"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-secondary/40"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-secondary/40"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-secondary/40"></div>
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-5xl text-secondary drop-shadow-[0_0_10px_rgba(195,127,255,0.3)]">trending_up</span>
+<span class="font-label text-[10px] text-outline-variant uppercase">ID: CMD_EARN_0X</span>
+</div>
+<h3 class="font-headline text-3xl font-black uppercase tracking-widest mb-4">EARN</h3>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed">Automated yield farming and staking strategies executed across the DeFi landscape.</p>
+<div class="mt-8 pt-8 border-t border-outline-variant/20 flex gap-4">
+<span class="text-[9px] font-label text-primary font-bold tracking-widest px-2 py-1 bg-primary/5">AUTO-COMPOUND</span>
+<span class="text-[9px] font-label text-secondary font-bold tracking-widest px-2 py-1 bg-secondary/5">RISK_SCORED</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA SECTION -->
+<section class="py-40 px-6 relative overflow-hidden">
+<div class="kinetic-glow-pink absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-20"></div>
+<div class="max-w-4xl mx-auto text-center relative z-10">
+<h2 class="font-headline text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-12">Take Control of the Machine.</h2>
+<button class="bracket-cta px-16 py-8 bg-surface-bright text-primary font-headline font-black text-2xl tracking-[0.4em] uppercase hover:bg-primary hover:text-on-primary transition-all duration-300">
+                    GET_ACCESS_NOW
+                </button>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="border-t border-outline-variant/10 py-20 px-6 bg-surface-dim">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-2">
+<div class="text-2xl font-bold tracking-[0.2em] text-[#ff88b8] font-['Space_Grotesk'] uppercase mb-6">
+                        [ AUTOMATA ]
+                    </div>
+<p class="text-on-surface-variant max-w-sm mb-8">The next generation of institutional-grade AI terminal for cross-chain capital coordination.</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">terminal</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">token</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">public</span>
+</div>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm tracking-widest uppercase mb-6 text-secondary">Network</h4>
+<ul class="space-y-4 text-sm text-on-surface-variant font-body">
+<li><a class="hover:text-primary transition-colors" href="#">Nodes</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Governance</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Staking</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline font-bold text-sm tracking-widest uppercase mb-6 text-secondary">System</h4>
+<ul class="space-y-4 text-sm text-on-surface-variant font-body">
+<li><a class="hover:text-primary transition-colors" href="#">Docs</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">API</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Uptime</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-6">
+<span class="font-label text-[10px] text-outline uppercase">© 2024 AUTOMATA LABS // ALL_RIGHTS_RESERVED</span>
+<span class="font-label text-[10px] text-primary uppercase animate-pulse">SYSTEM_STATUS: NOMINAL // 0.0042 MS</span>
+</div>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 md:hidden bg-[#1A1A2E]/90 backdrop-blur-2xl border-t border-[#c37fff]/20 flex justify-around items-center py-3 px-4 shadow-[0_-10px_40px_rgba(195,127,255,0.15)]">
+<div class="flex flex-col items-center justify-center text-[#ff88b8] scale-110">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100">
+<span class="material-symbols-outlined">toll</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Assets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Activity</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Profile</span>
+</div>
+</nav>
+</body></html>

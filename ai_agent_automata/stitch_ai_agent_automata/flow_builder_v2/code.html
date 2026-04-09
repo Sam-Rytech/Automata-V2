@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#ff88b8",
+                    "on-error-container": "#ffb2b9",
+                    "on-secondary-fixed": "#500087",
+                    "on-tertiary-container": "#525168",
+                    "error": "#ff6e84",
+                    "on-surface": "#e9e6f7",
+                    "error-dim": "#d73357",
+                    "inverse-primary": "#b9006c",
+                    "tertiary-fixed-dim": "#d7d4f0",
+                    "tertiary-fixed": "#e5e2ff",
+                    "secondary-fixed": "#e6c5ff",
+                    "primary-container": "#ff6ead",
+                    "primary-fixed": "#ff6ead",
+                    "on-surface-variant": "#aba9b9",
+                    "surface-container": "#181826",
+                    "on-tertiary-fixed-variant": "#5c5b72",
+                    "surface-bright": "#2b2a3c",
+                    "surface-variant": "#242434",
+                    "primary-dim": "#ff68ab",
+                    "on-secondary-fixed-variant": "#741fb7",
+                    "on-primary-fixed": "#000000",
+                    "secondary": "#c37fff",
+                    "secondary-fixed-dim": "#ddb3ff",
+                    "secondary-container": "#690bac",
+                    "tertiary": "#f5f2ff",
+                    "inverse-on-surface": "#555461",
+                    "on-primary-container": "#4b0029",
+                    "surface-container-low": "#12121e",
+                    "surface-dim": "#0d0d18",
+                    "on-primary": "#600036",
+                    "outline": "#757482",
+                    "on-primary-fixed-variant": "#5c0033",
+                    "background": "#0d0d18",
+                    "primary-fixed-dim": "#ff4da2",
+                    "error-container": "#a70138",
+                    "surface": "#0d0d18",
+                    "surface-tint": "#ff88b8",
+                    "on-tertiary-fixed": "#3f3f55",
+                    "tertiary-container": "#e5e2ff",
+                    "surface-container-highest": "#242434",
+                    "surface-container-high": "#1e1e2d",
+                    "inverse-surface": "#fcf8ff",
+                    "on-tertiary": "#5a5a71",
+                    "on-error": "#490013",
+                    "outline-variant": "#474754",
+                    "on-secondary-container": "#e5c3ff",
+                    "on-secondary": "#330059",
+                    "secondary-dim": "#c37fff",
+                    "surface-container-lowest": "#000000",
+                    "tertiary-dim": "#d7d4f0",
+                    "on-background": "#e9e6f7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Manrope"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(circle, #474754 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bracket-left::before { content: '['; margin-right: 4px; color: inherit; }
+        .bracket-right::after { content: ']'; margin-left: 4px; color: inherit; }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(26, 26, 46, 0.8);
+        }
+        .node-active-glow {
+            box-shadow: 0 0 30px rgba(255, 136, 184, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary-fixed overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar from JSON -->
+<header class="bg-[#1A1A2E]/80 backdrop-blur-xl text-[#ff88b8] font-['Space_Grotesk'] tracking-tight uppercase docked full-width top-0 border-b border-[#c37fff]/10 flex justify-between items-center w-full px-6 py-4 max-w-full z-50">
+<div class="text-xl font-bold tracking-[0.2em] text-[#ff88b8] drop-shadow-[0_0_8px_rgba(255,136,184,0.4)]">
+            [ AUTOMATA ]
+        </div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-[#ff88b8] border-b-2 border-[#ff88b8] pb-1 font-medium tracking-widest" href="#">Network</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 tracking-widest" href="#">Agents</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 tracking-widest" href="#">Bridge</a>
+<a class="text-slate-400 font-medium hover:text-[#ff88b8] transition-all duration-300 tracking-widest" href="#">Governance</a>
+</nav>
+<div class="flex items-center space-x-6">
+<div class="hidden lg:flex items-center bg-surface-container px-3 py-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-sm text-primary mr-2">terminal</span>
+<span class="text-[10px] font-label text-on-surface-variant tracking-tighter">FLOW_BUILDER_V2.0.4</span>
+</div>
+<div class="flex space-x-4">
+<span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer transition-colors">hub</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-primary cursor-pointer transition-colors">settings</span>
+</div>
+<button class="bg-primary text-on-primary-fixed px-6 py-2 font-label font-bold text-xs tracking-widest hover:bg-primary-dim transition-transform scale-95 active:opacity-80">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden relative">
+<!-- SideNavBar from JSON -->
+<aside class="bg-[#0F0F1A] fixed left-0 top-0 h-full w-64 border-r border-[#c37fff]/10 flex flex-col h-full space-y-2 z-40 pt-24 shadow-[10px_0_30px_rgba(0,0,0,0.3)]">
+<div class="px-6 mb-8">
+<h3 class="font-headline text-on-surface text-[11px] font-bold uppercase tracking-widest">OPERATOR_01</h3>
+<p class="font-label text-primary text-[10px] tracking-[0.2em]">[ STATUS: SYNCED ]</p>
+</div>
+<nav class="flex-1">
+<div class="bg-[#ff88b8]/10 text-[#ff88b8] border-r-4 border-[#ff88b8] py-4 px-6 flex items-center group cursor-pointer">
+<span class="material-symbols-outlined mr-4">terminal</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1 duration-200">Terminal</span>
+</div>
+<div class="text-slate-500 py-4 px-6 flex items-center group cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+<span class="material-symbols-outlined mr-4">psychology</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1 duration-200">Neural Nets</span>
+</div>
+<div class="text-slate-500 py-4 px-6 flex items-center group cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+<span class="material-symbols-outlined mr-4">lan</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1 duration-200">Cross-Chain</span>
+</div>
+<div class="text-slate-500 py-4 px-6 flex items-center group cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+<span class="material-symbols-outlined mr-4">account_balance_wallet</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1 duration-200">Vault</span>
+</div>
+<div class="text-slate-500 py-4 px-6 flex items-center group cursor-pointer hover:bg-white/5 hover:text-white transition-colors">
+<span class="material-symbols-outlined mr-4">receipt_long</span>
+<span class="font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-widest transition-transform group-hover:translate-x-1 duration-200">System Logs</span>
+</div>
+</nav>
+<div class="mt-auto border-t border-outline-variant/10 py-6">
+<div class="text-slate-500 py-2 px-6 flex items-center text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors cursor-pointer">
+<span class="material-symbols-outlined mr-4 text-sm">description</span>
+                    Documentation
+                </div>
+<div class="text-slate-500 py-2 px-6 flex items-center text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors cursor-pointer">
+<span class="material-symbols-outlined mr-4 text-sm">help_outline</span>
+                    Support
+                </div>
+</div>
+</aside>
+<!-- Canvas Area -->
+<main class="flex-1 ml-64 relative dot-grid overflow-hidden">
+<!-- Canvas Overlay UI -->
+<div class="absolute top-6 left-6 z-20 flex space-x-4">
+<div class="bg-surface-container-high/90 border border-outline-variant/30 px-4 py-2 flex items-center space-x-4 backdrop-blur-md">
+<span class="text-[10px] font-label text-primary-dim tracking-widest uppercase">Draft_v04</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-[10px] font-label text-on-surface tracking-tighter uppercase">Live Sync</span>
+</div>
+</div>
+<div class="bg-surface-container-high/90 border border-outline-variant/30 p-2 flex space-x-2 backdrop-blur-md">
+<button class="p-1 hover:bg-white/10 text-on-surface-variant"><span class="material-symbols-outlined text-sm">zoom_in</span></button>
+<button class="p-1 hover:bg-white/10 text-on-surface-variant"><span class="material-symbols-outlined text-sm">zoom_out</span></button>
+<button class="p-1 hover:bg-white/10 text-on-surface-variant"><span class="material-symbols-outlined text-sm">center_focus_strong</span></button>
+</div>
+</div>
+<!-- Flow SVG Layer (Connections) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10">
+<defs>
+<lineargradient id="flow-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#ff88b8" stop-opacity="0.2"></stop>
+<stop offset="50%" stop-color="#c37fff" stop-opacity="0.8"></stop>
+<stop offset="100%" stop-color="#ff88b8" stop-opacity="0.2"></stop>
+</lineargradient>
+</defs>
+<!-- Bridge to Swap -->
+<path class="opacity-60" d="M 240 300 C 350 300, 350 200, 460 200" fill="none" stroke="url(#flow-gradient)" stroke-width="2"></path>
+<!-- Swap to Stake -->
+<path class="opacity-60" d="M 760 200 C 850 200, 850 400, 960 400" fill="none" stroke="url(#flow-gradient)" stroke-width="2"></path>
+<!-- Data Flow Animated Dots -->
+<circle fill="#ff88b8" opacity="0.8" r="3">
+<animatemotion dur="3s" path="M 240 300 C 350 300, 350 200, 460 200" repeatcount="indefinite"></animatemotion>
+</circle>
+<circle fill="#c37fff" opacity="0.8" r="3">
+<animatemotion dur="4s" path="M 760 200 C 850 200, 850 400, 960 400" repeatcount="indefinite"></animatemotion>
+</circle>
+</svg>
+<!-- Nodes -->
+<div class="relative z-20 w-full h-full p-20">
+<!-- Node: Bridge -->
+<div class="absolute top-[220px] left-[40px] w-[200px] glass-panel border border-secondary/20 node-active-glow group">
+<div class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-primary"></div>
+<div class="h-1 w-full bg-gradient-to-r from-primary to-secondary"></div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-label text-on-surface-variant tracking-[0.2em]">01_TRIGGER</span>
+<span class="material-symbols-outlined text-sm text-secondary">waves</span>
+</div>
+<h4 class="font-headline text-sm font-bold tracking-widest text-on-surface mb-1">BRIDGE_ASSET</h4>
+<p class="text-[10px] text-on-surface-variant font-body">Source: Ethereum Mainnet</p>
+<div class="mt-6 flex justify-end">
+<div class="w-2 h-2 bg-secondary ring-4 ring-secondary/20"></div>
+</div>
+</div>
+</div>
+<!-- Node: Swap (Selected State) -->
+<div class="absolute top-[120px] left-[460px] w-[300px] glass-panel border border-primary node-active-glow ring-1 ring-primary/40">
+<div class="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-primary"></div>
+<div class="absolute -top-1 -right-1 w-2 h-2 border-t border-r border-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-2 h-2 border-b border-l border-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-primary"></div>
+<div class="h-1.5 w-full bg-primary shadow-[0_0_15px_rgba(255,136,184,0.6)]"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="text-[11px] font-label text-primary tracking-[0.3em] font-bold">02_EXECUTION</span>
+<span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: 'FILL' 1;">swap_horiz</span>
+</div>
+<h4 class="font-headline text-lg font-bold tracking-tight text-white mb-2 uppercase italic">DEX_SWAP_MODULE</h4>
+<div class="bg-surface-dim p-3 border-l-2 border-primary/40 mb-4">
+<p class="text-[10px] text-primary/80 font-label tracking-tighter uppercase mb-1">Configured Route</p>
+<p class="text-[11px] text-on-surface font-mono">ETH -&gt; $AUTO [OPTIMIZED]</p>
+</div>
+<div class="flex justify-between items-center mt-8">
+<div class="w-2 h-2 bg-primary ring-4 ring-primary/20"></div>
+<div class="flex space-x-1">
+<div class="w-1 h-1 bg-primary/40"></div>
+<div class="w-1 h-1 bg-primary"></div>
+<div class="w-1 h-1 bg-primary/40"></div>
+</div>
+<div class="w-2 h-2 bg-primary ring-4 ring-primary/20"></div>
+</div>
+</div>
+</div>
+<!-- Node: Stake -->
+<div class="absolute top-[320px] left-[960px] w-[200px] glass-panel border border-outline-variant/30 hover:border-secondary/40 transition-colors">
+<div class="h-1 w-full bg-surface-variant"></div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-label text-on-surface-variant tracking-[0.2em]">03_OUTCOME</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">account_balance</span>
+</div>
+<h4 class="font-headline text-sm font-bold tracking-widest text-on-surface mb-1">YIELD_VAULT</h4>
+<p class="text-[10px] text-on-surface-variant font-body">Strategy: Auto-Compound</p>
+<div class="mt-6 flex justify-start">
+<div class="w-2 h-2 bg-outline ring-4 ring-outline/20"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Side Configuration Panel -->
+<aside class="w-96 bg-[#1A1A2E] border-l border-[#c37fff]/10 flex flex-col z-40 shadow-[-10px_0_40px_rgba(0,0,0,0.5)]">
+<div class="p-6 border-b border-outline-variant/10">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline text-sm font-black uppercase tracking-[0.2em] text-primary">Module Configuration</h2>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white">close</span>
+</div>
+<div class="flex items-center space-x-3 bg-surface-container-low p-3 border border-primary/20">
+<div class="w-10 h-10 bg-primary/10 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary">swap_horiz</span>
+</div>
+<div>
+<p class="text-[10px] font-label text-primary uppercase font-bold tracking-tighter">DEX_SWAP_MODULE</p>
+<p class="text-[9px] text-on-surface-variant uppercase tracking-widest">ID: MOD_772_XP</p>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8">
+<!-- Config Group -->
+<section>
+<label class="block text-[10px] font-label text-on-surface-variant uppercase tracking-widest mb-4">Input Parameters</label>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between mb-1">
+<span class="text-[11px] text-on-surface font-bold">Source Token</span>
+<span class="text-[10px] text-primary font-label">[ETH]</span>
+</div>
+<select class="w-full bg-surface-dim border-b border-outline-variant text-[12px] py-2 focus:ring-0 focus:border-primary transition-colors appearance-none text-on-surface">
+<option>Mainnet Ethereum (ETH)</option>
+<option>Arbitrum ETH</option>
+<option>Polygon MATIC</option>
+</select>
+</div>
+<div>
+<div class="flex justify-between mb-1">
+<span class="text-[11px] text-on-surface font-bold">Destination Token</span>
+<span class="text-[10px] text-primary font-label">[$AUTO]</span>
+</div>
+<select class="w-full bg-surface-dim border-b border-outline-variant text-[12px] py-2 focus:ring-0 focus:border-primary transition-colors appearance-none text-on-surface">
+<option>Automata Governance ($AUTO)</option>
+<option>Wrapped Ether (WETH)</option>
+<option>USDC Circle</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Config Group -->
+<section>
+<label class="block text-[10px] font-label text-on-surface-variant uppercase tracking-widest mb-4">Slippage Tolerance</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="bg-surface-variant text-[10px] font-bold py-2 hover:bg-primary/20 transition-colors">0.1%</button>
+<button class="bg-primary/20 text-primary border border-primary/40 text-[10px] font-bold py-2">0.5%</button>
+<button class="bg-surface-variant text-[10px] font-bold py-2 hover:bg-primary/20 transition-colors">1.0%</button>
+<button class="bg-surface-variant text-[10px] font-bold py-2 hover:bg-primary/20 transition-colors">AUTO</button>
+</div>
+</section>
+<!-- Advanced Syntax Section -->
+<section class="bg-surface-container-low p-4 border-l border-primary">
+<label class="block text-[9px] font-label text-primary uppercase tracking-[0.2em] mb-3">Logic_Override</label>
+<div class="font-mono text-[10px] text-on-surface-variant space-y-1">
+<p><span class="text-secondary">if</span> (liquidity_depth &lt; 100k) {</p>
+<p class="pl-4">route = <span class="text-primary">"BALANCER_V2"</span>;</p>
+<p><span class="text-secondary">else</span> {</p>
+<p class="pl-4">route = <span class="text-primary">"UNISWAP_V3"</span>;</p>
+<p>}</p>
+</div>
+</section>
+</div>
+<div class="p-6 bg-surface-dim mt-auto border-t border-outline-variant/20">
+<button class="w-full bg-primary text-on-primary-fixed py-4 font-label font-black text-xs tracking-[0.3em] uppercase hover:shadow-[0_0_20px_rgba(255,136,184,0.4)] transition-all active:scale-95">
+                    Apply_Changes
+                </button>
+<button class="w-full border border-outline-variant text-on-surface-variant py-3 mt-3 font-label font-bold text-[10px] tracking-[0.2em] uppercase hover:text-white transition-colors">
+                    Reset_Module
+                </button>
+</div>
+</aside>
+</div>
+<!-- BottomNavBar from JSON (Visible on Mobile Only) -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center py-3 px-4 bg-[#1A1A2E]/90 backdrop-blur-2xl md:hidden border-t border-[#c37fff]/20 z-50">
+<div class="flex flex-col items-center justify-center text-[#ff88b8] scale-110">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">toll</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Assets</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Activity</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-black">Profile</span>
+</div>
+</nav>
+<!-- Floating Action Button for Flow Logic (Mobile Focus) -->
+<div class="fixed bottom-24 right-6 md:hidden">
+<button class="w-14 h-14 bg-primary text-on-primary-fixed flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</body></html>

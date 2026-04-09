@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA | Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-tertiary-container": "#002f33",
+                "on-error-container": "#ffdad6",
+                "outline": "#a88892",
+                "on-primary-fixed-variant": "#8d0051",
+                "surface-tint": "#ffb0cc",
+                "on-secondary-container": "#d5a4ff",
+                "on-tertiary-fixed": "#002022",
+                "tertiary-container": "#00a0aa",
+                "on-surface": "#e3e0f1",
+                "surface-variant": "#343440",
+                "secondary-fixed": "#f1daff",
+                "primary-container": "#ff46a0",
+                "secondary-container": "#6c11af",
+                "on-tertiary": "#00363a",
+                "tertiary-fixed": "#7df4ff",
+                "on-secondary-fixed": "#2d004f",
+                "error-container": "#93000a",
+                "on-background": "#e3e0f1",
+                "on-secondary": "#4b007e",
+                "primary": "#ffb0cc",
+                "background": "#12121d",
+                "surface-container": "#1f1e2a",
+                "secondary-fixed-dim": "#dfb7ff",
+                "surface": "#12121d",
+                "on-primary-container": "#580030",
+                "outline-variant": "#594048",
+                "surface-container-high": "#292935",
+                "inverse-primary": "#b8006c",
+                "tertiary": "#00dbe9",
+                "error": "#ffb4ab",
+                "secondary": "#dfb7ff",
+                "on-primary": "#640038",
+                "primary-fixed-dim": "#ffb0cc",
+                "surface-container-low": "#1b1a26",
+                "surface-bright": "#383845",
+                "on-error": "#690005",
+                "surface-container-lowest": "#0d0d18",
+                "on-surface-variant": "#e1bdc8",
+                "on-secondary-fixed-variant": "#690bac",
+                "on-tertiary-fixed-variant": "#004f54",
+                "inverse-on-surface": "#302f3b",
+                "inverse-surface": "#e3e0f1",
+                "primary-fixed": "#ffd9e4",
+                "tertiary-fixed-dim": "#00dbe9",
+                "surface-container-highest": "#343440",
+                "on-primary-fixed": "#3e0021",
+                "surface-dim": "#12121d"
+            },
+            "borderRadius": {
+                "DEFAULT": "0px",
+                "lg": "0px",
+                "xl": "0px",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Space Grotesk"],
+                "mono": ["JetBrains Mono"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Space Grotesk', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .corner-marker-tl { position: absolute; top: 0; left: 0; width: 8px; height: 8px; border-top: 1px solid #00dbe9; border-left: 1px solid #00dbe9; }
+        .corner-marker-tr { position: absolute; top: 0; right: 0; width: 8px; height: 8px; border-top: 1px solid #00dbe9; border-right: 1px solid #00dbe9; }
+        .corner-marker-bl { position: absolute; bottom: 0; left: 0; width: 8px; height: 8px; border-bottom: 1px solid #00dbe9; border-left: 1px solid #00dbe9; }
+        .corner-marker-br { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 1px solid #00dbe9; border-right: 1px solid #00dbe9; }
+
+        .scanline-effect {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 219, 233, 0.02) 50%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary/30 min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-slate-950/40 backdrop-blur-xl shadow-[0_0_60px_0_rgba(233,30,140,0.06)]">
+<div class="text-2xl font-bold tracking-tighter text-slate-100 dark:text-slate-100 headline">AUTOMATA</div>
+<div class="hidden md:flex items-center space-gap-8 gap-8">
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300" href="#">How it works</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300" href="#">Chains</a>
+<a class="text-pink-500 font-bold hover:text-pink-400 transition-colors duration-300" href="#">Launch App</a>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 font-bold transition-transform active:scale-95 hover:bg-pink-500/10 hover:text-pink-400 border border-transparent">
+            [ Launch App ]
+        </button>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-20 h-[calc(100vh-80px)] flex flex-col py-6 border-r border-slate-800/50 bg-[#0D0D18] w-64 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Abstract geometric avatar with glowing purple and pink fluid shapes against a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4ELtQsLqFJ_DeNXug6Ap_M190UJam-nD68GUhed9PyZP4n13HK3XLsbrdCoPaBRp47uR0tf_O0yAbOu2dPaPj3RgQ1lMRvJLFyd-oMH955HfiEMAUG0Zc7jgb5kESWb7L1hYMzjh_JjwTfbFbn8iv5Gg6hLtJ9VpMGsoA6sUZE7Te8MsLnz5_lZwcq1iu8ckpodS-bagaedgFfPEs5yT7UvsZrrJBPs71iV8PygTa4n9tVbPOI9CUh0epo7bBJR8lWNtOTGo6UzxD"/>
+</div>
+<div>
+<div class="text-on-surface text-sm font-mono tracking-tight">0x71C...4E21</div>
+<div class="text-pink-500 text-[10px] font-mono">[ ASSISTED MODE ]</div>
+</div>
+</div>
+<button class="w-full mt-4 text-[10px] font-mono text-pink-500 border border-pink-500/30 py-2 hover:bg-pink-500/10 transition-colors">
+                [ SWITCH TO AUTONOMOUS ]
+            </button>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 group transition-all relative" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-mono text-sm">Chat</span>
+</a>
+<a class="flex items-center gap-3 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 group transition-all relative" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="account_tree">account_tree</span>
+<span class="font-mono text-sm">Flow Builder</span>
+</a>
+<a class="flex items-center gap-3 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 group transition-all relative" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="history">history</span>
+<span class="font-mono text-sm">History</span>
+</a>
+<a class="flex items-center gap-3 py-3 text-pink-500 border-l-2 border-pink-500 pl-4 bg-pink-500/5 relative" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span class="font-mono text-sm font-bold">Settings</span>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-pink-500"></div>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-2 border-t border-slate-800/50 pt-6">
+<div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-xs" data-icon="layers">layers</span> Base</div>
+<span>1.2 ETH</span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-xs" data-icon="payments">payments</span> Celo</div>
+<span>450 CELO</span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-xs" data-icon="toll">toll</span> Ethereum</div>
+<span>0.5 ETH</span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-xs" data-icon="star">star</span> Stellar</div>
+<span>1200 XLM</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 pb-20 px-12 min-h-screen">
+<div class="max-w-6xl mx-auto">
+<header class="mb-12">
+<h1 class="text-5xl font-black headline tracking-tighter mb-2">SYSTEM_PARAMETERS</h1>
+<div class="flex items-center gap-4 text-tertiary font-mono text-xs tracking-widest uppercase">
+<span>// Node: 0.1-Alpha</span>
+<span class="w-1 h-1 bg-tertiary"></span>
+<span>Lat: 40.7128° N, Lon: 74.0060° W</span>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Column 1: AI & Logic -->
+<div class="space-y-8">
+<!-- AI Settings Card -->
+<section class="bg-surface-container-low p-8 relative overflow-hidden">
+<div class="corner-marker-tl"></div>
+<div class="corner-marker-tr"></div>
+<div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="flex justify-between items-start mb-8">
+<h2 class="headline text-2xl font-bold">AI SETTINGS</h2>
+<span class="font-mono text-[10px] text-slate-500">ID: 001</span>
+</div>
+<div class="space-y-6">
+<div class="group">
+<label class="block font-mono text-[10px] text-slate-400 mb-2 uppercase tracking-widest">Gemini API Key</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high border-b border-transparent focus:border-tertiary focus:ring-0 text-on-surface font-mono py-4 px-4 transition-all outline-none" placeholder="Enter API Key..." type="password" value="************************"/>
+<div class="absolute bottom-0 left-0 w-0 h-0.5 bg-tertiary transition-all group-focus-within:w-full"></div>
+</div>
+<div class="flex items-center justify-between mt-3">
+<p class="text-xs text-slate-500 italic">Required for autonomous reasoning modules.</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+<span class="text-[10px] font-mono text-emerald-500">CONNECTED</span>
+</div>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-10 py-3 font-bold text-sm tracking-widest hover:brightness-110 active:scale-[0.98] transition-all">
+                                [ SAVE CONFIGURATION ]
+                            </button>
+</div>
+</section>
+<!-- Execution Mode Card -->
+<section class="bg-surface-container-low p-8 relative">
+<div class="corner-marker-bl"></div>
+<div class="corner-marker-br"></div>
+<div class="flex justify-between items-start mb-6">
+<h2 class="headline text-2xl font-bold">EXECUTION MODE</h2>
+<span class="font-mono text-[10px] text-slate-500">ID: 002</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="border border-pink-500 bg-pink-500/10 p-6 flex flex-col items-start text-left group">
+<span class="material-symbols-outlined text-pink-500 mb-4" data-icon="person_search" style="font-variation-settings: 'FILL' 1;">person_search</span>
+<span class="headline font-bold text-lg text-pink-500">Assisted</span>
+<span class="text-[10px] font-mono text-pink-400/70 mt-1 uppercase">Requires User Approval</span>
+</button>
+<button class="border border-slate-800 hover:border-tertiary/50 p-6 flex flex-col items-start text-left group transition-colors">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-tertiary mb-4" data-icon="smart_toy">smart_toy</span>
+<span class="headline font-bold text-lg text-slate-300 group-hover:text-on-surface transition-colors">Autonomous</span>
+<span class="text-[10px] font-mono text-slate-500 mt-1 uppercase">Full Agent Agency</span>
+</button>
+</div>
+</section>
+</div>
+<!-- Column 2: Infrastructure -->
+<div class="space-y-8">
+<!-- Wallet Card -->
+<section class="bg-surface-container-low p-8 relative">
+<div class="corner-marker-tl"></div>
+<div class="corner-marker-tr"></div>
+<div class="flex justify-between items-start mb-8">
+<h2 class="headline text-2xl font-bold">WALLET</h2>
+<span class="font-mono text-[10px] text-slate-500">ID: 003</span>
+</div>
+<div class="bg-surface-container-highest p-6 mb-6 scanline-effect">
+<div class="flex justify-between items-center mb-4">
+<span class="font-mono text-xs text-slate-400">Current Address</span>
+<span class="bg-tertiary/10 text-tertiary text-[10px] font-mono px-2 py-0.5 border border-tertiary/20">METAMASK</span>
+</div>
+<div class="text-xl font-mono text-on-surface break-all mb-4">0x71C21BF1D3934E21C4BD73F68B6A191E1DBA4E21</div>
+<button class="text-pink-500 font-mono text-[10px] hover:text-pink-400 transition-colors uppercase tracking-widest">
+                                [ Disconnect Wallet ]
+                            </button>
+</div>
+<div class="space-y-4">
+<h3 class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mb-2">Supported Infrastructure</h3>
+<div class="flex flex-wrap gap-2">
+<div class="px-3 py-1 bg-surface-container-high border border-slate-700 text-[10px] font-mono text-slate-300">BASE_MAINNET</div>
+<div class="px-3 py-1 bg-surface-container-high border border-slate-700 text-[10px] font-mono text-slate-300">ETH_MAINNET</div>
+<div class="px-3 py-1 bg-surface-container-high border border-slate-700 text-[10px] font-mono text-slate-300">CELO_ALFAJORES</div>
+<div class="px-3 py-1 bg-surface-container-high border border-slate-700 text-[10px] font-mono text-slate-300">SOLANA_DEVNET</div>
+</div>
+</div>
+</section>
+<!-- Appearance Card -->
+<section class="bg-surface-container-low p-8 relative">
+<div class="corner-marker-bl"></div>
+<div class="corner-marker-br"></div>
+<div class="flex justify-between items-start mb-8">
+<h2 class="headline text-2xl font-bold">APPEARANCE</h2>
+<span class="font-mono text-[10px] text-slate-500">ID: 004</span>
+</div>
+<div class="flex items-center justify-between p-4 border border-tertiary/30 bg-tertiary/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="dark_mode" style="font-variation-settings: 'FILL' 1;">dark_mode</span>
+<div>
+<div class="font-bold text-sm headline">Night Protocol</div>
+<div class="text-[10px] font-mono text-tertiary/70 uppercase">System Locked</div>
+</div>
+</div>
+<div class="w-12 h-6 bg-tertiary relative flex items-center px-1">
+<div class="w-4 h-4 bg-on-tertiary-container ml-auto"></div>
+</div>
+</div>
+<div class="mt-4 p-4 border border-slate-800 bg-slate-900/30 opacity-50 cursor-not-allowed">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-600" data-icon="light_mode">light_mode</span>
+<div>
+<div class="font-bold text-sm headline text-slate-500">Day Protocol</div>
+<div class="text-[10px] font-mono text-slate-600 uppercase">Unavailable in Alpha</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-6 z-40 bg-[#0D0D18] h-10 border-t border-slate-800/30 font-mono text-[10px] uppercase tracking-widest">
+<div class="text-slate-600">
+<span class="text-cyan-400">Testnet · Phase 1</span> // Uptime: 99.98%
+        </div>
+<div class="flex items-center gap-6">
+<a class="text-slate-600 hover:text-cyan-300 transition-colors" href="#">Docs</a>
+<a class="text-slate-600 hover:text-cyan-300 transition-colors" href="#">X</a>
+<a class="text-slate-600 hover:text-cyan-300 transition-colors" href="#">Github</a>
+<a class="text-slate-600 hover:text-cyan-300 transition-colors" href="#">Discord</a>
+</div>
+</footer>
+<!-- Background Decoration -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[20%] right-[10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]"></div>
+<div class="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] rounded-full bg-tertiary/5 blur-[100px]"></div>
+</div>
+</body></html>

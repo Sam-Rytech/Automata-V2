@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  walletAddress   String    @unique
+  encryptedApiKey String?
+  agentMode       String    @default("assisted")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  flows           Flow[]
+  sessions        Session[]
+}
+
+model Flow {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  actions     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  history   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  walletAddress String
+  txHash        String?
+  chainId       String
+  actionType    String
+  status        String
+  details       Json
+  createdAt     DateTime @default(now())
+}

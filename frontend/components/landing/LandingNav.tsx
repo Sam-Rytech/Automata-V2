@@ -2,35 +2,23 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
-
-  // Track whether the user explicitly clicked "Launch App" in this session.
-  // Without this flag, the useEffect fires on every page load for already-
-  // authenticated users — causing the logo "back to landing" link to
-  // immediately redirect them to /build before they can click anything.
   const loginIntentRef = useRef(false);
 
-  useEffect(() => {
-    // Only redirect if the user just went through the login flow here.
-    // If they were already authenticated when they loaded the landing page,
-    // leave them alone — they're browsing the landing page intentionally.
-    if (ready && authenticated && loginIntentRef.current) {
-      router.push('/build');
-    }
-  }, [ready, authenticated, router]);
-
   const handleLaunch = () => {
+    if (!ready) return; // SDK not ready yet — ignore the click
+
     if (authenticated) {
-      // Already logged in — go straight to /build immediately
       router.push('/build');
     } else {
-      // Mark that login was user-initiated before opening the modal
       loginIntentRef.current = true;
-      login();
+      login({
+        onSuccess: () => router.push('/build'),
+      });
     }
   };
 
@@ -50,10 +38,9 @@ export function LandingNav() {
             variant="outline"
             className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-base uppercase tracking-wider h-11 px-8 relative"
             onClick={handleLaunch}
-            disabled={!ready}
           >
             <span className="tech-corners-extra" />
-            {!ready ? 'Loading...' : 'Launch App'}
+            Launch App
           </Button>
         </div>
       </nav>

@@ -19,3 +19,9 @@ export type AgentPlan = {
   estimatedTimeSeconds: number;
   warnings: string[];
 };
+export type PlanReviewProps = {
+  plan: AgentPlan;
+  onApprove: () => void;
+  onCancel: () => void;
+  isExecuting?: boolean;
+};

@@ -1,8 +1,23 @@
+import { LandingNav } from "@/components/landing/LandingNav";
+import { Hero } from "@/components/landing/Hero";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { Capabilities } from "@/components/landing/Capabilities";
+import { Models } from "@/components/landing/Models";
+import { Chains } from "@/components/landing/Chains";
+import { FinalCTA } from "@/components/landing/FinalCTA";
+import { Footer } from "@/components/landing/Footer";
+
 export default function HomePage() {
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>Automata</h1>
-      <p>Cross-Chain AI Agent Platform — coming soon</p>
+    <main className="min-h-screen bg-[#0F0F1A] text-white overflow-hidden">
+      <LandingNav />
+      <Hero />
+      <HowItWorks />
+      <Capabilities />
+      <Models />
+      <Chains />
+      <FinalCTA />
+      <Footer />
     </main>
   );
 }

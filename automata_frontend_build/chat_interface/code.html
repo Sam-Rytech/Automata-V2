@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA — Chat Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .font-headline { font-family: 'Syne', sans-serif; letter-spacing: -0.05em; }
+        .font-ui { font-family: 'IBM Plex Mono', monospace; }
+        .dot-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .crosshair-tl::before, .crosshair-tl::after {
+            content: ''; position: absolute; width: 8px; height: 8px; border-color: #594048;
+        }
+        .crosshair-tl::before { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+        .crosshair-br::before, .crosshair-br::after {
+            content: ''; position: absolute; width: 8px; height: 8px; border-color: #594048;
+        }
+        .crosshair-br::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-low": "#1a1a2e",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface": "#0f0f1a",
+                        "primary": "#e91e8c",
+                        "secondary": "#6a0dad",
+                        "on-surface": "#ffffff",
+                        "secondary-text": "#888888",
+                        "outline-variant": "#594048",
+                        "success": "#22c55e"
+                    },
+                    borderRadius: {
+                        "none": "0px",
+                        "DEFAULT": "0px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-ui overflow-hidden h-screen flex">
+<!-- SIDEBAR NAV (Based on JSON SideNavBar Blueprint) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-surface-container-low flex flex-col py-8 z-40 border-r border-white/5 dot-grid">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-2">
+<span class="text-xl font-black tracking-tighter text-white uppercase font-headline">AUTOMATA</span>
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 font-bold border border-primary/20">v1.0</span>
+</div>
+</div>
+<!-- WALLET INFO -->
+<div class="px-6 mb-8">
+<div class="text-[10px] text-secondary-text mb-2 uppercase tracking-widest">01 —— CONNECTED WALLET</div>
+<div class="flex items-center gap-3 bg-surface-container-lowest p-3 border border-white/5 relative">
+<div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">wallet</span>
+</div>
+<div>
+<div class="text-xs font-bold">0x1a2b...3c4d</div>
+<div class="text-[10px] text-success flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-success rounded-full"></span> CONNECTED
+                    </div>
+</div>
+</div>
+</div>
+<!-- NETWORKS & BALANCES -->
+<div class="px-6 mb-8 space-y-4">
+<div>
+<div class="text-[10px] text-secondary-text mb-2 uppercase tracking-widest">02 —— NETWORKS</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[9px] px-2 py-1 bg-white/5 border border-white/10">BASE</span>
+<span class="text-[9px] px-2 py-1 bg-white/5 border border-white/10">CELO</span>
+<span class="text-[9px] px-2 py-1 bg-white/5 border border-white/10">ETH</span>
+<span class="text-[9px] px-2 py-1 bg-white/5 border border-white/10">XLM</span>
+</div>
+</div>
+<div>
+<div class="text-[10px] text-secondary-text mb-2 uppercase tracking-widest">03 —— BALANCES</div>
+<div class="space-y-1 text-xs">
+<div class="flex justify-between text-secondary-text py-1 border-b border-white/5">
+<span>USDC (Base)</span>
+<span class="text-white">1,240.50</span>
+</div>
+<div class="flex justify-between text-secondary-text py-1 border-b border-white/5">
+<span>USDC (Celo)</span>
+<span class="text-white">45.00</span>
+</div>
+<div class="flex justify-between text-secondary-text py-1 border-b border-white/5">
+<span>XLM (Stellar)</span>
+<span class="text-white">892.12</span>
+</div>
+</div>
+</div>
+</div>
+<!-- EXECUTION MODE -->
+<div class="px-6 mb-auto">
+<div class="text-[10px] text-secondary-text mb-2 uppercase tracking-widest">04 —— EXECUTION</div>
+<div class="grid grid-cols-2 gap-0 border border-white/10">
+<button class="text-[10px] py-2 bg-primary/10 text-primary border-r border-white/10 font-bold">ASSISTED</button>
+<button class="text-[10px] py-2 text-secondary-text hover:text-white transition-colors">AUTONOMOUS</button>
+</div>
+</div>
+<!-- NAV TABS (Active: Chat) -->
+<nav class="mt-8">
+<a class="flex items-center gap-4 text-primary bg-primary/10 border-l-2 border-primary px-6 py-4 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-sm font-medium">Chat</span>
+</a>
+<a class="flex items-center gap-4 text-secondary-text px-6 py-4 hover:bg-white/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined">construction</span>
+<span class="text-sm font-medium">Builder</span>
+</a>
+<a class="flex items-center gap-4 text-secondary-text px-6 py-4 hover:bg-white/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-4 text-secondary-text px-6 py-4 hover:bg-white/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- MAIN CHAT AREA -->
+<main class="ml-[280px] flex-1 flex flex-col relative bg-surface h-full">
+<!-- BACKGROUND GLOW -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px]"></div>
+<div class="absolute inset-0 dot-grid opacity-20"></div>
+</div>
+<!-- CHAT THREAD -->
+<div class="flex-1 overflow-y-auto p-12 space-y-12 relative z-10 max-w-5xl mx-auto w-full">
+<!-- EMPTY STATE / SUGGESTIONS -->
+<section class="py-12">
+<h1 class="font-headline text-4xl mb-8 text-white uppercase">What do you want to do?</h1>
+<div class="grid grid-cols-2 gap-4">
+<button class="group bg-surface-container-low p-6 border border-white/5 hover:border-primary/50 text-left transition-all relative crosshair-tl">
+<div class="text-[10px] text-primary mb-2">QUERY —— 01</div>
+<p class="text-sm text-secondary-text group-hover:text-white">Check USDC balance across all active chains.</p>
+</button>
+<button class="group bg-surface-container-low p-6 border border-white/5 hover:border-primary/50 text-left transition-all relative">
+<div class="text-[10px] text-primary mb-2">BRIDGE —— 02</div>
+<p class="text-sm text-secondary-text group-hover:text-white">Bridge 50 USDC from Base to Celo via Wormhole.</p>
+</button>
+<button class="group bg-surface-container-low p-6 border border-white/5 hover:border-primary/50 text-left transition-all relative">
+<div class="text-[10px] text-primary mb-2">SWAP —— 03</div>
+<p class="text-sm text-secondary-text group-hover:text-white">Swap 0.1 ETH for XLM on Ethereum Mainnet.</p>
+</button>
+<button class="group bg-surface-container-low p-6 border border-white/5 hover:border-primary/50 text-left transition-all relative crosshair-br">
+<div class="text-[10px] text-primary mb-2">ANALYZE —— 04</div>
+<p class="text-sm text-secondary-text group-hover:text-white">Find the highest yield for USDC on Layer 2s.</p>
+</button>
+</div>
+</section>
+<!-- MESSAGES -->
+<div class="space-y-8">
+<!-- USER MESSAGE -->
+<div class="flex justify-end">
+<div class="bg-primary text-white p-4 max-w-md border border-primary relative shadow-[0_0_15px_rgba(233,30,140,0.2)]">
+<p class="text-sm leading-relaxed">Bridge 100 USDC from Base to Celo using the most cost-effective route.</p>
+</div>
+</div>
+<!-- AGENT RESPONSE + THINKING -->
+<div class="flex justify-start">
+<div class="bg-surface-container-low p-6 max-w-2xl border-l-2 border-primary relative">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-2 h-2 bg-primary animate-pulse"></div>
+<span class="text-[10px] font-bold tracking-widest text-primary uppercase">Automata Oracle —— THINKING</span>
+</div>
+<div class="space-y-2 text-xs text-secondary-text italic mb-6">
+<p>&gt; Analyzing liquidity pools on Base...</p>
+<p>&gt; Fetching Wormhole attestation quotes...</p>
+<p>&gt; Optimizing for gas fees (Target: &lt; $1.00)...</p>
+</div>
+<!-- TRANSACTION PLAN CARD -->
+<div class="bg-surface-container-lowest border border-white/5 p-6 space-y-6">
+<div class="flex justify-between items-center border-b border-white/5 pb-4">
+<h3 class="font-headline text-lg text-white">TRANSACTION PLAN</h3>
+<span class="text-xs text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 font-bold">$0.42 FEE</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded-full border border-primary flex items-center justify-center text-[10px] text-primary font-bold">01</div>
+<div class="flex-1">
+<div class="text-xs text-white">Burn USDC on Base</div>
+<div class="text-[10px] text-secondary-text">Initiating cross-chain transfer sequence</div>
+</div>
+</div>
+<div class="flex items-center gap-4 opacity-50">
+<div class="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[10px] text-white font-bold">02</div>
+<div class="flex-1">
+<div class="text-xs text-white">Wormhole Attestation</div>
+<div class="text-[10px] text-secondary-text">Verifying message integrity across VAA</div>
+</div>
+</div>
+<div class="flex items-center gap-4 opacity-50">
+<div class="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[10px] text-white font-bold">03</div>
+<div class="flex-1">
+<div class="text-xs text-white">Mint USDC on Celo</div>
+<div class="text-[10px] text-secondary-text">Finalizing liquidity arrival</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3 pt-4">
+<button class="flex-1 bg-primary text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-all">Confirm &amp; Sign</button>
+<button class="px-6 bg-transparent border border-white/10 text-secondary-text py-3 text-xs font-bold uppercase tracking-widest hover:text-white transition-all">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<!-- SUCCESS CARD -->
+<div class="flex justify-start">
+<div class="bg-surface-container-low p-6 max-w-2xl border-l-2 border-success relative">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-success">check_circle</span>
+<span class="text-sm font-bold text-white">Transaction Confirmed</span>
+</div>
+<p class="text-xs text-secondary-text mb-4">100.00 USDC successfully bridged. Assets are now available on Celo.</p>
+<a class="inline-flex items-center gap-2 text-[10px] text-primary hover:underline font-bold" href="#">
+                            VIEW ON EXPLORER <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- INPUT BAR -->
+<div class="p-8 z-20">
+<div class="max-w-5xl mx-auto relative group">
+<div class="absolute inset-0 bg-primary/5 blur-xl group-focus-within:bg-primary/10 transition-all"></div>
+<div class="relative bg-surface-container-low border-t border-white/10 p-1 flex items-center shadow-2xl">
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-4 px-6 text-white placeholder-secondary-text font-ui" placeholder="Type a command in plain English..." type="text"/>
+<button class="bg-primary text-white px-8 py-4 text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-primary/90 active:scale-95 transition-all">
+                        Send
+                        <span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+<div class="mt-3 flex justify-center gap-6">
+<div class="flex items-center gap-1.5">
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span class="text-[9px] text-secondary-text font-bold tracking-widest uppercase">Gas Optimized</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span class="text-[9px] text-secondary-text font-bold tracking-widest uppercase">MEV Protected</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

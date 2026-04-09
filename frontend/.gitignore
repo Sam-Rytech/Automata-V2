@@ -41,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+ai_agent_automata.zip
+automata_frontend_build.zip
+automata_frontend_build

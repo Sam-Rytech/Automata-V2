@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-syne), 'Syne', sans-serif;
+  --font-mono: var(--font-plex-mono), 'IBM Plex Mono', monospace;
+  --font-heading: var(--font-syne), 'Syne', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -84,8 +84,8 @@
 
   /* Automata design tokens */
   --bg-primary: #0F0F1A;
-  --bg-secondary: #1A1A2E;
-  --bg-card: #16213E;
+  --bg-secondary: #0F0F1A;
+  --bg-card: #1A1A2E;
   --accent-pink: #E91E8C;
   --accent-purple: #6A0DAD;
   --accent-glow: rgba(233, 30, 140, 0.3);
@@ -139,10 +139,61 @@
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Syne', sans-serif;
+    font-family: var(--font-syne), 'Syne', sans-serif;
   }
 
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .crosshair-corners {
+    position: relative;
+  }
+  
+  .crosshair-corners::before,
+  .crosshair-corners::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--border-subtle);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .crosshair-corners::before {
+    clip-path: polygon(
+      0% 0%, 5px 0%, 5px 1px, 1px 1px, 1px 5px, 0% 5px,
+      0% calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, 0% 100%
+    );
+    border-color: var(--accent-pink);
+  }
+
+  .crosshair-corners::after {
+    clip-path: polygon(
+      calc(100% - 5px) 0%, 100% 0%, 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 1px, calc(100% - 5px) 1px,
+      calc(100% - 5px) 100%, 100% 100%, 100% calc(100% - 5px), calc(100% - 1px) calc(100% - 5px), calc(100% - 1px) calc(100% - 1px), calc(100% - 5px) calc(100% - 1px)
+    );
+    border-color: var(--accent-purple);
+  }
+  
+  .glassmorphism {
+    @apply bg-card/60 backdrop-blur-md border border-[var(--border-subtle)];
+  }
+
+  /* Keyframes */
+  @keyframes slow-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .animate-slow-bob {
+    animation: slow-bob 4s ease-in-out infinite;
   }
 }

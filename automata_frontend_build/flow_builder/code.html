@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA — FLOW BUILDER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#37374d",
+                    "surface-container-highest": "#333348",
+                    "secondary-container": "#6c11af",
+                    "on-tertiary-fixed-variant": "#005321",
+                    "surface-container-low": "#1a1a2e",
+                    "surface-tint": "#ffb0cc",
+                    "inverse-primary": "#b8006c",
+                    "surface": "#111125",
+                    "on-secondary-fixed": "#2d004f",
+                    "secondary-fixed-dim": "#dfb7ff",
+                    "primary-fixed-dim": "#ffb0cc",
+                    "outline": "#a88892",
+                    "on-secondary-container": "#d5a4ff",
+                    "on-primary-container": "#580030",
+                    "surface-dim": "#111125",
+                    "primary-container": "#ff46a0",
+                    "tertiary-fixed": "#6bff8f",
+                    "error": "#ffb4ab",
+                    "tertiary": "#4ae176",
+                    "surface-container": "#1e1e32",
+                    "primary": "#ffb0cc",
+                    "inverse-on-surface": "#2f2e43",
+                    "secondary-fixed": "#f1daff",
+                    "background": "#111125",
+                    "surface-container-lowest": "#0c0c1f",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#002109",
+                    "on-tertiary-container": "#003111",
+                    "on-surface-variant": "#e1bdc8",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#690bac",
+                    "secondary": "#dfb7ff",
+                    "primary-fixed": "#ffd9e4",
+                    "on-secondary": "#4b007e",
+                    "on-surface": "#e2e0fc",
+                    "on-primary-fixed-variant": "#8d0051",
+                    "on-background": "#e2e0fc",
+                    "tertiary-container": "#00a74b",
+                    "tertiary-fixed-dim": "#4ae176",
+                    "on-primary": "#640038",
+                    "surface-container-high": "#28283d",
+                    "on-tertiary": "#003915",
+                    "surface-variant": "#333348",
+                    "outline-variant": "#594048",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed": "#3e0021",
+                    "inverse-surface": "#e2e0fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Syne", "sans-serif"],
+                    "body": ["IBM Plex Mono", "monospace"],
+                    "label": ["IBM Plex Mono", "monospace"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Mono', monospace; background-color: #0F0F1A; color: #FFFFFF; }
+        .syne-bold { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.05em; }
+        .dot-grid {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .crosshair-tl::before, .crosshair-tl::after { content: ''; position: absolute; background: #594048; }
+        .crosshair-tl::before { top: 0; left: 0; width: 8px; height: 1px; }
+        .crosshair-tl::after { top: 0; left: 0; width: 1px; height: 8px; }
+        .crosshair-tr::before, .crosshair-tr::after { content: ''; position: absolute; background: #594048; }
+        .crosshair-tr::before { top: 0; right: 0; width: 8px; height: 1px; }
+        .crosshair-tr::after { top: 0; right: 0; width: 1px; height: 8px; }
+        .crosshair-bl::before, .crosshair-bl::after { content: ''; position: absolute; background: #594048; }
+        .crosshair-bl::before { bottom: 0; left: 0; width: 8px; height: 1px; }
+        .crosshair-bl::after { bottom: 0; left: 0; width: 1px; height: 8px; }
+        .crosshair-br::before, .crosshair-br::after { content: ''; position: absolute; background: #594048; }
+        .crosshair-br::before { bottom: 0; right: 0; width: 8px; height: 1px; }
+        .crosshair-br::after { bottom: 0; right: 0; width: 1px; height: 8px; }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- Sidebar (SideNavBar Anchor) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 z-40 border-r border-white/5 bg-[#1A1A2E] w-[280px]">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-black tracking-tighter text-white uppercase syne-bold">AUTOMATA</h1>
+<div class="mt-4 flex items-center gap-3 p-3 bg-surface-container-lowest border border-white/5">
+<div class="w-8 h-8 bg-gradient-to-br from-[#E91E8C] to-[#6A0DAD] flex items-center justify-center">
+<span class="material-symbols-outlined text-xs">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-[10px] text-[#888888] leading-none mb-1">CONNECTED</p>
+<p class="text-xs font-bold">0x71C...4f2</p>
+</div>
+</div>
+</div>
+<nav class="flex-1">
+<a class="flex items-center gap-4 text-[#888888] px-6 py-4 hover:bg-[#FFFFFF]/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="text-sm font-medium">Chat</span>
+</a>
+<a class="flex items-center gap-4 text-[#E91E8C] bg-[#E91E8C]/10 border-l-2 border-[#E91E8C] px-6 py-4 active:border-l-4 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="construction">construction</span>
+<span class="text-sm font-medium">Builder</span>
+</a>
+<a class="flex items-center gap-4 text-[#888888] px-6 py-4 hover:bg-[#FFFFFF]/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-4 text-[#888888] px-6 py-4 hover:bg-[#FFFFFF]/5 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-6 space-y-2">
+<button class="w-full py-3 bg-[#E91E8C] text-white text-xs font-bold hover:brightness-110 transition-all uppercase">
+                Launch Agent
+            </button>
+<div class="pt-4 space-y-4">
+<a class="flex items-center gap-4 text-[#888888] text-sm hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-4 text-[#888888] text-sm hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="description">description</span>
+                    Documentation
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Layout -->
+<main class="ml-[280px] h-screen flex flex-col bg-surface overflow-hidden relative">
+<!-- Top App Bar (Mode Toggle Area) -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-white/5 bg-[#0F0F1A]/60 backdrop-blur-xl z-30">
+<div class="flex items-center gap-4">
+<span class="text-xs text-[#888888] uppercase tracking-widest">03 —— FLOW BUILDER</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-lowest p-1">
+<button class="px-4 py-1.5 text-[10px] font-bold bg-[#E91E8C] text-white uppercase">Visual</button>
+<button class="px-4 py-1.5 text-[10px] font-bold text-[#888888] uppercase hover:text-white">Terminal</button>
+</div>
+</header>
+<!-- Builder Core -->
+<div class="flex-1 flex overflow-hidden">
+<!-- LEFT PALETTE -->
+<aside class="w-[200px] bg-[#1A1A2E] border-r border-white/5 p-6 flex flex-col gap-6">
+<div class="text-[10px] text-[#888888] font-bold tracking-[0.2em]">NODES</div>
+<div class="space-y-4">
+<!-- Palette Cards -->
+<div class="bg-surface-container-lowest p-4 border-t-2 border-[#6A0DAD] relative group cursor-grab">
+<div class="crosshair-tl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-white">BRIDGE</span>
+<span class="material-symbols-outlined text-sm text-[#888888]">drag_indicator</span>
+</div>
+<p class="text-[9px] text-[#888888]">Cross-chain transfer</p>
+</div>
+<div class="bg-surface-container-lowest p-4 border-t-2 border-[#E91E8C] relative group cursor-grab">
+<div class="crosshair-tl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-white">SWAP</span>
+<span class="material-symbols-outlined text-sm text-[#888888]">drag_indicator</span>
+</div>
+<p class="text-[9px] text-[#888888]">Execute asset trade</p>
+</div>
+<div class="bg-surface-container-lowest p-4 border-t-2 border-[#22C55E] relative group cursor-grab">
+<div class="crosshair-tl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-white">STAKE</span>
+<span class="material-symbols-outlined text-sm text-[#888888]">drag_indicator</span>
+</div>
+<p class="text-[9px] text-[#888888]">Deposit for yield</p>
+</div>
+<div class="bg-surface-container-lowest p-4 border-t-2 border-[#F59E0B] relative group cursor-grab">
+<div class="crosshair-tl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-bold text-white">SEND</span>
+<span class="material-symbols-outlined text-sm text-[#888888]">drag_indicator</span>
+</div>
+<p class="text-[9px] text-[#888888]">Transfer to wallet</p>
+</div>
+</div>
+</aside>
+<!-- CANVAS -->
+<section class="flex-1 bg-[#0F0F1A] dot-grid relative flex items-center justify-center overflow-auto p-20">
+<div class="flex items-center gap-24 relative z-10">
+<!-- Node 1: Bridge (Active) -->
+<div class="w-[220px] bg-surface-container-low border border-white/10 p-6 relative shadow-[0_0_40px_rgba(233,30,140,0.15)] ring-1 ring-[#E91E8C]/30">
+<div class="absolute -top-[2px] left-0 right-0 h-[2px] bg-[#6A0DAD]"></div>
+<div class="crosshair-tl"></div><div class="crosshair-tr"></div><div class="crosshair-bl"></div><div class="crosshair-br"></div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-[#E91E8C] text-lg" style="font-variation-settings: 'FILL' 1;">router</span>
+<span class="text-[10px] font-bold text-[#888888] tracking-widest uppercase">NODE_01</span>
+</div>
+<h3 class="syne-bold text-sm leading-tight mb-2">USDC · Base → Celo</h3>
+<div class="flex items-center gap-2 text-[9px] text-[#22C55E]">
+<span class="w-1 h-1 rounded-full bg-[#22C55E]"></span>
+                            VALIDATED
+                        </div>
+</div>
+<!-- Connection 1-2 -->
+<div class="w-24 h-[2px] bg-gradient-to-r from-[#6A0DAD] to-[#E91E8C] relative">
+<div class="absolute right-0 -top-1">
+<span class="material-symbols-outlined text-[#E91E8C] text-sm leading-none">chevron_right</span>
+</div>
+<div class="absolute inset-0 bg-[#E91E8C]/20 blur-sm"></div>
+</div>
+<!-- Node 2: Swap -->
+<div class="w-[220px] bg-surface-container-low border border-white/5 p-6 relative">
+<div class="absolute -top-[2px] left-0 right-0 h-[2px] bg-[#E91E8C]"></div>
+<div class="crosshair-tl"></div><div class="crosshair-tr"></div><div class="crosshair-bl"></div><div class="crosshair-br"></div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-[#888888] text-lg">swap_horiz</span>
+<span class="text-[10px] font-bold text-[#888888] tracking-widest uppercase">NODE_02</span>
+</div>
+<h3 class="syne-bold text-sm leading-tight mb-2">USDC → CELO</h3>
+<div class="flex items-center gap-2 text-[9px] text-[#22C55E]">
+<span class="w-1 h-1 rounded-full bg-[#22C55E]"></span>
+                            VALIDATED
+                        </div>
+</div>
+<!-- Connection 2-3 -->
+<div class="w-24 h-[2px] bg-gradient-to-r from-[#E91E8C] to-[#22C55E] relative">
+<div class="absolute right-0 -top-1">
+<span class="material-symbols-outlined text-[#22C55E] text-sm leading-none">chevron_right</span>
+</div>
+</div>
+<!-- Node 3: Stake -->
+<div class="w-[220px] bg-surface-container-low border border-white/5 p-6 relative">
+<div class="absolute -top-[2px] left-0 right-0 h-[2px] bg-[#22C55E]"></div>
+<div class="crosshair-tl"></div><div class="crosshair-tr"></div><div class="crosshair-bl"></div><div class="crosshair-br"></div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-[#888888] text-lg">account_balance</span>
+<span class="text-[10px] font-bold text-[#888888] tracking-widest uppercase">NODE_03</span>
+</div>
+<h3 class="syne-bold text-sm leading-tight mb-2">CELO LENDING</h3>
+<div class="flex items-center gap-2 text-[9px] text-[#22C55E]">
+<span class="w-1 h-1 rounded-full bg-[#22C55E]"></span>
+                            READY
+                        </div>
+</div>
+</div>
+<!-- Subtle radial glow behind active -->
+<div class="absolute left-1/4 top-1/2 -translate-y-1/2 w-96 h-96 bg-[#E91E8C]/5 rounded-full blur-[100px] pointer-events-none"></div>
+</section>
+<!-- RIGHT CONFIG PANEL -->
+<aside class="w-[280px] bg-[#1A1A2E] border-l border-white/5 p-8 flex flex-col gap-8">
+<div class="flex items-center justify-between">
+<h2 class="text-[10px] text-[#888888] font-bold tracking-[0.2em] uppercase">CONFIGURE NODE</h2>
+<span class="material-symbols-outlined text-sm text-[#888888]">tune</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-[9px] text-[#888888] uppercase tracking-widest">From Chain</label>
+<div class="w-full bg-surface-container-lowest border border-white/10 p-3 flex justify-between items-center cursor-pointer">
+<span class="text-xs">Base</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[9px] text-[#888888] uppercase tracking-widest">To Chain</label>
+<div class="w-full bg-surface-container-lowest border border-white/10 p-3 flex justify-between items-center cursor-pointer">
+<span class="text-xs text-[#E91E8C]">Celo</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[9px] text-[#888888] uppercase tracking-widest">Token</label>
+<div class="w-full bg-surface-container-lowest border border-white/10 p-3 flex justify-between items-center cursor-pointer">
+<span class="text-xs">USDC</span>
+<span class="material-symbols-outlined text-xs">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-[9px] text-[#888888] uppercase tracking-widest">Amount</label>
+<div class="w-full bg-surface-container-lowest border border-white/10 p-3 flex items-center gap-2">
+<input class="bg-transparent border-none p-0 text-xs focus:ring-0 w-full font-bold" type="text" value="100"/>
+<span class="text-[10px] text-[#888888]">MAX</span>
+</div>
+</div>
+</div>
+<div class="mt-auto bg-surface-container-lowest p-4 border border-white/5">
+<div class="text-[9px] text-[#888888] mb-2 uppercase">Route Efficiency</div>
+<div class="w-full bg-white/5 h-1">
+<div class="bg-[#E91E8C] h-full w-[94%]"></div>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[9px] text-[#E91E8C]">94% Optimized</span>
+<span class="text-[9px] text-[#888888]">$0.14 GAS</span>
+</div>
+</div>
+</aside>
+</div>
+<!-- BOTTOM BAR -->
+<footer class="h-20 bg-[#1A1A2E] border-t border-white/10 flex items-center px-8 justify-between z-40 relative">
+<!-- Left: Stats -->
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-[#22C55E]"></div>
+<span class="text-xs font-medium text-white">3 nodes configured</span>
+</div>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<div class="flex flex-col">
+<span class="text-[9px] text-[#888888] uppercase tracking-tighter">Estimated Fee</span>
+<span class="text-xs font-bold text-white">$1.20 USD</span>
+</div>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#22C55E] text-lg">check_circle</span>
+<span class="text-xs font-bold text-[#22C55E]">Ready</span>
+</div>
+</div>
+<!-- Execution Steps (Pulsing Icons simulated) -->
+<div class="flex items-center gap-4 bg-surface-container-lowest px-6 py-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-[#22C55E]">check_circle</span>
+<span class="text-[9px] uppercase tracking-widest text-[#888888]">Auth</span>
+</div>
+<span class="material-symbols-outlined text-[10px] text-white/20">chevron_right</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-white/40 animate-pulse">pending</span>
+<span class="text-[9px] uppercase tracking-widest text-white/40">Simulation</span>
+</div>
+<span class="material-symbols-outlined text-[10px] text-white/20">chevron_right</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-white/20">radio_button_unchecked</span>
+<span class="text-[9px] uppercase tracking-widest text-white/20">Execution</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-4">
+<button class="px-8 py-3 border border-white/20 text-white text-[11px] font-bold uppercase hover:bg-white/5 transition-all">
+                    Simulate
+                </button>
+<button class="px-10 py-3 bg-[#E91E8C] text-white text-[11px] font-extrabold uppercase hover:shadow-[0_0_20px_rgba(233,30,140,0.4)] transition-all">
+                    Execute Flow
+                </button>
+</div>
+</footer>
+</main>
+<!-- Corner Crosshairs for App Corners -->
+<div class="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[60]">
+<div class="absolute top-4 left-4 w-4 h-[1px] bg-white/20"></div>
+<div class="absolute top-4 left-4 w-[1px] h-4 bg-white/20"></div>
+</div>
+<div class="fixed bottom-0 right-0 w-8 h-8 pointer-events-none z-[60]">
+<div class="absolute bottom-4 right-4 w-4 h-[1px] bg-white/20"></div>
+<div class="absolute bottom-4 right-4 w-[1px] h-4 bg-white/20"></div>
+</div>
+</body></html>

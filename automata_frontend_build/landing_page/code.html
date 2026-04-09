@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA | Cross-Chain AI Agents</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0F0F1A;
+            color: #FFFFFF;
+            font-family: 'IBM Plex Mono', monospace;
+            overflow-x: hidden;
+        }
+        .font-headline { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.05em; }
+        .font-ui { font-family: 'IBM Plex Mono', monospace; }
+        
+        .dot-grid {
+            background-image: radial-gradient(rgba(233, 30, 140, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        
+        .crosshair-tl::before, .crosshair-tl::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 1px; background: rgba(255,255,255,0.2);
+        }
+        .crosshair-tl::after { width: 1px; height: 8px; }
+
+        .crosshair-tr::before, .crosshair-tr::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 8px; height: 1px; background: rgba(255,255,255,0.2);
+        }
+        .crosshair-tr::after { width: 1px; height: 8px; right: 0; }
+
+        .crosshair-bl::before, .crosshair-bl::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 8px; height: 1px; background: rgba(255,255,255,0.2);
+        }
+        .crosshair-bl::after { width: 1px; height: 8px; left: 0; bottom: 0; }
+
+        .crosshair-br::before, .crosshair-br::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 8px; height: 1px; background: rgba(255,255,255,0.2);
+        }
+        .crosshair-br::after { width: 1px; height: 8px; right: 0; bottom: 0; }
+
+        .orb-glow {
+            background: radial-gradient(circle, rgba(106, 13, 173, 0.2) 0%, rgba(15, 15, 26, 0) 70%);
+        }
+
+        .glass-nav {
+            background: rgba(15, 15, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#0F0F1A",
+                        "surface-container-low": "#1A1A2E",
+                        "surface-container-lowest": "#0C0C1F",
+                        "primary": "#E91E8C",
+                        "secondary": "#6A0DAD",
+                        "on-surface": "#FFFFFF",
+                        "muted": "#888888",
+                        "outline-variant": "rgba(255,255,255,0.08)"
+                    },
+                    borderRadius: {
+                        "none": "0px",
+                        "sm": "0px",
+                        "md": "0px",
+                        "lg": "0px",
+                        "xl": "0px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dot-grid">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 glass-nav">
+<div class="text-2xl font-black tracking-tighter text-white uppercase font-headline">AUTOMATA</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#E91E8C] border-b-2 border-[#E91E8C] pb-1 font-ui text-sm transition-colors duration-300" href="#">How it works</a>
+<a class="text-[#888888] hover:text-[#E91E8C] font-ui text-sm transition-colors duration-300" href="#">Chains</a>
+<a class="text-[#888888] hover:text-[#E91E8C] font-ui text-sm transition-colors duration-300" href="#">Models</a>
+</div>
+<button class="bg-[#E91E8C] text-white px-6 py-2 font-ui font-bold uppercase tracking-widest text-xs hover:scale-95 active:duration-100 transition-all border border-[#E91E8C]">
+            Launch App
+        </button>
+</nav>
+<!-- SECTION 1: HERO -->
+<section class="relative min-h-screen flex flex-col items-center justify-center pt-20 px-4">
+<!-- Floating Nodes & Orb Area -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+<div class="relative w-[600px] h-[600px] flex items-center justify-center">
+<!-- Orb Shadow/Glow -->
+<div class="absolute w-[400px] h-[400px] orb-glow rounded-full"></div>
+<!-- Main Orb Representation -->
+<div class="relative w-80 h-80 border border-white/10 rounded-full flex items-center justify-center">
+<div class="absolute inset-4 border border-primary/20 rounded-full"></div>
+<div class="absolute inset-10 border border-secondary/30 rounded-full"></div>
+<!-- Central Node -->
+<div class="w-12 h-12 bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">hub</span>
+</div>
+<!-- SVG Connecting Lines -->
+<svg class="absolute inset-0 w-full h-full opacity-30" viewbox="0 0 320 320">
+<line stroke="white" stroke-dasharray="4 4" x1="160" x2="40" y1="160" y2="40"></line>
+<line stroke="white" stroke-dasharray="4 4" x1="160" x2="280" y1="160" y2="40"></line>
+<line stroke="white" stroke-dasharray="4 4" x1="160" x2="40" y1="160" y2="280"></line>
+<line stroke="white" stroke-dasharray="4 4" x1="160" x2="280" y1="160" y2="280"></line>
+</svg>
+<!-- Floating Chips -->
+<div class="absolute -top-12 -left-12 px-3 py-1 bg-surface-container-low border border-white/10 text-[10px] font-bold tracking-tighter">BASE</div>
+<div class="absolute -top-12 -right-12 px-3 py-1 bg-surface-container-low border border-white/10 text-[10px] font-bold tracking-tighter">CELO</div>
+<div class="absolute -bottom-12 -left-12 px-3 py-1 bg-surface-container-low border border-white/10 text-[10px] font-bold tracking-tighter">ETHEREUM</div>
+<div class="absolute -bottom-12 -right-12 px-3 py-1 bg-surface-container-low border border-white/10 text-[10px] font-bold tracking-tighter">STELLAR</div>
+</div>
+</div>
+</div>
+<!-- Hero Content -->
+<div class="relative z-10 text-center max-w-4xl mx-auto mt-20">
+<div class="text-primary font-ui text-xs font-bold tracking-[0.3em] uppercase mb-6 bg-primary/10 px-4 py-2 inline-block border-l-2 border-primary">
+                CROSS-CHAIN AI AGENT — v1.0
+            </div>
+<h1 class="text-6xl md:text-8xl font-headline uppercase leading-none mb-8">
+                One message.<br/>Every chain.
+            </h1>
+<p class="text-muted font-ui text-lg max-w-2xl mx-auto mb-12">
+                Deploy intent-based agents that bridge, swap, and stake across EVM and non-EVM ecosystems with a single natural language prompt.
+            </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="bg-primary text-white px-10 py-5 font-ui font-bold uppercase tracking-widest hover:brightness-110 transition-all border border-primary">
+                    Start Chatting
+                </button>
+<button class="bg-transparent text-white px-10 py-5 font-ui font-bold uppercase tracking-widest border border-white/20 hover:border-primary transition-all">
+                    Build a Flow
+                </button>
+</div>
+</div>
+</section>
+<!-- SECTION 2: HOW IT WORKS -->
+<section class="py-32 px-8 max-w-7xl mx-auto">
+<div class="mb-16">
+<div class="text-muted font-ui text-sm mb-4 uppercase tracking-widest">01 —— HOW IT WORKS</div>
+<h2 class="text-4xl md:text-6xl font-headline uppercase">Two ways to<br/>move money.</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Chat Interface Mockup -->
+<div class="relative bg-surface-container-low p-8 border-l-2 border-primary group">
+<div class="crosshair-tl"></div><div class="crosshair-tr"></div><div class="crosshair-bl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+<span class="text-xs text-muted">TERMINAL // CHAT_v2</span>
+<div class="flex gap-2">
+<div class="w-2 h-2 bg-white/10"></div>
+<div class="w-2 h-2 bg-white/10"></div>
+</div>
+</div>
+<div class="space-y-6 min-h-[300px]">
+<div class="flex gap-4">
+<div class="w-8 h-8 bg-primary/20 flex-shrink-0"></div>
+<div class="bg-surface p-4 text-xs leading-relaxed max-w-[80%] border border-white/5">
+                            "Move 500 USDC from Base to Ethereum, swap for ETH and stake it in Lido."
+                        </div>
+</div>
+<div class="flex gap-4 flex-row-reverse">
+<div class="w-8 h-8 bg-secondary/40 flex-shrink-0"></div>
+<div class="bg-surface-container-lowest p-4 text-xs leading-relaxed max-w-[80%] border border-secondary/20">
+<span class="text-secondary font-bold">AUTOMATA:</span> Executing bridge... BASE -&gt; ETH. Found best route via Stargate. Confirm transaction?
+                        </div>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-white/5 flex gap-4">
+<div class="flex-1 bg-surface-container-lowest p-3 text-xs text-muted border border-white/5">Type intent...</div>
+<div class="bg-primary px-6 flex items-center text-xs font-bold">SEND</div>
+</div>
+</div>
+<!-- Flow Builder Mockup -->
+<div class="relative bg-surface-container-low p-8 border-l-2 border-secondary group">
+<div class="crosshair-tl"></div><div class="crosshair-tr"></div><div class="crosshair-bl"></div><div class="crosshair-br"></div>
+<div class="flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+<span class="text-xs text-muted">VISUAL_ENGINE // CANVAS</span>
+<span class="text-xs text-secondary font-bold">AUTO_SAVE: ON</span>
+</div>
+<div class="relative h-[300px] flex items-center justify-around">
+<div class="z-10 bg-surface border border-white/10 p-4 text-[10px] w-32 text-center">
+<div class="text-primary mb-2">BRIDGE</div>
+<div class="text-muted">USDC [BASE]</div>
+</div>
+<div class="absolute h-[1px] w-full bg-white/5 top-1/2 -translate-y-1/2"></div>
+<div class="z-10 bg-surface border border-secondary p-4 text-[10px] w-32 text-center">
+<div class="text-secondary mb-2">SWAP</div>
+<div class="text-muted">USDC -&gt; ETH</div>
+</div>
+<div class="z-10 bg-surface border border-white/10 p-4 text-[10px] w-32 text-center">
+<div class="text-primary mb-2">STAKE</div>
+<div class="text-muted">LIDO [ETH]</div>
+</div>
+</div>
+<div class="mt-8 text-center">
+<button class="text-xs border border-white/20 px-6 py-2 uppercase tracking-widest hover:bg-secondary/20 transition-all">Compile Agent</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: CAPABILITIES -->
+<section class="py-32 px-8 bg-surface-container-lowest/50">
+<div class="max-w-7xl mx-auto">
+<div class="mb-16">
+<div class="text-muted font-ui text-sm mb-4 uppercase tracking-widest">02 —— CAPABILITIES</div>
+<h2 class="text-4xl md:text-6xl font-headline uppercase">Everything your<br/>money needs.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-1 px-1 bg-white/5">
+<!-- Card 1: SEND -->
+<div class="relative bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors group">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary"></div>
+<div class="text-primary font-headline text-2xl mb-4">SEND</div>
+<p class="text-muted text-sm mb-8 font-ui">Global transfers at wire speed. Any token, any address, any chain.</p>
+<div class="h-32 bg-surface-container-lowest border border-white/5 flex items-center justify-center p-4">
+<div class="flex items-center gap-4 w-full">
+<div class="flex-1 bg-white/5 h-2"></div>
+<div class="w-8 h-8 border border-primary/40 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">arrow_forward</span>
+</div>
+<div class="flex-1 bg-white/5 h-2"></div>
+</div>
+</div>
+</div>
+<!-- Card 2: SWAP -->
+<div class="relative bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors group">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-secondary"></div>
+<div class="text-secondary font-headline text-2xl mb-4">SWAP</div>
+<p class="text-muted text-sm mb-8 font-ui">Access deep liquidity pools across the multichain ecosystem with zero friction.</p>
+<div class="h-32 bg-surface-container-lowest border border-white/5 flex flex-col justify-center p-4 gap-2">
+<div class="flex justify-between text-[10px] text-muted"><span>IN</span><span>1,200 USDC</span></div>
+<div class="h-1 bg-secondary/40 w-full"></div>
+<div class="flex justify-between text-[10px] text-white"><span>OUT</span><span>0.42 ETH</span></div>
+</div>
+</div>
+<!-- Card 3: BRIDGE -->
+<div class="relative bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors group">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary"></div>
+<div class="text-primary font-headline text-2xl mb-4">BRIDGE</div>
+<p class="text-muted text-sm mb-8 font-ui">Native assets moved between isolated networks through secure messaging protocols.</p>
+<div class="h-32 bg-surface-container-lowest border border-white/5 flex items-center justify-center">
+<div class="grid grid-cols-3 gap-4 items-center">
+<div class="w-10 h-10 border border-white/10 flex items-center justify-center text-[10px]">L2</div>
+<span class="material-symbols-outlined text-muted">sync_alt</span>
+<div class="w-10 h-10 border border-white/10 flex items-center justify-center text-[10px]">L1</div>
+</div>
+</div>
+</div>
+<!-- Card 4: EARN -->
+<div class="relative bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors group">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-secondary"></div>
+<div class="text-secondary font-headline text-2xl mb-4">EARN</div>
+<p class="text-muted text-sm mb-8 font-ui">Automated yield optimization across protocols. Compound gains while you sleep.</p>
+<div class="h-32 bg-surface-container-lowest border border-white/5 flex items-end p-4 gap-1">
+<div class="flex-1 bg-secondary/10 h-1/4"></div>
+<div class="flex-1 bg-secondary/20 h-1/2"></div>
+<div class="flex-1 bg-secondary/40 h-3/4"></div>
+<div class="flex-1 bg-secondary h-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: MODELS -->
+<section class="py-32 px-8 max-w-7xl mx-auto">
+<div class="mb-16 text-center">
+<div class="text-muted font-ui text-sm mb-4 uppercase tracking-widest">03 —— MODELS</div>
+<h2 class="text-4xl md:text-5xl font-headline uppercase">Optimized for Intelligence.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Gemini Card -->
+<div class="bg-surface-container-low border border-primary/20 p-8 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-20 h-20 bg-primary/10 rotate-45"></div>
+<div class="text-xs font-bold text-primary mb-2 uppercase">Recommended</div>
+<div class="text-xl font-bold mb-4 font-headline uppercase">Gemini 2.0 Flash</div>
+<p class="text-xs text-muted font-ui mb-8">Ultra-low latency for real-time market execution and complex chain reasoning.</p>
+<div class="text-[10px] text-primary/60 border-t border-white/5 pt-4">CONTEXT: 1M TOKENS</div>
+</div>
+<!-- GPT Card -->
+<div class="bg-surface-container-low border border-white/5 p-8 relative group hover:border-white/20 transition-all">
+<div class="text-xs font-bold text-muted mb-2 uppercase">Advanced Reasoning</div>
+<div class="text-xl font-bold mb-4 font-headline uppercase">GPT-4o</div>
+<p class="text-xs text-muted font-ui mb-8">Highest precision for intricate cross-chain logic and security auditing.</p>
+<div class="text-[10px] text-muted border-t border-white/5 pt-4">CONTEXT: 128K TOKENS</div>
+</div>
+<!-- Claude Card -->
+<div class="bg-surface-container-low border border-white/5 p-8 relative group hover:border-white/20 transition-all">
+<div class="text-xs font-bold text-muted mb-2 uppercase">Strategic Execution</div>
+<div class="text-xl font-bold mb-4 font-headline uppercase">Claude 3.5 Sonnet</div>
+<p class="text-xs text-muted font-ui mb-8">Balanced performance for long-form agent narratives and flow building.</p>
+<div class="text-[10px] text-muted border-t border-white/5 pt-4">CONTEXT: 200K TOKENS</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: CHAINS -->
+<section class="py-20 border-y border-white/5 bg-surface-container-lowest">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-center mb-8">
+<div class="text-[10px] text-muted font-bold tracking-[0.4em] uppercase">04 —— SUPPORTED NETWORKS</div>
+</div>
+<div class="flex flex-wrap justify-between gap-12 grayscale opacity-40 hover:grayscale-0 transition-all">
+<div class="text-2xl font-headline uppercase tracking-tighter">BASE</div>
+<div class="text-2xl font-headline uppercase tracking-tighter">CELO</div>
+<div class="text-2xl font-headline uppercase tracking-tighter">ETHEREUM</div>
+<div class="text-2xl font-headline uppercase tracking-tighter">STELLAR</div>
+<div class="text-2xl font-headline uppercase tracking-tighter">SOLANA</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: FINAL CTA -->
+<section class="py-40 px-8 text-center relative overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full orb-glow opacity-50"></div>
+<div class="relative z-10 max-w-5xl mx-auto">
+<h2 class="text-5xl md:text-8xl font-headline uppercase mb-16 leading-none">
+                Your money.<br/>Your agent.<br/>Every chain.
+            </h2>
+<button class="bg-primary text-white px-16 py-8 font-ui font-black uppercase tracking-[0.2em] text-lg hover:scale-105 transition-transform border border-primary">
+                Launch Automata
+            </button>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="bg-surface p-12 border-t border-white/5">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="space-y-4">
+<div class="text-2xl font-black font-headline uppercase">AUTOMATA</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-success rounded-full animate-pulse" style="background-color: #22C55E;"></div>
+<span class="text-[10px] text-muted font-ui tracking-widest uppercase">v1.0 · Testnet Active</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-16">
+<div class="space-y-4">
+<div class="text-xs font-bold text-white uppercase tracking-widest">Protocol</div>
+<ul class="space-y-2 text-xs text-muted font-ui">
+<li><a class="hover:text-primary transition-colors" href="#">Documentation</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Governance</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Whitepaper</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<div class="text-xs font-bold text-white uppercase tracking-widest">Community</div>
+<ul class="space-y-2 text-xs text-muted font-ui">
+<li><a class="hover:text-primary transition-colors" href="#">GitHub</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Twitter / X</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Discord</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<div class="text-xs font-bold text-white uppercase tracking-widest">Legal</div>
+<ul class="space-y-2 text-xs text-muted font-ui">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted font-ui">
+<div>© 2024 AUTOMATA LABS. ALL RIGHTS RESERVED.</div>
+<div class="flex gap-8">
+<span>0x71C...4F2</span>
+<span>LATENCY: 42MS</span>
+<span>UPTIME: 99.9%</span>
+</div>
+</div>
+</footer>
+</body></html>

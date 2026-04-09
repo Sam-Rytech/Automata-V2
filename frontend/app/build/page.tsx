@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import {
   AdjustmentsHorizontalIcon,
+  Bars3Icon,
   ChevronDownIcon,
   TrashIcon,
   CodeBracketIcon,
@@ -176,6 +177,7 @@ export default function BuildPage() {
   ]);
 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>('node-1');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
 
@@ -203,14 +205,35 @@ export default function BuildPage() {
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
 
   return (
-    <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden relative">
-      <div className="hidden lg:block w-[260px] shrink-0 z-40 bg-[#0F0F1A] border-r border-white/5">
+    <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden font-mono relative">
+
+      {/* Mobile Sidebar Toggle */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="lg:hidden absolute top-5 left-4 z-50 p-2 bg-[#1A1A2E] border border-white/10"
+      >
+        {isSidebarOpen ? <XMarkIcon className="w-5 h-5" /> : <Bars3Icon className="w-5 h-5" />}
+      </button>
+
+      {/* Sidebar — slides in on mobile, always visible on desktop */}
+      <div className={`
+        w-[260px] shrink-0 fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
         <Sidebar activeMode="build" />
       </div>
 
+      {/* Mobile backdrop */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="lg:hidden fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"
+        />
+      )}
+
       <main className="flex-1 flex flex-col min-w-0 bg-[#0A0A12] relative">
         <header className="h-16 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 bg-[#0F0F1A] shrink-0 z-20">
-          <div className="text-[10px] text-white/40 tracking-[0.3em] uppercase flex items-center gap-4">
+          <div className="text-[10px] text-white/40 tracking-[0.3em] uppercase flex items-center gap-4 pl-10 lg:pl-0">
             03 —— Build Mode
           </div>
           <div className="flex bg-[#1A1A2E] p-1 border border-white/5">

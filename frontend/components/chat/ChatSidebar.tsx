@@ -17,10 +17,8 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
 
   return (
     <aside className="w-[300px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
-      <div className="flex items-center gap-2 mb-12 mt-10 md:mt-0">
-        <h1 className="font-syne text-2xl font-black text-white tracking-tighter uppercase mb-8">Automata</h1>
-
-
+      <div className="mb-12 mt-10 md:mt-0">
+        <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase">Automata</h1>
       </div>
 
       <div className="mb-10">

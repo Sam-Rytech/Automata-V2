@@ -14,7 +14,7 @@ export function BuildSidebar() {
     <aside className="w-[260px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
       {/* Brand Header */}
       <div className="mb-12 mt-4 md:mt-0">
-        <h1 className="font-syne text-2xl font-black text-white tracking-tighter uppercase mb-8">Automata</h1>
+        <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase mb-8">Automata</h1>
 
         {/* Connected Wallet Snippet */}
         <div className="mb-10">

@@ -34,7 +34,7 @@ const CHAINS = ['Ethereum', 'Base', 'Arbitrum', 'Optimism', 'Celo'];
 const ASSETS = ['USDC', 'ETH', 'WETH', 'DAI', 'USDT'];
 
 // --- DRAGGABLE PALETTE COMPONENT ---
-function DraggablePaletteItem({ item, canvasRef, onDrop, closeDrawer }: { item: typeof PALETTE[0], canvasRef: React.RefObject<HTMLDivElement>, onDrop: (t: ActionType, c: string) => void, closeDrawer?: () => void }) {
+function DraggablePaletteItem({ item, canvasRef, onDrop, closeDrawer }: { item: typeof PALETTE[0], canvasRef: React.RefObject<HTMLDivElement | null>, onDrop: (t: ActionType, c: string) => void, closeDrawer?: () => void }) {
   const [isRecovering, setIsRecovering] = useState(false);
 
   const handleDragEnd = (event: any, info: any) => {
@@ -203,7 +203,7 @@ export default function BuildPage() {
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
 
   return (
-    <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden font-mono relative">
+    <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden relative">
       <div className="hidden lg:block w-[260px] shrink-0 z-40 bg-[#0F0F1A] border-r border-white/5">
         <Sidebar activeMode="build" />
       </div>

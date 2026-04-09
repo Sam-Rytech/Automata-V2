@@ -1,23 +1,28 @@
+'use client';
 import { Button } from "@/components/ui/button";
 
 export function LandingNav() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glassmorphism bg-[#0F0F1A]/80 border-b border-b-white/5 h-20 px-8 flex items-center justify-between">
-      <div className="text-white font-syne font-bold text-2xl tracking-widest">
-        AUTOMATA
-      </div>
-      
-      <div className="hidden md:flex items-center gap-12 text-sm uppercase tracking-widest font-mono text-white/70">
-        <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
-        <a href="#chains" className="hover:text-white transition-colors">Chains</a>
-        <a href="#models" className="hover:text-white transition-colors">Models</a>
-      </div>
+    <div className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">
+      <nav className="glassmorphism rounded-xs flex items-center justify-between gap-8 px-8 py-3 w-full md:w-3/4 crosshair-corners relative overflow-hidden">
+        {/* Branding */}
+        <div className="flex items-center cursor-pointer">
+          <span className="text-white font-syne font-bold text-lg md:text-xl tracking-[0.3em] uppercase">
+            Automata
+          </span>
+        </div>
 
-      <div>
-        <Button variant="outline" className="text-white border-white/20 hover:border-white/40">
-          Launch App
-        </Button>
-      </div>
-    </nav>
+        {/* Action */}
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="outline" 
+            className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-mono text-xs md:text-sm uppercase tracking-widest h-10 px-6 md:px-8 relative"
+          >
+            <span className="tech-corners-extra" />
+            Launch App
+          </Button>
+        </div>
+      </nav>
+    </div>
   );
 }

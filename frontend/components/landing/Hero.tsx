@@ -31,13 +31,20 @@ export function Hero() {
         <div className="absolute inset-0 bg-[var(--accent-glow)] rounded-[100%] blur-[120px] opacity-40 transform scale-150 -z-10" />
       </motion.div>
 
-      {/* Cross-Chain AI Agent Badge */}
+      {/* Minimalist Proprietary Badge Aesthetic */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)]/50 backdrop-blur-sm text-[0.75rem] font-bold tracking-widest text-[var(--accent-pink)] uppercase"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="mb-12 flex items-center gap-3 font-mono text-[10px] md:text-[11px] tracking-[0.2em] text-white/40 uppercase"
       >
-        Cross-Chain AI Agent — V1.0
+        <motion.div 
+          animate={{ opacity: [1, 0] }} 
+          transition={{ repeat: Infinity, duration: 0.8 }}
+          className="w-[2px] h-4 bg-white"
+        />
+        <span>·</span>
+        <span>Automata Protocol & Cross-Chain Agent Operating System</span>
       </motion.div>
 
       {/* Typography matching the uploaded design brief */}

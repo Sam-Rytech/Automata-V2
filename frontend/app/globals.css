@@ -93,7 +93,7 @@
   --text-muted: #888888;
   --border-subtle: rgba(255, 255, 255, 0.08);
   --success: #22C55E;
-  --warning: #F59E0B;
+  --warning: #F59/991/participants/2652E0B;
   --error: #EF4444;
 }
 
@@ -156,7 +156,7 @@
   .crosshair-corners {
     position: relative;
   }
-  
+
   .crosshair-corners::before,
   .crosshair-corners::after {
     content: "";
@@ -168,31 +168,34 @@
   }
 
   .crosshair-corners::before {
-    clip-path: polygon(
-      0% 0%, 5px 0%, 5px 1px, 1px 1px, 1px 5px, 0% 5px,
-      0% calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, 0% 100%
-    );
+    clip-path: polygon(0% 0%, 5px 0%, 5px 1px, 1px 1px, 1px 5px, 0% 5px,
+        0% calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, 0% 100%);
     border-color: var(--accent-pink);
   }
 
   .crosshair-corners::after {
-    clip-path: polygon(
-      calc(100% - 5px) 0%, 100% 0%, 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 1px, calc(100% - 5px) 1px,
-      calc(100% - 5px) 100%, 100% 100%, 100% calc(100% - 5px), calc(100% - 1px) calc(100% - 5px), calc(100% - 1px) calc(100% - 1px), calc(100% - 5px) calc(100% - 1px)
-    );
+    clip-path: polygon(calc(100% - 5px) 0%, 100% 0%, 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 1px, calc(100% - 5px) 1px,
+        calc(100% - 5px) 100%, 100% 100%, 100% calc(100% - 5px), calc(100% - 1px) calc(100% - 5px), calc(100% - 1px) calc(100% - 1px), calc(100% - 5px) calc(100% - 1px));
     border-color: var(--accent-purple);
   }
-  
+
   .glassmorphism {
     @apply bg-card/60 backdrop-blur-md border border-[var(--border-subtle)];
   }
 
   /* Keyframes */
   @keyframes slow-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
-  
+
   .animate-slow-bob {
     animation: slow-bob 4s ease-in-out infinite;
   }

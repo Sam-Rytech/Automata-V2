@@ -17,7 +17,7 @@ export function HowItWorks() {
           <div className="h-12 border-b border-white/10 flex items-center px-4 font-mono text-xs text-white/50 tracking-wider bg-[#0F0F1A]/80">
             AUTOMATA — Chat
           </div>
-          
+
           {/* Chat Thread */}
           <div className="flex-1 p-6 flex flex-col gap-6 overflow-hidden">
             {/* User message */}
@@ -33,7 +33,7 @@ export function HowItWorks() {
                 On it. Found the best route via Circle CCTP V2.<br />
                 <span className="text-[#E91E8C]">Transfer fee: $0.42 · Est. time: 45 sec</span>
               </div>
-              
+
               {/* Transaction Plan */}
               <div className="bg-[#0F0F1A] border-l-2 border-[#E91E8C] p-4 mb-4">
                 <div className="font-mono text-xs text-white/50 mb-3 tracking-widest">TRANSACTION PLAN</div>
@@ -50,7 +50,7 @@ export function HowItWorks() {
                 <Button size="sm" variant="ghost">Cancel</Button>
               </div>
             </div>
-            
+
             {/* User confirmation */}
             <div className="self-end bg-[#E91E8C] text-white p-4 max-w-[80%] mt-4">
               <span className="font-mono text-sm">Confirmed.</span>
@@ -73,7 +73,7 @@ export function HowItWorks() {
           <div className="flex-1 bg-dot-grid p-8 flex items-center justify-center relative">
             {/* Nodes */}
             <div className="flex items-center gap-12 w-full max-w-lg relative z-10">
-              
+
               {/* Node 1 */}
               <div className="flex-1 bg-[#1A1A2E] border border-white/10 border-t-2 border-t-[#6A0DAD] p-4 relative crosshair-corners">
                 <div className="font-mono text-[10px] text-white/50 tracking-wider mb-2">BRIDGE</div>
@@ -98,7 +98,7 @@ export function HowItWorks() {
                 <div className="font-syne text-sm text-white font-bold">cUSD → Aave</div>
               </div>
             </div>
-            
+
             {/* Flow line underneath */}
             <div className="absolute top-1/2 left-0 w-full h-[1px] border-t border-dashed border-white/20 -translate-y-1/2 z-0" />
           </div>

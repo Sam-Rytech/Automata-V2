@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA | Every chain. One command.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#002f33",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#a88892",
+                        "on-primary-fixed-variant": "#8d0051",
+                        "surface-tint": "#ffb0cc",
+                        "on-secondary-container": "#d5a4ff",
+                        "on-tertiary-fixed": "#002022",
+                        "tertiary-container": "#00a0aa",
+                        "on-surface": "#e3e0f1",
+                        "surface-variant": "#343440",
+                        "secondary-fixed": "#f1daff",
+                        "primary-container": "#ff46a0",
+                        "secondary-container": "#6c11af",
+                        "on-tertiary": "#00363a",
+                        "tertiary-fixed": "#7df4ff",
+                        "on-secondary-fixed": "#2d004f",
+                        "error-container": "#93000a",
+                        "on-background": "#e3e0f1",
+                        "on-secondary": "#4b007e",
+                        "primary": "#ffb0cc",
+                        "background": "#12121d",
+                        "surface-container": "#1f1e2a",
+                        "secondary-fixed-dim": "#dfb7ff",
+                        "surface": "#12121d",
+                        "on-primary-container": "#580030",
+                        "outline-variant": "#594048",
+                        "surface-container-high": "#292935",
+                        "inverse-primary": "#b8006c",
+                        "tertiary": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "secondary": "#dfb7ff",
+                        "on-primary": "#640038",
+                        "primary-fixed-dim": "#ffb0cc",
+                        "surface-container-low": "#1b1a26",
+                        "surface-bright": "#383845",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0d0d18",
+                        "on-surface-variant": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#690bac",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "inverse-on-surface": "#302f3b",
+                        "inverse-surface": "#e3e0f1",
+                        "primary-fixed": "#ffd9e4",
+                        "tertiary-fixed-dim": "#00dbe9",
+                        "surface-container-highest": "#343440",
+                        "on-primary-fixed": "#3e0021",
+                        "surface-dim": "#12121d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Space Grotesk", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(circle, #ffb0cc22 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .corner-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: #00dbe9;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-slate-950/40 backdrop-blur-xl shadow-[0_0_60px_0_rgba(233,30,140,0.06)]">
+<div class="text-2xl font-bold tracking-tighter text-slate-100 dark:text-slate-100 font-headline">AUTOMATA</div>
+<nav class="hidden md:flex gap-10">
+<a class="text-pink-500 font-bold hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">How it works</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">Chains</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">Launch App</a>
+</nav>
+<button class="bg-primary text-on-primary font-bold px-6 py-2 active:scale-95 transition-transform hover:bg-pink-500/10 font-label">
+            [ Launch App ]
+        </button>
+</header>
+<main class="pt-20">
+<!-- HERO SECTION -->
+<section class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center overflow-hidden bg-[#0F0F1A] px-6">
+<div class="absolute inset-0 dot-grid opacity-30"></div>
+<!-- Centerpiece Orb -->
+<div class="relative w-full max-w-lg aspect-square flex items-center justify-center">
+<div class="absolute w-64 h-64 bg-primary/20 rounded-full blur-[120px]"></div>
+<div class="relative z-10 w-80 h-80 bg-gradient-to-br from-primary to-secondary-container rounded-full shadow-[0_0_100px_rgba(233,30,140,0.4)] flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover mix-blend-overlay opacity-60" data-alt="vibrant abstract 3d orb with flowing ethereal neon textures and glowing pink and purple filaments" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYh2sue3H8zeic-2r5qgz6pJYHaaiXOEHAnvte9HrW2GZcizSMRSDP8thZaAznV1tVW6cMsN4Wkjn2kqvq34DBceyUdZi6M8b0eEvAL6mI3OBIOJblqdL5vEbPkDuLgPhWfhu09561vjDR49RR-p7AeYBSffcwHQk_8Em_2Frm5H7JnFh9z92ZP6V8PvfF2wAgTbyRRYnCBi87Yp40Z46hUI7Z6qd7BJ1EOoBLZNz-mvn8dmadS_Rr80O0FBq7KFa8ujs9gcH4yWza"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
+</div>
+<!-- Orbiting Logos Placeholder -->
+<div class="absolute w-[450px] h-[450px] rounded-full border border-outline-variant/20 animate-[spin_20s_linear_infinite]">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface-container p-3 border border-primary/50">
+<span class="material-symbols-outlined text-primary" data-icon="token">token</span>
+</div>
+</div>
+<div class="absolute w-[550px] h-[550px] rounded-full border border-outline-variant/10 animate-[spin_35s_linear_infinite_reverse]">
+<div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-surface-container p-3 border border-tertiary/50">
+<span class="material-symbols-outlined text-tertiary" data-icon="layers">layers</span>
+</div>
+</div>
+</div>
+<div class="relative z-20 text-center mt-12 space-y-8">
+<h1 class="text-6xl md:text-8xl font-headline font-bold tracking-tighter leading-[0.9] text-on-surface">
+                    Your money moves.<br/>Every chain. <span class="text-primary">One command.</span>
+</h1>
+<div class="flex flex-wrap justify-center gap-6 mt-12">
+<button class="bg-primary text-on-primary px-10 py-4 font-label text-lg font-black tracking-widest uppercase hover:brightness-110 transition-all active:scale-95 shadow-[0_0_30px_rgba(255,176,204,0.3)]">
+                        [ Start Chatting ]
+                    </button>
+<button class="border border-primary text-primary px-10 py-4 font-label text-lg font-black tracking-widest uppercase hover:bg-primary/10 transition-all active:scale-95">
+                        [ Build a Flow ]
+                    </button>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS -->
+<section class="py-32 px-8 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-baseline gap-4 mb-20">
+<span class="font-label text-tertiary tracking-[0.3em] font-bold">01</span>
+<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter">HOW IT WORKS</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-1px bg-outline-variant/20">
+<!-- COMMAND -->
+<div class="bg-surface-container-lowest p-12 relative group overflow-hidden border-t-2 border-primary">
+<div class="absolute inset-0 dot-grid opacity-5 group-hover:opacity-10 transition-opacity"></div>
+<div class="mb-8">
+<span class="material-symbols-outlined text-5xl text-primary" data-icon="keyboard">keyboard</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight">COMMAND</h3>
+<p class="text-slate-400 font-body leading-relaxed">Type your intent in plain English. Our LLM parses complex multi-chain operations into actionable payloads instantly.</p>
+<div class="mt-12 font-label text-xs text-primary/40">SYSTEM_INPUT // STATUS_OK</div>
+</div>
+<!-- EXECUTE -->
+<div class="bg-surface-container-lowest p-12 relative group overflow-hidden border-t-2 border-primary">
+<div class="absolute inset-0 dot-grid opacity-5 group-hover:opacity-10 transition-opacity"></div>
+<div class="mb-8">
+<span class="material-symbols-outlined text-5xl text-primary" data-icon="account_tree">account_tree</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight">EXECUTE</h3>
+<p class="text-slate-400 font-body leading-relaxed">Automata orchestrates cross-chain liquidity and routing across Base, Celo, and Ethereum simultaneously.</p>
+<div class="mt-12 font-label text-xs text-primary/40">ENGINE_CORE // RUNNING_V4</div>
+</div>
+<!-- CONFIRM -->
+<div class="bg-surface-container-lowest p-12 relative group overflow-hidden border-t-2 border-primary">
+<div class="absolute inset-0 dot-grid opacity-5 group-hover:opacity-10 transition-opacity"></div>
+<div class="mb-8">
+<span class="material-symbols-outlined text-5xl text-primary" data-icon="verified">verified</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight">CONFIRM</h3>
+<p class="text-slate-400 font-body leading-relaxed">Transactions are verified on-chain. Real-time status updates are streamed directly to your interface.</p>
+<div class="mt-12 font-label text-xs text-primary/40">OUTPUT_LOG // FINALIZED</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CAPABILITIES -->
+<section class="py-32 px-8 bg-surface-container-lowest relative overflow-hidden">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-baseline gap-4 mb-20">
+<span class="font-label text-tertiary tracking-[0.3em] font-bold">02</span>
+<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter">CAPABILITIES</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Send -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5">
+<div class="corner-marker top-0 left-0 border-t-2 border-l-2"></div>
+<div class="corner-marker bottom-0 right-0 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-4xl text-tertiary" data-icon="send">send</span>
+<span class="font-label text-xs text-slate-500 uppercase tracking-widest">[ CAP_01 ]</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">SEND</h3>
+<p class="text-slate-400 text-lg">Push assets across any supported network with a single signature.</p>
+</div>
+<!-- Swap -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5">
+<div class="corner-marker top-0 left-0 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-4xl text-tertiary" data-icon="swap_horiz">swap_horiz</span>
+<span class="font-label text-xs text-slate-500 uppercase tracking-widest">[ CAP_02 ]</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">SWAP</h3>
+<p class="text-slate-400 text-lg">Deep liquidity aggregation ensuring the best rates across all decentralized venues.</p>
+</div>
+<!-- Bridge -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5">
+<div class="corner-marker top-0 left-0 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-4xl text-tertiary" data-icon="bridge">link</span>
+<span class="font-label text-xs text-slate-500 uppercase tracking-widest">[ CAP_03 ]</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">BRIDGE</h3>
+<p class="text-slate-400 text-lg">Zero-friction asset migration between L1s and L2s using top-tier protocols.</p>
+</div>
+<!-- Earn -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5">
+<div class="corner-marker top-0 left-0 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-4xl text-tertiary" data-icon="trending_up">trending_up</span>
+<span class="font-label text-xs text-slate-500 uppercase tracking-widest">[ CAP_04 ]</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">EARN</h3>
+<p class="text-slate-400 text-lg">Automated yield farming and staking strategies executed by autonomous agents.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- MODES -->
+<section class="py-32 px-8 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-20 gap-8">
+<div class="flex items-baseline gap-4">
+<span class="font-label text-tertiary tracking-[0.3em] font-bold">03</span>
+<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter">YOUR CONTROL</h2>
+</div>
+<div class="flex bg-surface-container-high p-1">
+<button class="bg-primary text-on-primary px-6 py-2 font-label text-xs tracking-widest uppercase">Assisted</button>
+<button class="text-on-surface/40 px-6 py-2 font-label text-xs tracking-widest uppercase hover:text-on-surface">Autonomous</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Chat Preview -->
+<div class="space-y-6">
+<div class="bg-surface-container p-8 border-b-4 border-primary/20">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-2 h-2 bg-primary animate-pulse"></div>
+<span class="font-label text-xs text-primary uppercase">Automata Chat Instance</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-end">
+<div class="bg-surface-container-highest p-4 max-w-[80%] text-sm font-body">
+                                        "Swap 0.5 ETH to CELO and bridge to Base."
+                                    </div>
+</div>
+<div class="flex justify-start">
+<div class="bg-primary/10 border-l-2 border-primary p-4 max-w-[80%] text-sm font-body text-primary">
+                                        "Analyzing route... Best path: ETH (Mainnet) -&gt; Stargate -&gt; CELO (Celo) -&gt; Base Bridge. Execution payload ready. [ Approve ]"
+                                    </div>
+</div>
+</div>
+</div>
+<p class="font-headline text-xl font-medium">Chat Interface: Conversational Finance.</p>
+</div>
+<!-- Flow Preview -->
+<div class="space-y-6">
+<div class="bg-surface-container p-8 border-b-4 border-tertiary/20">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-2 h-2 bg-tertiary animate-pulse"></div>
+<span class="font-label text-xs text-tertiary uppercase">Logic Flow Builder</span>
+</div>
+<div class="flex flex-col items-center gap-4 py-4">
+<div class="w-48 h-12 bg-surface-container-high flex items-center justify-center font-label text-[10px] border border-white/5">TRIGGER: PRICE_THRESHOLD</div>
+<div class="h-6 w-px bg-tertiary/40"></div>
+<div class="w-48 h-12 bg-surface-container-high flex items-center justify-center font-label text-[10px] border border-tertiary/30">ACTION: SWAP_USDC_ETH</div>
+<div class="h-6 w-px bg-tertiary/40"></div>
+<div class="w-48 h-12 bg-surface-container-high flex items-center justify-center font-label text-[10px] border border-white/5">SINK: LEDGER_WALLET</div>
+</div>
+</div>
+<p class="font-headline text-xl font-medium">Flow Builder: Visual logic for the heavy lifting.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CHAINS -->
+<section class="py-24 px-8 border-t border-outline-variant/10">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-baseline gap-4 mb-16">
+<span class="font-label text-tertiary tracking-[0.3em] font-bold">04</span>
+<h2 class="font-headline text-4xl font-bold uppercase tracking-tighter">SUPPORTED CHAINS</h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="h-40 bg-surface-container-lowest flex flex-col items-center justify-center group hover:bg-surface-container transition-colors">
+<img class="w-12 h-12 mb-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="minimalist blue ethereum blockchain logo on dark textured background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbMo3n9_KDAb0v0284ZtFA7p0eGn35V1kC-iRlGny74jXbk3KwY1GqIJWB3w0HZ5yKDQ59WOIcsQfem1pGiHHLwftqSfCBXz05uRO3xbvDpfGNsGHFzCRBMV3u16n98TPLdfvWLzTRi0Vha8A7vDalOFz9Lx5QJZS0vm5Z9eIV5cG15vUPuxn5yjqVkFmkphrOGNeFgFvpoOu94WwaL3IM2y3mGHOh3GNvkjE9IZmqtm3qug3fhpkFVtaGF135jD_p1hbU_RC4bM9P"/>
+<span class="font-label text-xs tracking-widest text-slate-500 group-hover:text-on-surface">ETHEREUM</span>
+</div>
+<div class="h-40 bg-surface-container-lowest flex flex-col items-center justify-center group hover:bg-surface-container transition-colors">
+<img class="w-12 h-12 mb-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="minimalist bold blue chain icon for Base network" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA201N-fv7yJD76zIS_2TTCVOprtBIaGMMtiWwtA0UD8BBsfxO_1PqUmmERyKcc6vnFZxlh1rmpd5FKgnbK7mhJfEKl3edNaF5i3gCopvywV-cuwsVwc_gal3qYvAKvLsAqzFtX84UGskWB5378iudgjFXiZtaluOjRhAeoG_329E-sUEPr3CZjUMFXcgRyELxy5cORe5KA5p6I_rFPwOEkNY0_NNBWXYwWV45jL9MQybH6R0RvyxWa-QeryTavE_tzX1Maf4fNbHXd"/>
+<span class="font-label text-xs tracking-widest text-slate-500 group-hover:text-on-surface">BASE</span>
+</div>
+<div class="h-40 bg-surface-container-lowest flex flex-col items-center justify-center group hover:bg-surface-container transition-colors">
+<img class="w-12 h-12 mb-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="elegant gold and green crypto icon representing Celo ecosystem" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo2hluAnEuzzSbnhU5P3PagP0_pF_wWTI9CzJi14CRZD-VYAX0dsYvSEr9zXS2iv9t_a041BIB3BzQGld_1ADNO970R5GFDytTwxAKKIemh63O2GGJAK6DrZ9D1NV_SmnBuZjokTyXNjiWh7f3JP5mGEFOmlGdrFrxf69F1wwf8BSFPsRjXxzNiQ-fFj2IAnV2cZMfA1U4mnmswYyIsFyruARL2DjINmKHJU73PZynNQbs4xEWb6pXXJgq0MpJHjPw-IyB4eoE8hwG"/>
+<span class="font-label text-xs tracking-widest text-slate-500 group-hover:text-on-surface">CELO</span>
+</div>
+<div class="h-40 bg-surface-container-lowest flex flex-col items-center justify-center group hover:bg-surface-container transition-colors">
+<img class="w-12 h-12 mb-4 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="stellar lumens logo icon with sharp geometric rocket lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDleacV1wpwYczfJvBJxCfgWcnrY-dlzQGltxVQ0gibwhZdY3wGMZ7TjqlLEhBjZmfked5_W9IwDac5BS74Fc953c-lTZELmlooKpNjhlP6084FRrj5Yt_aAbxTXb1qdTKOxsQtdvvt9F27fJlzxZrXpb_bFsi10WnM4VWVrhAbea5C0iGl8s52NSDQPKm4-toTpNZ6Q_G08JzK6NGOna1cug_zIpMTHiJaqvwuZ0BCV2vt3oN0bZNVHXvRTVHIXnrf5yXOoDI5w4Ns"/>
+<span class="font-label text-xs tracking-widest text-slate-500 group-hover:text-on-surface">STELLAR</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-6 z-40 bg-[#0D0D18] h-10 border-t border-slate-800/30">
+<div class="flex items-center gap-6">
+<span class="font-label text-[10px] uppercase tracking-[0.3em] text-slate-600 font-bold">AUTOMATA CORE</span>
+<span class="font-label text-[10px] uppercase tracking-[0.3em] text-cyan-400 font-bold">Testnet · Phase 1</span>
+</div>
+<div class="flex gap-6">
+<a class="font-label text-[10px] uppercase tracking-widest text-slate-600 hover:text-cyan-300 transition-colors" href="#">Docs</a>
+<a class="font-label text-[10px] uppercase tracking-widest text-slate-600 hover:text-cyan-300 transition-colors" href="#">X</a>
+<a class="font-label text-[10px] uppercase tracking-widest text-slate-600 hover:text-cyan-300 transition-colors" href="#">Github</a>
+<a class="font-label text-[10px] uppercase tracking-widest text-slate-600 hover:text-cyan-300 transition-colors" href="#">Discord</a>
+</div>
+</footer>
+<!-- Scroll Progress Bar (Non-animated decoration) -->
+<div class="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3">
+<div class="w-1 h-8 bg-primary"></div>
+<div class="w-1 h-4 bg-slate-800"></div>
+<div class="w-1 h-4 bg-slate-800"></div>
+<div class="w-1 h-4 bg-slate-800"></div>
+</div>
+</body></html>

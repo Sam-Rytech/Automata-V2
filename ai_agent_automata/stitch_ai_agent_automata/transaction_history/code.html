@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA - Transaction History</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#002f33",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#a88892",
+                        "on-primary-fixed-variant": "#8d0051",
+                        "surface-tint": "#ffb0cc",
+                        "on-secondary-container": "#d5a4ff",
+                        "on-tertiary-fixed": "#002022",
+                        "tertiary-container": "#00a0aa",
+                        "on-surface": "#e3e0f1",
+                        "surface-variant": "#343440",
+                        "secondary-fixed": "#f1daff",
+                        "primary-container": "#ff46a0",
+                        "secondary-container": "#6c11af",
+                        "on-tertiary": "#00363a",
+                        "tertiary-fixed": "#7df4ff",
+                        "on-secondary-fixed": "#2d004f",
+                        "error-container": "#93000a",
+                        "on-background": "#e3e0f1",
+                        "on-secondary": "#4b007e",
+                        "primary": "#ffb0cc",
+                        "background": "#12121d",
+                        "surface-container": "#1f1e2a",
+                        "secondary-fixed-dim": "#dfb7ff",
+                        "surface": "#12121d",
+                        "on-primary-container": "#580030",
+                        "outline-variant": "#594048",
+                        "surface-container-high": "#292935",
+                        "inverse-primary": "#b8006c",
+                        "tertiary": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "secondary": "#dfb7ff",
+                        "on-primary": "#640038",
+                        "primary-fixed-dim": "#ffb0cc",
+                        "surface-container-low": "#1b1a26",
+                        "surface-bright": "#383845",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0d0d18",
+                        "on-surface-variant": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#690bac",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "inverse-on-surface": "#302f3b",
+                        "inverse-surface": "#e3e0f1",
+                        "primary-fixed": "#ffd9e4",
+                        "tertiary-fixed-dim": "#00dbe9",
+                        "surface-container-highest": "#343440",
+                        "on-primary-fixed": "#3e0021",
+                        "surface-dim": "#12121d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .monospace { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        .glass-panel { backdrop-filter: blur(20px); }
+        .corner-marker-tl { border-top: 1px solid #00dbe9; border-left: 1px solid #00dbe9; top: 0; left: 0; width: 8px; height: 8px; position: absolute; }
+        .corner-marker-br { border-bottom: 1px solid #00dbe9; border-right: 1px solid #00dbe9; bottom: 0; right: 0; width: 8px; height: 8px; position: absolute; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-slate-950/40 backdrop-blur-xl shadow-[0_0_60px_0_rgba(233,30,140,0.06)]">
+<div class="text-2xl font-bold tracking-tighter text-slate-100 dark:text-slate-100 font-headline">AUTOMATA</div>
+<div class="hidden md:flex gap-10">
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label" href="#">How it works</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label" href="#">Chains</a>
+<a class="text-pink-500 font-bold hover:text-pink-400 transition-colors duration-300 font-label" href="#">Launch App</a>
+</div>
+<button class="bg-primary text-on-primary font-bold py-2 px-6 hover:bg-pink-500/10 active:scale-95 transition-all duration-300">
+            [ Launch App ]
+        </button>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-20 h-[calc(100vh-80px)] w-64 flex flex-col py-6 bg-[#0D0D18] border-r border-slate-800/50 z-40 hidden md:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 bg-surface-container-highest border border-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<div class="text-xs font-label text-on-surface leading-none">0x71C...4E21</div>
+<div class="text-[10px] font-label text-primary mt-1">[ ASSISTED MODE ]</div>
+</div>
+</div>
+<button class="w-full mt-4 text-[10px] font-label text-primary py-2 border border-primary/30 hover:bg-primary/10 transition-colors">
+                [ SWITCH TO AUTONOMOUS ]
+            </button>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 transition-colors font-label" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span>Chat</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 transition-colors font-label" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Flow Builder</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-pink-500 border-l-2 border-pink-500 pl-4 bg-primary/5 font-label" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>History</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-slate-500 pl-4 hover:bg-slate-800/50 hover:text-pink-300 transition-colors font-label" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-6 pt-6 border-t border-slate-800/50 mt-auto space-y-3">
+<div class="flex items-center justify-between text-[10px] font-label text-slate-500">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[12px]" data-icon="layers">layers</span> Base</span>
+<span class="text-on-surface">1.2 ETH</span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-label text-slate-500">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[12px]" data-icon="payments">payments</span> Celo</span>
+<span class="text-on-surface">450 CELO</span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-label text-slate-500">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[12px]" data-icon="toll">toll</span> Ethereum</span>
+<span class="text-on-surface">0.5 ETH</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:pl-64 pt-20 pb-10">
+<div class="max-w-6xl mx-auto px-8 pt-12">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div>
+<h1 class="text-6xl md:text-7xl font-black font-headline tracking-tighter text-on-surface leading-none mb-4">
+                        TRANSACTION <span class="text-primary">HISTORY</span>
+</h1>
+<div class="flex items-center gap-3">
+<span class="text-xs font-label text-tertiary bg-tertiary/10 px-2 py-1">CONNECTED WALLET</span>
+<span class="monospace text-sm text-slate-400">0x71C24961697849d7D02BAf0f2164d010A60f4E21</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-primary text-on-primary font-label text-xs">All</button>
+<button class="px-4 py-2 border border-outline-variant hover:border-primary transition-colors font-label text-xs text-on-surface">Bridges</button>
+<button class="px-4 py-2 border border-outline-variant hover:border-primary transition-colors font-label text-xs text-on-surface">Swaps</button>
+<button class="px-4 py-2 border border-outline-variant hover:border-primary transition-colors font-label text-xs text-on-surface">Stakes</button>
+<button class="px-4 py-2 border border-outline-variant hover:border-primary transition-colors font-label text-xs text-on-surface">Sends</button>
+</div>
+</header>
+<!-- Data Visual Background Orbs (Decorative) -->
+<div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -z-10"></div>
+<div class="fixed bottom-0 right-0 w-[400px] h-[400px] bg-tertiary/5 rounded-full blur-[100px] -z-10"></div>
+<!-- Transaction List -->
+<div class="space-y-4">
+<!-- Transaction Card 1: Bridge -->
+<div class="group relative bg-surface-container-lowest hover:bg-surface-container p-6 transition-all duration-300 border-t-2 border-primary/40">
+<div class="corner-marker-br"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-8">
+<!-- Status & Type -->
+<div class="flex items-center gap-4 min-w-[140px]">
+<div class="w-12 h-12 bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="swap_calls">swap_calls</span>
+</div>
+<div>
+<div class="text-[10px] font-label text-primary uppercase tracking-widest leading-none mb-1">Bridge</div>
+<div class="text-xs font-bold text-tertiary font-label flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span>
+                                    CONFIRMED
+                                </div>
+</div>
+</div>
+<!-- Description & Chains -->
+<div class="flex-1">
+<div class="text-xl font-headline font-bold text-on-surface mb-1">100.00 USDC <span class="text-slate-500 font-normal">· Base -&gt; Celo</span></div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 bg-slate-800 rounded-full border border-background flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist circular crypto logo for Base network with blue and white geometric patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClwNLiD0u_chWEMNQ_hh_1CiFnSrJ3gFdr4104ai7UNNGS4ZvCSlaB6EKfv1IqGCH-hC7r4nA7wh0o7sq6wztyKRYYOxFKl4loBPdh6QYflGmZxLyYLlEOyZ1pxynNQ8e9d4f5BE5Gyj1GTAwaZpZCVKmUl-Ig7IpIisvOzJI2iwsFLTOpkoDYfnHKmMaNz7aaAeqGUSh9mfmTRslStBw7ONlUm60MrFExA0fY7CwXxz9pireSX2trKTEOVglNdyCTfPO5KwvJPdE5"/>
+</div>
+<div class="w-6 h-6 bg-slate-800 rounded-full border border-background flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist circular crypto logo for Celo network with gold and green interlocking rings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCpAYV9SKleyFltWPGm-pk1KEGdrh1JrgxbH-TMqGELST_yg3BGmWGDuzk5_mmnvtwN2-oqV2lksXUJ1GH96GGk7h1q1M6-aN0vPquR8kJaMPdoJIPRb59MLONxckLgV35cskP6Grjk_WPG0vEydLWPUCfPc74xjwE_sJx_nRM9MN2Sa-g2MivJdEOZyREKv4DdPo9I_lJ-q-eVIsOlyssL3sFzkG5KwocM-fv6mmnbSub5txxz-cMndSD16X5sQrwH1lKp04Wo4ck"/>
+</div>
+</div>
+<span class="text-[10px] font-label text-slate-500 uppercase tracking-tighter">Automata Route Optimal // v2.4</span>
+</div>
+</div>
+<!-- Hash & Time -->
+<div class="flex flex-row lg:flex-col justify-between lg:items-end gap-2">
+<div class="monospace text-[11px] text-slate-400 bg-slate-800/50 px-2 py-1">0x8a2f...c3e9</div>
+<div class="text-[10px] font-label text-slate-500">2 MINS AGO</div>
+</div>
+<!-- Action -->
+<div class="flex justify-end">
+<button class="text-primary hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Transaction Card 2: Swap -->
+<div class="group relative bg-surface-container-lowest hover:bg-surface-container p-6 transition-all duration-300 border-t-2 border-tertiary/40">
+<div class="corner-marker-br"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-8">
+<div class="flex items-center gap-4 min-w-[140px]">
+<div class="w-12 h-12 bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="currency_exchange">currency_exchange</span>
+</div>
+<div>
+<div class="text-[10px] font-label text-tertiary uppercase tracking-widest leading-none mb-1">Swap</div>
+<div class="text-xs font-bold text-tertiary font-label flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full animate-pulse"></span>
+                                    PENDING
+                                </div>
+</div>
+</div>
+<div class="flex-1">
+<div class="text-xl font-headline font-bold text-on-surface mb-1">0.50 ETH <span class="text-slate-500 font-normal">-&gt; 1,120 USDT</span></div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 bg-slate-800 rounded-full border border-background flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="icon for ethereum network, a diamond shape in silver on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9sXbI_bUjdWsFoeLFHI5ByaI1ylbXykg2PlJmrGu59JOmTOAhVSgQnidqtz7MvhnhMiBt7bqkL_Ige8vZe7HUqvmjSKnxQGSCmSlgCnzeO76sfmbMVOrdLm9HnCjKTcezbJzJsJpikTzNXZzI3dmrACdhfpKHJEDWPyCzF77vek6JiLIJ84uH5ibwzMfhOdG7h9p2fE10o2XFEcGuB1iqFqN4-6O5qDg6Y0JJVx3LW_6-cwQz1onNuCRz54FgAgTGYVyM4NJrRZqy"/>
+</div>
+</div>
+<span class="text-[10px] font-label text-slate-500 uppercase tracking-tighter">Uniswap V3 Pool // Slippage 0.5%</span>
+</div>
+</div>
+<div class="flex flex-row lg:flex-col justify-between lg:items-end gap-2">
+<div class="monospace text-[11px] text-slate-400 bg-slate-800/50 px-2 py-1">0x4d11...f0a2</div>
+<div class="text-[10px] font-label text-slate-500">14 MINS AGO</div>
+</div>
+<div class="flex justify-end">
+<button class="text-tertiary hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Transaction Card 3: Stake -->
+<div class="group relative bg-surface-container-lowest hover:bg-surface-container p-6 transition-all duration-300 border-t-2 border-slate-700/40 opacity-80">
+<div class="corner-marker-br"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-8">
+<div class="flex items-center gap-4 min-w-[140px]">
+<div class="w-12 h-12 bg-slate-800/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<div class="text-[10px] font-label text-slate-500 uppercase tracking-widest leading-none mb-1">Stake</div>
+<div class="text-xs font-bold text-error font-label flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-error rounded-full"></span>
+                                    FAILED
+                                </div>
+</div>
+</div>
+<div class="flex-1">
+<div class="text-xl font-headline font-bold text-on-surface mb-1">1,200 XLM <span class="text-slate-500 font-normal">· Stellar Protocol</span></div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 bg-slate-800 rounded-full border border-background flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="stellar network rocket logo in white and light blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU2q2CN5w8VvNTrNAOtceiv75_8nmRcEEfL0Q7rHFJOtHpuT3ajeK_UTE1yJ3MKTYYoz_A_Qng0gffMAAmzKFYBzCx_NeOK7UJEg7DePfIce5hYskY732rihAvKDEncyp1jEWpa5fts8BEmIxh8F6S0XSvrw0CEKuwFRFcbQZobJMpVb1YnKhv86U1DYDsADPx9aVF5846INEu0QLBaE4sj2uDeE9zu7q9FKRYluJz16uh3YPf1n6zATg-W4UclihitP5Ud5EQ3kZZ"/>
+</div>
+</div>
+<span class="text-[10px] font-label text-error/70 uppercase tracking-tighter">Insufficient Gas for execution</span>
+</div>
+</div>
+<div class="flex flex-row lg:flex-col justify-between lg:items-end gap-2">
+<div class="monospace text-[11px] text-slate-400 bg-slate-800/50 px-2 py-1">0x99a0...33c1</div>
+<div class="text-[10px] font-label text-slate-500">1 HOUR AGO</div>
+</div>
+<div class="flex justify-end">
+<button class="text-error hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="refresh">refresh</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Transaction Card 4: Send -->
+<div class="group relative bg-surface-container-lowest hover:bg-surface-container p-6 transition-all duration-300 border-t-2 border-primary/40">
+<div class="corner-marker-br"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-8">
+<div class="flex items-center gap-4 min-w-[140px]">
+<div class="w-12 h-12 bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="send">send</span>
+</div>
+<div>
+<div class="text-[10px] font-label text-primary uppercase tracking-widest leading-none mb-1">Send</div>
+<div class="text-xs font-bold text-tertiary font-label flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span>
+                                    CONFIRMED
+                                </div>
+</div>
+</div>
+<div class="flex-1">
+<div class="text-xl font-headline font-bold text-on-surface mb-1">50.00 MATIC <span class="text-slate-500 font-normal">-&gt; 0x9fA...881c</span></div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 bg-slate-800 rounded-full border border-background flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="polygon network logo, purple stylized P in a circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT7rxpIbGymx6lH7ZzovPDcrHPXzocZjup1Ho0qG9iE7nIxuHqwvLihmDsRz59TCDcTWYfRkuQtMu32QM9w6wUxyEhoYYhhR9crT9fJekn9W2MOvh4RPi-anaMCGTRPajzDo0DHU28_DVs_TJr5pBzO3YU8oUodk3V8hjhhNKZIRMpIOQpnKBqlDVBhP_CODhNGFOhG6CgObne1pJunvXag9gctw93qRx0pdtmTkKyvIPidskK4-Q17DVHJtWj1VWitsJiOQOFfCIb"/>
+</div>
+</div>
+<span class="text-[10px] font-label text-slate-500 uppercase tracking-tighter">Direct P2P Transfer</span>
+</div>
+</div>
+<div class="flex flex-row lg:flex-col justify-between lg:items-end gap-2">
+<div class="monospace text-[11px] text-slate-400 bg-slate-800/50 px-2 py-1">0xbb22...11d0</div>
+<div class="text-[10px] font-label text-slate-500">4 HOURS AGO</div>
+</div>
+<div class="flex justify-end">
+<button class="text-primary hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty Space filler for aesthetic balance -->
+<div class="mt-12 p-8 border border-dashed border-slate-800 flex flex-col items-center justify-center opacity-30">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="history">history</span>
+<p class="font-label text-xs uppercase tracking-widest text-slate-400">End of History Log</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-6 h-10 bg-[#0D0D18] border-t border-slate-800/30 z-50">
+<div class="font-label text-[10px] uppercase tracking-widest text-slate-600">
+            Testnet · Phase 1
+        </div>
+<div class="flex gap-6 font-label text-[10px] uppercase tracking-widest text-slate-600">
+<a class="hover:text-cyan-300 transition-colors" href="#">Docs</a>
+<a class="hover:text-cyan-300 transition-colors" href="#">X</a>
+<a class="hover:text-cyan-300 transition-colors" href="#">Github</a>
+<a class="hover:text-cyan-300 transition-colors text-cyan-400" href="#">Discord</a>
+</div>
+</footer>
+<!-- Aesthetic Overlay Components -->
+<div class="fixed top-0 left-0 w-full h-screen pointer-events-none overflow-hidden -z-20">
+<div class="absolute top-[10%] left-[5%] text-[10px] font-label text-slate-800 monospace rotate-90">SYS_PROTOCOL: 0.22.4</div>
+<div class="absolute bottom-[10%] right-[5%] text-[10px] font-label text-slate-800 monospace">COORD: 40.7128° N, 74.0060° W</div>
+</div>
+</body></html>

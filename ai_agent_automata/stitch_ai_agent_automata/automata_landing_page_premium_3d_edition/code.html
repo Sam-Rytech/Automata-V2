@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AUTOMATA | Every chain. One command.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#002f33",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#a88892",
+                        "on-primary-fixed-variant": "#8d0051",
+                        "surface-tint": "#ffb0cc",
+                        "on-secondary-container": "#d5a4ff",
+                        "on-tertiary-fixed": "#002022",
+                        "tertiary-container": "#00a0aa",
+                        "on-surface": "#e3e0f1",
+                        "surface-variant": "#343440",
+                        "secondary-fixed": "#f1daff",
+                        "primary-container": "#ff46a0",
+                        "secondary-container": "#6c11af",
+                        "on-tertiary": "#00363a",
+                        "tertiary-fixed": "#7df4ff",
+                        "on-secondary-fixed": "#2d004f",
+                        "error-container": "#93000a",
+                        "on-background": "#e3e0f1",
+                        "on-secondary": "#4b007e",
+                        "primary": "#ffb0cc",
+                        "background": "#0F0F1A",
+                        "surface-container": "#1A1A2E",
+                        "secondary-fixed-dim": "#dfb7ff",
+                        "surface": "#0F0F1A",
+                        "on-primary-container": "#580030",
+                        "outline-variant": "#594048",
+                        "surface-container-high": "#292935",
+                        "inverse-primary": "#b8006c",
+                        "tertiary": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "secondary": "#dfb7ff",
+                        "on-primary": "#640038",
+                        "primary-fixed-dim": "#ffb0cc",
+                        "surface-container-low": "#1b1a26",
+                        "surface-bright": "#383845",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0d0d18",
+                        "on-surface-variant": "#e1bdc8",
+                        "on-secondary-fixed-variant": "#690bac",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "inverse-on-surface": "#302f3b",
+                        "inverse-surface": "#e3e0f1",
+                        "primary-fixed": "#ffd9e4",
+                        "tertiary-fixed-dim": "#00dbe9",
+                        "surface-container-highest": "#343440",
+                        "on-primary-fixed": "#3e0021",
+                        "surface-dim": "#0F0F1A"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Space Grotesk", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(circle, #ffb0cc11 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .corner-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: #ffb0cc;
+        }
+        .glow-soft {
+            box-shadow: 0 0 60px -15px rgba(255, 176, 204, 0.2);
+        }
+        @keyframes orbit-1 {
+            from { transform: rotate(0deg) translateX(220px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(220px) rotate(-360deg); }
+        }
+        @keyframes orbit-2 {
+            from { transform: rotate(180deg) translateX(280px) rotate(-180deg); }
+            to { transform: rotate(540deg) translateX(280px) rotate(-540deg); }
+        }
+        .orbit-item-1 { animation: orbit-1 25s linear infinite; }
+        .orbit-item-2 { animation: orbit-2 35s linear infinite reverse; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-background/60 backdrop-blur-xl border-b border-white/5 shadow-2xl">
+<div class="text-2xl font-bold tracking-tighter text-slate-100 font-headline">AUTOMATA</div>
+<nav class="hidden md:flex gap-10">
+<a class="text-pink-500 font-bold hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">How it works</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">Chains</a>
+<a class="text-slate-400 font-medium hover:text-pink-400 transition-colors duration-300 font-label uppercase tracking-widest text-sm" href="#">Launch App</a>
+</nav>
+<button class="bg-primary text-on-primary font-bold px-6 py-2 active:scale-95 transition-transform hover:brightness-110 font-label">
+            [ Launch App ]
+        </button>
+</header>
+<main class="pt-20">
+<!-- HERO SECTION -->
+<section class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center overflow-hidden px-6 bg-[#0F0F1A]">
+<div class="absolute inset-0 dot-grid pointer-events-none"></div>
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-tertiary/5 blur-[120px] rounded-full"></div>
+<!-- Centerpiece 3D Core -->
+<div class="relative w-full max-w-2xl aspect-square flex items-center justify-center">
+<!-- Glowing Aura -->
+<div class="absolute w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px]"></div>
+<!-- 3D Core Image -->
+<div class="relative z-10 w-[450px] h-[450px] drop-shadow-[0_0_50px_rgba(255,176,204,0.3)]">
+<img alt="Advanced AI Core" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGWN4mESDr2OEPq_kUenXggXu12nug86mmRB3N7_8KkLr1TL8uY3o-sLQtBzQDijlQ_U3XnB29b28by9vRnoE4ztgZPGPkK9pPwm5YqphFXgHXiuJNHBZr9RaE_5xKoAy2z3KB4sJNzt8zInr-gCW52bmr74hkpLnaFnw4vaeUyXXjVrVa5T47JfSLDhCPqNmSyTTJvuq_3tovlCEYqQTMRZcw8cuibUiSiSYOYgB88OvHG0HqO6JGQU0IcNRTNwJzxgpndRWeT27x"/>
+</div>
+<!-- Orbiting 3D Icons -->
+<div class="absolute orbit-item-1 w-16 h-16 z-20">
+<div class="relative w-full h-full bg-surface-container border border-white/10 p-2 shadow-2xl">
+<img alt="Base Icon" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: 0 0;"/>
+</div>
+</div>
+<div class="absolute orbit-item-2 w-16 h-16 z-20">
+<div class="relative w-full h-full bg-surface-container border border-white/10 p-2 shadow-2xl">
+<img alt="Ethereum Icon" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: 0 100%;"/>
+</div>
+</div>
+</div>
+<div class="relative z-20 text-center -mt-10 space-y-8">
+<h1 class="text-6xl md:text-8xl font-headline font-bold tracking-tighter leading-[0.9] text-on-surface">
+                    Your money moves.<br/>Every chain. <span class="text-primary">One command.</span>
+</h1>
+<div class="flex flex-wrap justify-center gap-6 mt-12">
+<button class="bg-primary text-on-primary px-10 py-4 font-label text-lg font-black tracking-widest uppercase hover:brightness-110 transition-all active:scale-95 shadow-[0_0_30px_rgba(255,176,204,0.3)]">
+                        [ Start Chatting ]
+                    </button>
+<button class="border border-primary text-primary px-10 py-4 font-label text-lg font-black tracking-widest uppercase hover:bg-primary/10 transition-all active:scale-95">
+                        [ Build a Flow ]
+                    </button>
+</div>
+</div>
+</section>
+<!-- HOW IT WORKS -->
+<section class="py-32 px-8 bg-surface relative">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-center gap-6 mb-24">
+<div class="px-4 py-2 border border-tertiary/30 font-label text-tertiary tracking-[0.3em] font-bold text-sm">01</div>
+<h2 class="font-headline text-5xl font-bold uppercase tracking-tighter">THE PROTOCOL</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- COMMAND MOCKUP -->
+<div class="bg-surface-container p-1 relative overflow-hidden group border border-white/5 glow-soft transition-transform hover:-translate-y-2">
+<div class="bg-surface-container-lowest p-8 h-full flex flex-col">
+<div class="mb-12 relative h-40 bg-surface-container border border-white/5 p-4 overflow-hidden">
+<div class="absolute top-0 right-0 p-2 text-[8px] font-label text-primary opacity-30">CMD_01.EXE</div>
+<div class="space-y-3">
+<div class="h-2 w-3/4 bg-primary/20 rounded-full"></div>
+<div class="h-2 w-1/2 bg-primary/10 rounded-full"></div>
+<div class="mt-6 flex gap-2">
+<div class="w-8 h-8 rounded-full border border-primary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-primary">terminal</span>
+</div>
+<div class="flex-1 bg-surface-container-high border border-white/5 p-2 text-[10px] font-mono text-slate-400">
+                                            &gt; SWAP 10 ETH TO BASE
+                                        </div>
+</div>
+</div>
+<div class="absolute bottom-2 right-2">
+<img alt="3D icon" class="w-12 h-12 opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd"/>
+</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight flex items-center gap-3">
+<span class="text-primary">[</span> COMMAND <span class="text-primary">]</span>
+</h3>
+<p class="text-slate-400 font-body text-sm leading-relaxed">Type your intent in plain English. Our LLM parses complex multi-chain operations into actionable payloads instantly.</p>
+<div class="mt-auto pt-8 font-label text-[10px] text-primary/40 tracking-widest">SYSTEM_INPUT // STATUS_OK</div>
+</div>
+</div>
+<!-- EXECUTE MOCKUP -->
+<div class="bg-surface-container p-1 relative overflow-hidden group border border-white/5 glow-soft transition-transform hover:-translate-y-2">
+<div class="bg-surface-container-lowest p-8 h-full flex flex-col">
+<div class="mb-12 relative h-40 bg-surface-container border border-white/5 p-4 overflow-hidden flex items-center justify-center">
+<div class="absolute top-0 right-0 p-2 text-[8px] font-label text-tertiary opacity-30">CORE_V4.SYS</div>
+<div class="w-full h-full flex flex-col items-center justify-center gap-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 border border-tertiary/40 bg-tertiary/5"></div>
+<div class="w-1 h-px bg-tertiary/40 flex-grow min-w-[40px]"></div>
+<div class="w-10 h-10 border border-primary/40 bg-primary/5 animate-pulse"></div>
+</div>
+<div class="text-[8px] font-mono text-tertiary tracking-widest">ROUTING CROSS-CHAIN...</div>
+</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight flex items-center gap-3">
+<span class="text-tertiary">[</span> EXECUTE <span class="text-tertiary">]</span>
+</h3>
+<p class="text-slate-400 font-body text-sm leading-relaxed">Automata orchestrates cross-chain liquidity and routing across Base, Celo, and Ethereum simultaneously.</p>
+<div class="mt-auto pt-8 font-label text-[10px] text-tertiary/40 tracking-widest">ENGINE_CORE // RUNNING_V4</div>
+</div>
+</div>
+<!-- CONFIRM MOCKUP -->
+<div class="bg-surface-container p-1 relative overflow-hidden group border border-white/5 glow-soft transition-transform hover:-translate-y-2">
+<div class="bg-surface-container-lowest p-8 h-full flex flex-col">
+<div class="mb-12 relative h-40 bg-surface-container border border-white/5 p-4 overflow-hidden">
+<div class="absolute top-0 right-0 p-2 text-[8px] font-label text-white opacity-30">OUT_01.LOG</div>
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-green-400 text-sm">check_circle</span>
+<div class="h-2 w-1/2 bg-white/10 rounded-full"></div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-green-400 text-sm">check_circle</span>
+<div class="h-2 w-2/3 bg-white/10 rounded-full"></div>
+</div>
+<div class="mt-4 p-2 bg-black/40 border border-white/10 font-mono text-[9px] text-green-400/80">
+                                        TX_ID: 0x8a2...F421 COMPLETED
+                                    </div>
+</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 tracking-tight flex items-center gap-3">
+<span class="text-slate-200">[</span> CONFIRM <span class="text-slate-200">]</span>
+</h3>
+<p class="text-slate-400 font-body text-sm leading-relaxed">Transactions are verified on-chain. Real-time status updates are streamed directly to your interface.</p>
+<div class="mt-auto pt-8 font-label text-[10px] text-slate-500 tracking-widest">OUTPUT_LOG // FINALIZED</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CAPABILITIES -->
+<section class="py-32 px-8 bg-surface-container-lowest relative overflow-hidden">
+<div class="absolute inset-0 dot-grid opacity-20 pointer-events-none"></div>
+<div class="max-w-7xl mx-auto relative">
+<div class="flex items-center gap-6 mb-24">
+<div class="px-4 py-2 border border-primary/30 font-label text-primary tracking-[0.3em] font-bold text-sm">02</div>
+<h2 class="font-headline text-5xl font-bold uppercase tracking-tighter">CAPABILITIES</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Send UI Card -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5 transition-all hover:bg-surface-container-high glow-soft">
+<div class="corner-marker -top-1 -left-1 border-t-2 border-l-2"></div>
+<div class="corner-marker -bottom-1 -right-1 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-12">
+<div class="w-16 h-16 bg-background flex items-center justify-center border border-white/5 relative">
+<div class="absolute inset-0 bg-primary/5"></div>
+<img alt="Send" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: center; filter: hue-rotate(45deg);"/>
+</div>
+<span class="font-label text-[10px] text-slate-500 uppercase tracking-[0.4em]">[ CAP_01 ]</span>
+</div>
+<h3 class="font-headline text-4xl font-bold mb-6 tracking-tighter">SEND ANYWHERE</h3>
+<p class="text-slate-400 text-lg leading-relaxed mb-8">Push assets across any supported network with a single signature. No manual network switching required.</p>
+<div class="h-px w-full bg-gradient-to-r from-primary/40 to-transparent"></div>
+</div>
+<!-- Swap UI Card -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5 transition-all hover:bg-surface-container-high glow-soft">
+<div class="corner-marker -top-1 -left-1 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-12">
+<div class="w-16 h-16 bg-background flex items-center justify-center border border-white/5 relative">
+<div class="absolute inset-0 bg-tertiary/5"></div>
+<img alt="Swap" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: center; filter: hue-rotate(-90deg);"/>
+</div>
+<span class="font-label text-[10px] text-slate-500 uppercase tracking-[0.4em]">[ CAP_02 ]</span>
+</div>
+<h3 class="font-headline text-4xl font-bold mb-6 tracking-tighter">INTELLIGENT SWAP</h3>
+<p class="text-slate-400 text-lg leading-relaxed mb-8">Deep liquidity aggregation ensuring the best rates across all decentralized venues, optimized for gas efficiency.</p>
+<div class="h-px w-full bg-gradient-to-r from-tertiary/40 to-transparent"></div>
+</div>
+<!-- Bridge UI Card -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5 transition-all hover:bg-surface-container-high glow-soft">
+<div class="corner-marker -top-1 -left-1 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-12">
+<div class="w-16 h-16 bg-background flex items-center justify-center border border-white/5 relative">
+<div class="absolute inset-0 bg-white/5"></div>
+<img alt="Bridge" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: center;"/>
+</div>
+<span class="font-label text-[10px] text-slate-500 uppercase tracking-[0.4em]">[ CAP_03 ]</span>
+</div>
+<h3 class="font-headline text-4xl font-bold mb-6 tracking-tighter">CROSS-L1 BRIDGE</h3>
+<p class="text-slate-400 text-lg leading-relaxed mb-8">Zero-friction asset migration between L1s and L2s using top-tier protocols like Stargate and Axelar.</p>
+<div class="h-px w-full bg-gradient-to-r from-white/20 to-transparent"></div>
+</div>
+<!-- Earn UI Card -->
+<div class="bg-surface-container p-10 relative group border-t border-l border-white/5 transition-all hover:bg-surface-container-high glow-soft">
+<div class="corner-marker -top-1 -left-1 border-t-2 border-l-2"></div>
+<div class="flex justify-between items-start mb-12">
+<div class="w-16 h-16 bg-background flex items-center justify-center border border-white/5 relative">
+<div class="absolute inset-0 bg-primary/5"></div>
+<img alt="Earn" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGWN4mESDr2OEPq_kUenXggXu12nug86mmRB3N7_8KkLr1TL8uY3o-sLQtBzQDijlQ_U3XnB29b28by9vRnoE4ztgZPGPkK9pPwm5YqphFXgHXiuJNHBZr9RaE_5xKoAy2z3KB4sJNzt8zInr-gCW52bmr74hkpLnaFnw4vaeUyXXjVrVa5T47JfSLDhCPqNmSyTTJvuq_3tovlCEYqQTMRZcw8cuibUiSiSYOYgB88OvHG0HqO6JGQU0IcNRTNwJzxgpndRWeT27x" style="object-position: center;"/>
+</div>
+<span class="font-label text-[10px] text-slate-500 uppercase tracking-[0.4em]">[ CAP_04 ]</span>
+</div>
+<h3 class="font-headline text-4xl font-bold mb-6 tracking-tighter">AGENTIC YIELD</h3>
+<p class="text-slate-400 text-lg leading-relaxed mb-8">Automated yield farming and staking strategies executed by autonomous agents 24/7.</p>
+<div class="h-px w-full bg-gradient-to-r from-primary/40 to-transparent"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- CONTROL MODES (UI PREVIEWS) -->
+<section class="py-32 px-8 bg-surface border-y border-white/5">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-24 gap-8">
+<div class="flex items-center gap-6">
+<div class="px-4 py-2 border border-tertiary/30 font-label text-tertiary tracking-[0.3em] font-bold text-sm">03</div>
+<h2 class="font-headline text-5xl font-bold uppercase tracking-tighter">SYSTEM MODES</h2>
+</div>
+<div class="flex bg-surface-container-high p-1 border border-white/10">
+<button class="bg-primary text-on-primary px-8 py-3 font-label text-xs tracking-[0.2em] uppercase font-bold">ASSISTED</button>
+<button class="text-on-surface/40 px-8 py-3 font-label text-xs tracking-[0.2em] uppercase hover:text-on-surface transition-colors">AUTONOMOUS</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+<!-- Chat Interface Mockup -->
+<div class="space-y-8">
+<div class="bg-surface-container p-2 border border-white/10 glow-soft relative">
+<div class="absolute -top-3 left-4 bg-primary px-2 py-1 text-[8px] font-bold text-on-primary uppercase tracking-widest">REALTIME_MOCK_01</div>
+<div class="bg-background p-8 border border-white/5">
+<div class="flex items-center gap-3 mb-10 border-b border-white/5 pb-4">
+<div class="w-3 h-3 bg-primary animate-pulse"></div>
+<span class="font-label text-xs text-primary uppercase tracking-[0.2em]">Automata Terminal</span>
+</div>
+<div class="space-y-6">
+<div class="flex justify-end">
+<div class="bg-surface-container-highest p-4 max-w-[85%] border-r-2 border-primary">
+<p class="text-xs font-mono text-slate-300">"Deploy $2000 USDC across optimized Celo yield farms."</p>
+</div>
+</div>
+<div class="flex justify-start">
+<div class="bg-primary/5 border-l-2 border-primary p-6 max-w-[85%] space-y-3">
+<div class="text-[10px] text-primary/60 font-mono tracking-tighter">PATH_FINDER_INIT...</div>
+<p class="text-xs font-mono text-primary">"Route identified: Mento -&gt; Curve -&gt; Beefy. Estimated APY: 14.2%. Execute strategy?"</p>
+<div class="flex gap-4 pt-2">
+<button class="text-[10px] font-bold border border-primary px-4 py-1 text-primary">[ CONFIRM ]</button>
+<button class="text-[10px] text-slate-500 px-4 py-1">[ REVISE ]</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4">
+<h4 class="font-headline text-2xl font-bold mb-2 tracking-tight">Terminal Interface</h4>
+<p class="text-slate-500 font-body text-sm uppercase tracking-widest">Natural language for high-speed execution.</p>
+</div>
+</div>
+<!-- Flow Builder Mockup -->
+<div class="space-y-8">
+<div class="bg-surface-container p-2 border border-white/10 glow-soft relative">
+<div class="absolute -top-3 left-4 bg-tertiary px-2 py-1 text-[8px] font-bold text-on-tertiary uppercase tracking-widest">FLOW_ENGINE_04</div>
+<div class="bg-background p-8 border border-white/5 min-h-[300px] flex flex-col items-center justify-center">
+<div class="flex flex-col items-center gap-6 py-4 w-full max-w-xs">
+<div class="w-full h-14 bg-surface-container-high flex flex-col items-center justify-center font-label border border-white/10 relative group">
+<span class="text-[8px] text-slate-500">TRIGGER</span>
+<span class="text-[10px] tracking-widest">PRICE_DROP &lt; 5%</span>
+<div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-tertiary"></div>
+</div>
+<div class="h-8 w-px bg-tertiary/20"></div>
+<div class="w-full h-14 bg-surface-container-high flex flex-col items-center justify-center font-label border border-tertiary/30 relative shadow-[0_0_15px_rgba(0,219,233,0.1)]">
+<div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-tertiary"></div>
+<span class="text-[8px] text-tertiary">ACTION</span>
+<span class="text-[10px] tracking-widest">EXECUTE_DCA_SWAP</span>
+<div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-tertiary"></div>
+</div>
+<div class="h-8 w-px bg-tertiary/20"></div>
+<div class="w-full h-14 bg-surface-container-high flex flex-col items-center justify-center font-label border border-white/10 relative">
+<div class="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-tertiary"></div>
+<span class="text-[8px] text-slate-500">SINK</span>
+<span class="text-[10px] tracking-widest">OFFSHORE_WALLET</span>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 text-right">
+<h4 class="font-headline text-2xl font-bold mb-2 tracking-tight">Visual Logic Engine</h4>
+<p class="text-slate-500 font-body text-sm uppercase tracking-widest">Complex multi-hop automation made visual.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CHAINS -->
+<section class="py-32 px-8 bg-background">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-center gap-6 mb-24">
+<div class="px-4 py-2 border border-slate-700 font-label text-slate-500 tracking-[0.3em] font-bold text-sm">04</div>
+<h2 class="font-headline text-5xl font-bold uppercase tracking-tighter">NETWORK MESH</h2>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="h-48 bg-surface-container border border-white/5 flex flex-col items-center justify-center group hover:border-primary/40 transition-all glow-soft">
+<div class="w-20 h-20 mb-6 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all">
+<img alt="Ethereum" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: center bottom;"/>
+</div>
+<span class="font-label text-xs tracking-[0.3em] text-slate-500 group-hover:text-primary transition-colors">ETHEREUM</span>
+</div>
+<div class="h-48 bg-surface-container border border-white/5 flex flex-col items-center justify-center group hover:border-blue-400/40 transition-all glow-soft">
+<div class="w-20 h-20 mb-6 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all">
+<img alt="Base" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: left top;"/>
+</div>
+<span class="font-label text-xs tracking-[0.3em] text-slate-500 group-hover:text-blue-400 transition-colors">BASE L2</span>
+</div>
+<div class="h-48 bg-surface-container border border-white/5 flex flex-col items-center justify-center group hover:border-gold-400/40 transition-all glow-soft">
+<div class="w-20 h-20 mb-6 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all">
+<img alt="Celo" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: right top;"/>
+</div>
+<span class="font-label text-xs tracking-[0.3em] text-slate-500 group-hover:text-yellow-400 transition-colors">CELO</span>
+</div>
+<div class="h-48 bg-surface-container border border-white/5 flex flex-col items-center justify-center group hover:border-white/40 transition-all glow-soft">
+<div class="w-20 h-20 mb-6 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all">
+<img alt="Stellar" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0T6K9PUaxWqtwM2XjaZylF2BTxQZodCQoBxc9mQfotW_7ttp-lUkQjghdh7zHc8pu-2doCNavvqH0L_kMxvRLDp4ElX7t9B6Wj4sP82Ji169MFEaiD9WAIYoJqSoh94Zeq3H6JUx7qhmfyxVJkNuHrvtR-0z_n_Ojzzwpzf51r0_eIsC2HnT1xnsSE4KERd3jBZBcWBp-BsqzT5Ocwym0SxVJdMOf1OLkz6MQ16sgiuN2jSdMkawcD8yObLO4-iMUV2QXdANblVd" style="object-position: right bottom;"/>
+</div>
+<span class="font-label text-xs tracking-[0.3em] text-slate-500 group-hover:text-white transition-colors">STELLAR</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-8 z-40 bg-background/80 backdrop-blur-md h-12 border-t border-white/5">
+<div class="flex items-center gap-6">
+<span class="font-label text-[9px] uppercase tracking-[0.3em] text-slate-600 font-bold">AUTOMATA CORE</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span>
+<span class="font-label text-[9px] uppercase tracking-[0.3em] text-cyan-400 font-bold">Testnet · Phase 1</span>
+</div>
+</div>
+<div class="flex gap-8">
+<a class="font-label text-[9px] uppercase tracking-[0.2em] text-slate-500 hover:text-cyan-400 transition-colors" href="#">Docs</a>
+<a class="font-label text-[9px] uppercase tracking-[0.2em] text-slate-500 hover:text-cyan-400 transition-colors" href="#">X</a>
+<a class="font-label text-[9px] uppercase tracking-[0.2em] text-slate-500 hover:text-cyan-400 transition-colors" href="#">Github</a>
+<a class="font-label text-[9px] uppercase tracking-[0.2em] text-slate-500 hover:text-cyan-400 transition-colors" href="#">Discord</a>
+</div>
+</footer>
+<!-- Scroll Progress Decoration -->
+<div class="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-50">
+<div class="w-0.5 h-12 bg-primary"></div>
+<div class="w-0.5 h-4 bg-slate-800"></div>
+<div class="w-0.5 h-4 bg-slate-800"></div>
+<div class="w-0.5 h-4 bg-slate-800"></div>
+</div>
+</body></html>

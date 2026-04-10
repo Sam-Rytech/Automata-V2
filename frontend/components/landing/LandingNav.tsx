@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export function LandingNav() {
   const router = useRouter();
@@ -16,11 +16,15 @@ export function LandingNav() {
       router.push('/build');
     } else {
       loginIntentRef.current = true;
-      login({
-        onSuccess: () => router.push('/build'),
-      });
+      login();
     }
   };
+
+  useEffect(() => {
+    if (ready && authenticated && loginIntentRef.current) {
+      router.push('/build');
+    }
+  }, [ready, authenticated, router]);
 
   return (
     <div className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">

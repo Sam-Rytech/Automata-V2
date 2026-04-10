@@ -1,7 +1,7 @@
 import { ActionType } from '@/types/flow';
 
 export const TYPE_COLOURS: Record<string, string> = {
-  SEND: '#E91E8C', SWAP: '#8B5CF6', BRIDGE: '#6A0DAD', STAKE: '#22C55E', TRANSFER: '#0EA5E9'
+  SEND: '#E91E8C', SWAP: '#8B5CF6', BRIDGE: '#e3b009ff', STAKE: '#22C55E', TRANSFER: '#0EA5E9'
 };
 
 export const PALETTE_ITEMS = [

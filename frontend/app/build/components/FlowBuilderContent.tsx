@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useState, useRef } from 'react';
 import ReactFlow, {
   addEdge, useNodesState, useEdgesState,
@@ -10,14 +12,15 @@ import { ActionNode } from '@/components/FlowBuilder/ActionNode';
 import { ActionType, ActionNodeData, StatusState } from '@/types/flow';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  MagnifyingGlassPlusIcon, MagnifyingGlassMinusIcon,
-  Squares2X2Icon, CodeBracketIcon, PlusIcon, Bars3Icon,
-  DocumentDuplicateIcon, CheckIcon, XMarkIcon
+  Squares2X2Icon, CodeBracketIcon, PlusIcon, Bars3Icon, XMarkIcon
 } from '@heroicons/react/24/solid';
 
 import { TYPE_COLOURS, PALETTE_ITEMS } from '../constants';
 import { DraggablePaletteItem } from './DraggablePaletteItem';
 import { NodeConfigContent } from './NodeConfigContent';
+import { TerminalView } from './TerminalView';
+import { ExecutionOverlay } from './ExecutionOverlay';
+import { CanvasHUD } from './CanvasHUD';
 
 const nodeTypes = { actionNode: ActionNode };
 
@@ -30,7 +33,6 @@ export function FlowBuilderContent() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // Execution & Terminal State
   const [statusState, setStatusState] = useState<StatusState>('idle');
@@ -92,24 +94,6 @@ export function FlowBuilderContent() {
   };
 
   const onConnect = useCallback((connection: Connection) => setEdges(prev => addEdge({ ...connection, animated: true }, prev)), [setEdges]);
-
-  // --- TERMINAL VIEW CLEANUP & COPY ---
-  const getCleanTerminalData = () => {
-    return nodes.map((n, i) => {
-      const { color, onDelete, stepIndex, ...cleanData } = n.data;
-      return {
-        step: i + 1,
-        moduleId: `MOD_${n.id.split('-')[1]}`,
-        ...cleanData
-      };
-    });
-  };
-
-  const handleCopyTerminal = () => {
-    navigator.clipboard.writeText(JSON.stringify(getCleanTerminalData(), null, 2));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   // --- MOCK EXECUTION THOUGHT PROCESS ---
   const runProcess = async (type: 'simulate' | 'execute') => {
@@ -203,20 +187,7 @@ export function FlowBuilderContent() {
           <div className="flex-1 relative bg-[#0A0A12]" ref={reactFlowWrapper}>
             {view === 'visual' ? (
               <>
-                <div className="absolute top-4 left-4 z-30 flex items-center gap-4 pointer-events-none">
-                  <div className="flex items-center gap-4 bg-[#12121A]/80 backdrop-blur-md border border-white/5 p-2 px-3 shadow-lg">
-                    <span className="text-[8px] text-[#E91E8C] tracking-[0.3em] font-bold">DRAFT_V04</span>
-                    <div className="w-[1px] h-3 bg-white/10" />
-                    <span className="flex items-center gap-2 text-[8px] text-white/60 tracking-widest">
-                      <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full shadow-[0_0_10px_#22C55E] animate-pulse" /> LIVE SYNC
-                    </span>
-                  </div>
-                  <div className="flex items-center bg-[#12121A]/80 backdrop-blur-md border border-white/5 pointer-events-auto shadow-lg">
-                    <button onClick={() => reactFlowInstance?.zoomIn()} className="p-2.5 hover:bg-white/5 text-white/40 hover:text-white border-r border-white/5"><MagnifyingGlassPlusIcon className="w-3 h-3" /></button>
-                    <button onClick={() => reactFlowInstance?.zoomOut()} className="p-2.5 hover:bg-white/5 text-white/40 hover:text-white border-r border-white/5"><MagnifyingGlassMinusIcon className="w-3 h-3" /></button>
-                    <button onClick={() => reactFlowInstance?.fitView()} className="p-2.5 hover:bg-white/5 text-white/40 hover:text-white"><div className="w-3 h-3 border border-current rounded-sm" /></button>
-                  </div>
-                </div>
+                <CanvasHUD reactFlowInstance={reactFlowInstance} />
 
                 <ReactFlow
                   nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onInit={setReactFlowInstance} onDrop={onDrop} onDragOver={onDragOver}
@@ -237,41 +208,10 @@ export function FlowBuilderContent() {
                 )}
               </>
             ) : (
-              /* CLEANED TERMINAL VIEW */
-              <div className="absolute inset-0 bg-[#050508] p-6 sm:p-12 overflow-y-auto z-40 custom-scrollbar flex flex-col">
-                <div className="flex justify-between items-center mb-6 border-b border-[#22C55E]/20 pb-4">
-                  <div className="text-[10px] text-[#22C55E] tracking-[0.3em] uppercase flex items-center gap-3">
-                    <span className="w-2 h-2 bg-[#22C55E] animate-pulse" /> Flow_Configuration_Export.json
-                  </div>
-                  <button onClick={handleCopyTerminal} className="flex items-center gap-2 text-[9px] text-[#22C55E] uppercase tracking-widest border border-[#22C55E]/30 px-4 py-2 hover:bg-[#22C55E]/10 transition-colors">
-                    {copied ? <CheckIcon className="w-3 h-3" /> : <DocumentDuplicateIcon className="w-3 h-3" />}
-                    {copied ? 'Copied' : 'Copy Data'}
-                  </button>
-                </div>
-                <pre className="text-[#22C55E]/80 text-xs font-mono leading-loose flex-1">{JSON.stringify(getCleanTerminalData(), null, 2)}</pre>
-              </div>
+              <TerminalView nodes={nodes} />
             )}
 
-            {/* PROCESS SIMULATION OVERLAY */}
-            <AnimatePresence>
-              {isProcessing && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-                  className="absolute inset-x-4 sm:inset-x-12 bottom-12 top-24 bg-[#050508]/95 backdrop-blur-xl border border-[#22C55E]/30 z-50 p-8 font-mono text-[#22C55E] overflow-y-auto shadow-[0_0_50px_rgba(34,197,94,0.1)] flex flex-col"
-                >
-                  <div className="text-[10px] tracking-[0.3em] uppercase border-b border-[#22C55E]/20 pb-4 mb-6 flex items-center gap-3">
-                    <span className="w-2 h-2 bg-[#22C55E] animate-pulse" /> Automata Terminal Environment
-                  </div>
-                  <div className="space-y-4 flex-1">
-                    {terminalLogs.map((log, i) => (
-                      <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="text-xs sm:text-sm tracking-wider">
-                        {log}
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <ExecutionOverlay isProcessing={isProcessing} terminalLogs={terminalLogs} />
 
           </div>
 

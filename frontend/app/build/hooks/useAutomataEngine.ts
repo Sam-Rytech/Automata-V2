@@ -89,7 +89,7 @@ export function useAutomataEngine() {
           warnings: ['Review raw transaction parameters in your wallet provider.']
         });
       } else {
-        throw new Error(result.response || 'Agent failed to return valid transaction data.');
+        throw new Error(result.reply || 'Agent failed to return valid transaction data.');
       }
 
     } catch (error: any) {

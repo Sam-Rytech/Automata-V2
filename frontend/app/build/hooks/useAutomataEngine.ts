@@ -10,20 +10,18 @@ export function useAutomataEngine() {
   const { wallets } = useWallets();
   const activeWallet = wallets?.[0];
 
-  // Engine State
   const [statusState, setStatusState] = useState<StatusState>('idle');
   const [statusMessage, setStatusMessage] = useState<string>('Ready');
   const [isProcessing, setIsProcessing] = useState(false);
   const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
 
-  // Execution State
   const [planReviewData, setPlanReviewData] = useState<any | null>(null);
   const [isSigningWallet, setIsSigningWallet] = useState(false);
 
   const addLog = (msg: string) => setTerminalLogs(prev => [...prev, msg]);
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  // --- CORE PROCESS RUNNER (100% MOCK MODE) ---
+  // --- CORE PROCESS RUNNER (GEMINI MOCKED) ---
   const runProcess = async (type: 'simulate' | 'execute', sequence: ReactFlowNode<ActionNodeData>[]) => {
     if (!sequence || sequence.length === 0) {
       setStatusState('error');
@@ -32,15 +30,12 @@ export function useAutomataEngine() {
       return;
     }
 
-    // 🚨 MOCK OVERRIDE: Bypassing Gemini API and Wallet checks for testing phase
-    /*
-    const geminiKey = localStorage.getItem('gemini_api_key');
-    if (!geminiKey || !activeWallet) {
+    if (type === 'execute' && !activeWallet) {
       setStatusState('error');
-      setStatusMessage(!geminiKey ? 'Missing Gemini API Key in Settings.' : 'Please connect your wallet.');
+      setStatusMessage('Please connect your wallet.');
+      toast.error('Wallet Disconnected', { description: 'Please connect your wallet to execute.' });
       return;
     }
-    */
 
     setIsProcessing(true);
     setStatusState('thinking');
@@ -49,10 +44,8 @@ export function useAutomataEngine() {
 
     await delay(600);
     addLog(`[SYS] Parsed valid sequence of ${sequence.length} module(s)...`);
-
     await delay(800);
     addLog(`[NET] Transmitting intent to LLM Core (MOCK MODE)...`);
-
     await delay(1200);
     addLog(`[OPT] Calculating optimal routing pathways...`);
 
@@ -65,7 +58,6 @@ export function useAutomataEngine() {
         setStatusState('success');
         setStatusMessage('Simulation successful. Ready to execute.');
         toast.success('Simulation Complete', { description: 'Estimated Gas: ~$0.42' });
-
         setTimeout(() => { setStatusState('idle'); setStatusMessage('Ready'); }, 3000);
       } else {
         await delay(1500);
@@ -75,7 +67,6 @@ export function useAutomataEngine() {
         setStatusState('awaiting_approval');
         setStatusMessage('Awaiting User Approval...');
 
-        // Mocking the Agent Plan response
         setPlanReviewData({
           steps: sequence.map((node, i) => ({
             stepNumber: i + 1,
@@ -96,25 +87,49 @@ export function useAutomataEngine() {
     }
   };
 
-  // --- PRIVY TRANSACTION EXECUTION (MOCK) ---
+  // --- REAL PRIVY EXECUTION ---
   const handleApprovePlan = async () => {
+    if (!activeWallet) {
+      toast.error('Execution Error', { description: 'Wallet lost connection.' });
+      return;
+    }
+
     setStatusState('executing');
     setStatusMessage('Awaiting wallet signature...');
     setPlanReviewData(null);
     setIsSigningWallet(true);
 
     try {
-      // 🚨 MOCK OVERRIDE: Simulating the Privy wallet signature delay
-      await delay(3500);
+      // 1. Get the real EIP-1193 Provider from Privy
+      const provider = await activeWallet.getEthereumProvider();
+
+      // 2. Since Gemini is mocked, we execute a SAFE 0 ETH test transaction to your own address.
+      // When Gemini is live, you will loop through the `pendingTxs` returned by the API instead.
+      const txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          to: activeWallet.address, // Sending to yourself
+          value: '0x0',             // 0 ETH
+          from: activeWallet.address
+        }]
+      });
+
+      console.log('Transaction Successful. Hash:', txHash);
 
       setStatusState('success');
       setStatusMessage('Flow executed successfully.');
-      toast.success('Execution Complete', { description: 'All transactions confirmed on-chain.' });
+      toast.success('Execution Complete', { description: `Tx Hash: ${txHash}` });
     } catch (error: any) {
       console.error(error);
       setStatusState('error');
       setStatusMessage(error.message || 'Transaction rejected or failed.');
-      toast.error('Transaction Failed', { description: error.message || 'User rejected the signature.' });
+
+      // Handle User Rejection vs actual RPC error
+      if (error.code === 4001) {
+        toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });
+      } else {
+        toast.error('Transaction Failed', { description: error.message || 'Failed to execute.' });
+      }
     } finally {
       setIsSigningWallet(false);
       setTimeout(() => {
@@ -130,7 +145,7 @@ export function useAutomataEngine() {
     setPlanReviewData(null);
     setStatusState('idle');
     setStatusMessage('Execution aborted.');
-    toast.info('Execution Aborted', { description: 'The transaction plan was cancelled.' });
+    toast.warning('Execution Aborted', { description: 'The transaction plan was cancelled.' });
   };
 
   return {

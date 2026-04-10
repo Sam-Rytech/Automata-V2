@@ -30,8 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TooltipProvider>
             {children}
           </TooltipProvider>
-          {/* Global Toaster Mount */}
-          <Toaster theme="dark" position="bottom-right" />
+          {/* Clean global Toaster call */}
+          <Toaster />
         </Providers>
       </body>
     </html>

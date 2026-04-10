@@ -17,6 +17,7 @@
     "@heroicons/react": "^2.2.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
+    "@solana/kit": "^6.7.0",
     "abitype": "^1.2.3",
     "acorn": "^8.16.0",
     "acorn-walk": "^8.3.5",
@@ -206,5 +207,8 @@
   "homepage": "https://github.com/Sam-Rytech/Automata-V2#readme",
   "devDependencies": {
     "@types/three": "^0.183.1"
+  },
+  "overrides": {
+    "@phosphor-icons/webcomponents": "2.1.1"
   }
 }

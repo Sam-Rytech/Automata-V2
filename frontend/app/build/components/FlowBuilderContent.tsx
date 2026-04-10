@@ -9,11 +9,12 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { ActionNode } from '@/components/FlowBuilder/ActionNode';
-import { ActionType, ActionNodeData, StatusState } from '@/types/flow';
+import { ActionType, ActionNodeData } from '@/types/flow';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Squares2X2Icon, CodeBracketIcon, PlusIcon, Bars3Icon, XMarkIcon
 } from '@heroicons/react/24/solid';
+import { toast } from 'sonner';
 
 import { TYPE_COLOURS, PALETTE_ITEMS } from '../constants';
 import { DraggablePaletteItem } from './DraggablePaletteItem';
@@ -21,6 +22,8 @@ import { NodeConfigContent } from './NodeConfigContent';
 import { TerminalView } from './TerminalView';
 import { ExecutionOverlay } from './ExecutionOverlay';
 import { CanvasHUD } from './CanvasHUD';
+import { PlanReview } from '@/components/PlanReview';
+import { useAutomataEngine } from '../hooks/useAutomataEngine';
 
 const nodeTypes = { actionNode: ActionNode };
 
@@ -34,16 +37,59 @@ export function FlowBuilderContent() {
   const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Execution & Terminal State
-  const [statusState, setStatusState] = useState<StatusState>('idle');
-  const [statusMessage, setStatusMessage] = useState<string>('Ready');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [flowName, setFlowName] = useState('');
 
+  const engine = useAutomataEngine();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const selectedNode = nodes.find(n => n.selected);
 
-  // --- DRAG AND DROP LOGIC ---
+  const getOrderedSequence = useCallback((): ReactFlowNode<ActionNodeData>[] | null => {
+    if (nodes.length === 0) return [];
+    if (nodes.length === 1) return nodes;
+
+    const targetIds = new Set(edges.map(e => e.target));
+    const rootNodes = nodes.filter(n => !targetIds.has(n.id));
+
+    if (rootNodes.length !== 1) return null;
+
+    const ordered: ReactFlowNode<ActionNodeData>[] = [];
+    let currentId: string | undefined = rootNodes[0].id;
+
+    while (currentId) {
+      const node = nodes.find(n => n.id === currentId);
+      if (node) ordered.push(node);
+      const outEdge = edges.find(e => e.source === currentId);
+      currentId = outEdge ? outEdge.target : undefined;
+    }
+
+    if (ordered.length !== nodes.length) return null;
+    return ordered;
+  }, [nodes, edges]);
+
+  const handleSaveFlow = () => {
+    const sequence = getOrderedSequence();
+    if (!sequence) {
+      toast.error('Graph Error', { description: 'All modules must be connected in a single path before saving.' });
+      return;
+    }
+
+    const flow = {
+      id: crypto.randomUUID(),
+      name: flowName || 'Untitled Flow',
+      nodes: sequence.map((n, i) => ({ ...n, data: { ...n.data, stepIndex: i + 1, onDelete: undefined } })),
+      edges,
+      savedAt: new Date().toISOString(),
+    };
+
+    const existing = JSON.parse(localStorage.getItem('automata_flows') || '[]');
+    localStorage.setItem('automata_flows', JSON.stringify([flow, ...existing]));
+
+    setSaveDialogOpen(false);
+    setFlowName('');
+    toast.success('Sequence Saved', { description: `"${flow.name}" has been stored locally.` });
+  };
+
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
@@ -57,7 +103,7 @@ export function FlowBuilderContent() {
   const onDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     const type = event.dataTransfer.getData('application/reactflow') as ActionType;
-    if (typeof type === 'undefined' || !type || !reactFlowInstance || !reactFlowWrapper.current) return;
+    if (!type || !reactFlowInstance || !reactFlowWrapper.current) return;
 
     const bounds = reactFlowWrapper.current.getBoundingClientRect();
     const position = reactFlowInstance.screenToFlowPosition({
@@ -95,48 +141,14 @@ export function FlowBuilderContent() {
 
   const onConnect = useCallback((connection: Connection) => setEdges(prev => addEdge({ ...connection, animated: true }, prev)), [setEdges]);
 
-  // --- MOCK EXECUTION THOUGHT PROCESS ---
-  const runProcess = async (type: 'simulate' | 'execute') => {
-    if (nodes.length === 0) { setStatusState('error'); setStatusMessage('Canvas empty.'); return; }
-
-    setIsProcessing(true);
-    setStatusState('thinking');
-    setStatusMessage(type === 'simulate' ? 'Simulating...' : 'Executing Sequence...');
-    setTerminalLogs(['[SYS] Booting Automata Execution Engine v1.4...']);
-
-    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
-    await delay(800);
-    setTerminalLogs(prev => [...prev, `[SYS] Parsing ${nodes.length} module(s) from Intent Graph...`]);
-
-    await delay(1000);
-    setTerminalLogs(prev => [...prev, `[NET] Fetching live cross-chain liquidity depth...`]);
-
-    await delay(1200);
-    setTerminalLogs(prev => [...prev, `[OPT] Calculating optimal routing pathways...`]);
-
-    await delay(1500);
-
-    if (type === 'simulate') {
-      setTerminalLogs(prev => [...prev, `[EST] Simulation Complete. Estimated Gas: ~$0.42`]);
-      await delay(2000);
-      setIsProcessing(false);
-      setStatusState('success');
-      setStatusMessage('Simulation successful.');
-    } else {
-      setTerminalLogs(prev => [...prev, `[BLD] Compiling EVM transaction calldata...`]);
-      await delay(1200);
-      setTerminalLogs(prev => [...prev, `[SEC] Payload verified. Injecting to connected wallet...`]);
-      await delay(2000);
-      setTerminalLogs(prev => [...prev, `[OK] Transactions confirmed on-chain.`]);
-      await delay(1500);
-      setIsProcessing(false);
-      setStatusState('success');
-      setStatusMessage('Flow executed successfully.');
+  const fireProcess = (type: 'simulate' | 'execute') => {
+    const sequence = getOrderedSequence();
+    if (!sequence) {
+      toast.error('Graph Error', { description: 'All modules must be connected in a single path.' });
+      return;
     }
-
-    setTimeout(() => { setStatusState('idle'); setStatusMessage('Ready'); }, 3000);
-  };
+    engine.runProcess(type, sequence);
+  }
 
   return (
     <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden font-mono relative">
@@ -155,6 +167,23 @@ export function FlowBuilderContent() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {saveDialogOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSaveDialogOpen(false)} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative bg-[#12121A] border border-white/10 p-8 w-full max-w-md shadow-2xl">
+              <h3 className="font-syne text-xl font-black uppercase tracking-widest mb-2">Save Flow</h3>
+              <p className="text-[10px] text-white/40 uppercase tracking-widest mb-6">Store this sequence for future execution.</p>
+              <input type="text" value={flowName} onChange={e => setFlowName(e.target.value)} placeholder="e.g., Weekly Yield Harvesting" className="w-full bg-[#0A0A12] border border-white/10 px-4 py-3 text-sm text-white focus:border-[#E91E8C]/50 outline-none mb-6 font-mono" />
+              <div className="flex justify-end gap-3">
+                <button onClick={() => setSaveDialogOpen(false)} className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Cancel</button>
+                <button onClick={handleSaveFlow} className="bg-[#E91E8C] text-white px-6 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-[#E91E8C]/80 transition-colors">Save Sequence</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <main className="flex-1 flex flex-col min-w-0 bg-[#0A0A12] relative">
         <header className="h-16 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 bg-[#0F0F1A] shrink-0 z-20">
           <div className="flex items-center gap-4">
@@ -167,9 +196,12 @@ export function FlowBuilderContent() {
               <span className="hidden sm:inline text-white/40">BRIDGE</span>
             </div>
           </div>
-          <div className="flex bg-[#1A1A2E] p-1 border border-white/5">
-            <button onClick={() => setView('visual')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'visual' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><Squares2X2Icon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Visual</span></button>
-            <button onClick={() => setView('terminal')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'terminal' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><CodeBracketIcon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Terminal</span></button>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setSaveDialogOpen(true)} className="px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase border border-white/10 hover:bg-white/5 transition-colors hidden md:block">Save Flow</button>
+            <div className="flex bg-[#1A1A2E] p-1 border border-white/5">
+              <button onClick={() => setView('visual')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'visual' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><Squares2X2Icon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Visual</span></button>
+              <button onClick={() => setView('terminal')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'terminal' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><CodeBracketIcon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Terminal</span></button>
+            </div>
           </div>
         </header>
 
@@ -208,10 +240,32 @@ export function FlowBuilderContent() {
                 )}
               </>
             ) : (
-              <TerminalView nodes={nodes} />
+              <TerminalView nodes={getOrderedSequence() || nodes} />
             )}
 
-            <ExecutionOverlay isProcessing={isProcessing} terminalLogs={terminalLogs} />
+            <ExecutionOverlay isProcessing={engine.isProcessing} terminalLogs={engine.terminalLogs} />
+
+            <AnimatePresence>
+              {engine.planReviewData && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-40 bg-[#0A0A12]/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-12 overflow-y-auto">
+                  <div className="w-full max-w-2xl mt-auto sm:mt-0">
+                    <PlanReview plan={engine.planReviewData} onApprove={engine.handleApprovePlan} onCancel={engine.handleCancelPlan} isExecuting={engine.statusState === 'executing'} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {engine.isSigningWallet && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                  <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-2xl p-6 w-full max-w-sm flex flex-col items-center text-center shadow-2xl">
+                    <div className="w-12 h-12 border-4 border-gray-100 border-t-[#6A0DAD] rounded-full animate-spin mb-4" />
+                    <h3 className="text-gray-900 font-bold text-lg mb-1">Confirm in Wallet</h3>
+                    <p className="text-gray-500 text-sm">Please sign the transaction in your connected wallet provider to continue.</p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
           </div>
 
@@ -266,17 +320,17 @@ export function FlowBuilderContent() {
 
         <footer className="h-16 sm:h-20 bg-[#0F0F1A] border-t border-white/5 flex items-center px-4 sm:px-6 justify-between shrink-0 z-20 relative">
           <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold">
-            <span className={`flex items-center gap-2 ${statusState === 'success' ? 'text-[#22C55E]' : statusState === 'error' ? 'text-[#EF4444]' : 'text-[#E91E8C]'}`}>
-              <span className={`w-2 h-2 rounded-full ${statusState === 'thinking' ? 'bg-[#F59E0B] animate-pulse' : statusState === 'success' ? 'bg-[#22C55E]' : statusState === 'error' ? 'bg-[#EF4444]' : 'bg-[#E91E8C]'}`} />
-              {statusState === 'idle' ? `${nodes.length} Modules Ready` : statusState}
+            <span className={`flex items-center gap-2 ${engine.statusState === 'success' ? 'text-[#22C55E]' : engine.statusState === 'error' ? 'text-[#EF4444]' : 'text-[#E91E8C]'}`}>
+              <span className={`w-2 h-2 rounded-full ${engine.statusState === 'thinking' || engine.statusState === 'executing' || engine.statusState === 'awaiting_approval' ? 'bg-[#F59E0B] animate-pulse' : engine.statusState === 'success' ? 'bg-[#22C55E]' : engine.statusState === 'error' ? 'bg-[#EF4444]' : 'bg-[#E91E8C]'}`} />
+              {engine.statusState === 'idle' ? `${nodes.length} Modules Ready` : engine.statusState}
             </span>
-            <span className="text-white/40 border-l border-white/10 pl-4 hidden sm:block">{statusMessage}</span>
+            <span className="text-white/40 border-l border-white/10 pl-4 hidden sm:block">{engine.statusMessage}</span>
           </div>
           <div className="flex gap-4">
-            <button onClick={() => runProcess('simulate')} disabled={isProcessing} className="px-8 py-3.5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/5 transition-colors hidden sm:block disabled:opacity-50">
+            <button onClick={() => fireProcess('simulate')} disabled={engine.isProcessing || engine.statusState === 'awaiting_approval' || engine.statusState === 'executing'} className="px-8 py-3.5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/5 transition-colors hidden sm:block disabled:opacity-50">
               Simulate
             </button>
-            <button onClick={() => runProcess('execute')} disabled={isProcessing} className="bg-[#E91E8C] text-white px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors disabled:opacity-50">
+            <button onClick={() => fireProcess('execute')} disabled={engine.isProcessing || engine.statusState === 'awaiting_approval' || engine.statusState === 'executing'} className="bg-[#E91E8C] text-white px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors disabled:opacity-50">
               Execute Flow →
             </button>
           </div>

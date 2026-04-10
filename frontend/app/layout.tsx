@@ -3,6 +3,7 @@ import { Syne, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const syne = Syne({
   subsets: ['latin'],
@@ -29,6 +30,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TooltipProvider>
             {children}
           </TooltipProvider>
+          {/* Global Toaster Mount */}
+          <Toaster theme="dark" position="bottom-right" />
         </Providers>
       </body>
     </html>

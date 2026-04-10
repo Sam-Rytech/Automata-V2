@@ -17,7 +17,7 @@ export type UnsignedTx = {
 
 // The shape of the full response from POST /api/chat
 export type AgentResponse = {
-  response: string;            // the agent's plain-English reply
+  reply: string;            // the agent's plain-English reply
   unsignedTxs: UnsignedTx[];   // transactions for user to sign (may be empty)
   sessionId: string;           // session identifier for conversation continuity
 };

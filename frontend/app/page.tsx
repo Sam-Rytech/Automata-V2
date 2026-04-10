@@ -1,6 +1,6 @@
 import { LandingNav } from "@/components/landing/LandingNav";
 import { Hero } from "@/components/landing/Hero";
-import { Models } from "@/components/landing/Models"; // Moved up
+import { Models } from "@/components/landing/Models";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Capabilities } from "@/components/landing/Capabilities";
 import { Chains } from "@/components/landing/Chains";
@@ -12,7 +12,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
       <LandingNav />
       <Hero />
-      <Models /> {/* Now directly below the Hero */}
+      <Models />
       <HowItWorks />
       <Capabilities />
       <Chains />

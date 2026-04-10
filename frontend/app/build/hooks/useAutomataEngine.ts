@@ -67,7 +67,7 @@ export function useAutomataEngine() {
       addLog(`[SYS] Parsed sequence. Generated Intent: "${intent.substring(0, 50)}..."`);
       addLog(`[NET] Transmitting to Automata Backend...`);
 
-      const result = await sendAgentMessage(intent, activeWallet.address, geminiKey);
+      const result = await sendAgentMessage(intent, activeWallet.address, geminiKey, crypto.randomUUID());
 
       if (result.unsignedTxs && result.unsignedTxs.length > 0) {
         addLog(`[BLD] Valid transaction payload received from Agent. Generating Plan Review...`);

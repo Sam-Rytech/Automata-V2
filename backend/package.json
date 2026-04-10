@@ -7,6 +7,9 @@
     "build": "tsc",
     "start": "node dist/index.js"
   },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "@lifi/sdk": "^3.4.1",

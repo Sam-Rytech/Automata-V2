@@ -5,7 +5,7 @@ import { useWallets } from '@privy-io/react-auth';
 import { StatusState, ActionNodeData } from '@/types/flow';
 import { Node as ReactFlowNode } from 'reactflow';
 import { toast } from 'sonner';
-import { sendAgentMessage, UnsignedTx } from '@/lib/api';
+import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
 
 export function useAutomataEngine() {
   const { wallets } = useWallets();
@@ -22,8 +22,6 @@ export function useAutomataEngine() {
 
   const addLog = (msg: string) => setTerminalLogs(prev => [...prev, msg]);
 
-  // --- INTENT COMPILER ---
-  // Transforms visual nodes into a prompt the backend agent understands
   const buildIntent = (sequence: ReactFlowNode<ActionNodeData>[]) => {
     const actionDescriptions = sequence.map((node, i) => {
       const d = node.data;
@@ -36,7 +34,6 @@ export function useAutomataEngine() {
     return `Generate transaction calldata for the following flow: ${actionDescriptions}. Return only the required transaction payload.`;
   };
 
-  // --- LIVE BACKEND EXECUTION ---
   const runProcess = async (type: 'simulate' | 'execute', sequence: ReactFlowNode<ActionNodeData>[]) => {
     if (!sequence || sequence.length === 0) {
       setStatusState('error');
@@ -70,7 +67,6 @@ export function useAutomataEngine() {
       addLog(`[SYS] Parsed sequence. Generated Intent: "${intent.substring(0, 50)}..."`);
       addLog(`[NET] Transmitting to Automata Backend...`);
 
-      // Hitting your real Express backend via lib/api.ts
       const result = await sendAgentMessage(intent, activeWallet.address, geminiKey);
 
       if (result.unsignedTxs && result.unsignedTxs.length > 0) {
@@ -81,7 +77,6 @@ export function useAutomataEngine() {
         setStatusState('awaiting_approval');
         setStatusMessage('Awaiting User Approval...');
 
-        // Dynamically map backend UnsignedTx objects to the PlanReview UI
         setPlanReviewData({
           steps: result.unsignedTxs.map((tx, i) => ({
             stepNumber: i + 1,
@@ -105,17 +100,16 @@ export function useAutomataEngine() {
     }
   };
 
-  // --- REAL PRIVY EXECUTION ---
   const handleApprovePlan = async () => {
-    if (!activeWallet || pendingTxs.length === 0) {
-      toast.error('Execution Error', { description: 'Wallet lost connection or payload is empty.' });
-      return;
-    }
+    if (!activeWallet || pendingTxs.length === 0) return;
 
     setStatusState('executing');
     setStatusMessage('Awaiting wallet signature...');
 
-    const historyDesc = planReviewData ? `Executed ${planReviewData.steps.length} module sequence` : 'Executed sequence';
+    // Cache details for DB
+    const stepCount = planReviewData?.steps?.length || 0;
+    const detailsCache = { steps: stepCount, chainId: pendingTxs[0]?.chainId || 'VARIOUS' };
+
     setPlanReviewData(null);
     setIsSigningWallet(true);
 
@@ -123,7 +117,6 @@ export function useAutomataEngine() {
       const provider = await activeWallet.getEthereumProvider();
       let lastTxHash = '';
 
-      // Loop through and execute every real transaction returned by the agent
       for (const tx of pendingTxs) {
         lastTxHash = await provider.request({
           method: 'eth_sendTransaction',
@@ -136,18 +129,18 @@ export function useAutomataEngine() {
         });
       }
 
-      // --- TEMPORARY LOCAL HISTORY (Until we build the POST /history route) ---
-      const historyRecord = {
-        id: crypto.randomUUID(),
-        type: 'FLOW_EXECUTION',
-        status: 'SUCCESS',
-        description: historyDesc,
-        txHash: lastTxHash,
-        fee: 'Pending',
-        timestamp: new Date().toISOString(),
-      };
-      const existingHistory = JSON.parse(localStorage.getItem('automata_history') || '[]');
-      localStorage.setItem('automata_history', JSON.stringify([historyRecord, ...existingHistory]));
+      // --- DATABASE HISTORY HOOKUP ---
+      try {
+        await saveHistoryToDb(
+          activeWallet.address,
+          lastTxHash,
+          'FLOW',
+          'SUCCESS',
+          detailsCache
+        );
+      } catch (dbErr) {
+        console.error('Failed to log history to DB:', dbErr);
+      }
 
       setStatusState('success');
       setStatusMessage('Flow executed successfully.');
@@ -157,6 +150,11 @@ export function useAutomataEngine() {
       console.error(error);
       setStatusState('error');
       setStatusMessage(error.message || 'Transaction rejected or failed.');
+
+      // Log failure to DB as well
+      try {
+        await saveHistoryToDb(activeWallet.address, undefined, 'FLOW', 'FAILED', detailsCache);
+      } catch (e) { }
 
       if (error.code === 4001) {
         toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });

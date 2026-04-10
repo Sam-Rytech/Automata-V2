@@ -24,6 +24,8 @@ import { ExecutionOverlay } from './ExecutionOverlay';
 import { CanvasHUD } from './CanvasHUD';
 import { PlanReview } from '@/components/PlanReview';
 import { useAutomataEngine } from '../hooks/useAutomataEngine';
+import { saveFlowToDb, getFlowsFromDb } from '@/lib/api';
+import { useWallets } from '@privy-io/react-auth';
 
 const nodeTypes = { actionNode: ActionNode };
 
@@ -44,6 +46,8 @@ export function FlowBuilderContent() {
   const [savedFlows, setSavedFlows] = useState<any[]>([]);
 
   const engine = useAutomataEngine();
+  const { wallets } = useWallets();
+  const walletAddress = wallets[0]?.address;
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const selectedNode = nodes.find(n => n.selected);
 
@@ -71,48 +75,59 @@ export function FlowBuilderContent() {
   }, [nodes, edges]);
 
   // --- SAVE & LOAD LOGIC ---
-  const handleSaveFlow = () => {
+  const handleSaveFlow = async () => {
+    if (!walletAddress) {
+      toast.error('Wallet Required', { description: 'Please connect your wallet to save flows.' });
+      return;
+    }
     const sequence = getOrderedSequence();
     if (!sequence) {
       toast.error('Graph Error', { description: 'All modules must be connected in a single path before saving.' });
       return;
     }
 
-    const flow = {
-      id: crypto.randomUUID(),
-      name: flowName || 'Untitled Flow',
+    const flowData = {
       nodes: sequence.map((n, i) => ({ ...n, data: { ...n.data, stepIndex: i + 1, onDelete: undefined } })),
-      edges,
-      savedAt: new Date().toISOString(),
+      edges
     };
-
-    const existing = JSON.parse(localStorage.getItem('automata_flows') || '[]');
-    localStorage.setItem('automata_flows', JSON.stringify([flow, ...existing]));
-
-    setSaveDialogOpen(false);
-    setFlowName('');
-    toast.success('Sequence Saved', { description: `"${flow.name}" has been stored locally.` });
+    
+    try {
+      await saveFlowToDb(walletAddress, flowName || 'Untitled Flow', flowData);
+      setSaveDialogOpen(false);
+      setFlowName('');
+      toast.success('Sequence Saved', { description: `Stored securely in your account.` });
+    } catch (error) {
+      toast.error('Save Failed', { description: 'Could not connect to database.' });
+    }
   };
 
-  const handleOpenLoad = () => {
-    const flows = JSON.parse(localStorage.getItem('automata_flows') || '[]');
-    setSavedFlows(flows);
-    setLoadDialogOpen(true);
+  const handleOpenLoad = async () => {
+    if (!walletAddress) {
+      toast.error('Wallet Required', { description: 'Please connect your wallet to load flows.' });
+      return;
+    }
+    try {
+      const flows = await getFlowsFromDb(walletAddress);
+      setSavedFlows(flows);
+      setLoadDialogOpen(true);
+    } catch (error) {
+      toast.error('Load Failed', { description: 'Could not fetch saved flows.' });
+    }
   };
 
   const handleLoadFlow = (flow: any) => {
-    // Re-attach the dynamic onDelete function that we stripped during save
-    const restoredNodes = flow.nodes.map((n: any) => ({
+    // Prisma stores JSON in `flow.actions` based on our backend code
+    const flowData = typeof flow.actions === 'string' ? JSON.parse(flow.actions) : flow.actions;
+    
+    const restoredNodes = flowData.nodes.map((n: any) => ({
       ...n,
       data: { ...n.data, onDelete: () => deleteNode(n.id) }
     }));
-
+    
     setNodes(restoredNodes);
-    setEdges(flow.edges || []);
+    setEdges(flowData.edges || []);
     setLoadDialogOpen(false);
     toast.success('Sequence Loaded', { description: `Loaded "${flow.name}" onto the canvas.` });
-
-    // Fit view after a short delay to allow React Flow to render
     setTimeout(() => reactFlowInstance?.fitView({ padding: 0.5 }), 50);
   };
 

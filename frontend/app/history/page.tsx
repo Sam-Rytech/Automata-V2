@@ -6,6 +6,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TransactionCard, Transaction } from './_components/TransactionCard'
 import { Bars3Icon } from '@heroicons/react/24/solid'
+import { getHistoryFromDb } from '@/lib/api';
+import { useWallets } from '@privy-io/react-auth';
 
 const FILTER_OPTIONS = ['ALL', 'FLOW', 'BRIDGE', 'SWAP', 'STAKE', 'SEND']
 
@@ -18,35 +20,44 @@ function HistoryPageContent() {
   // Added Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
+  const { wallets } = useWallets();
+  const walletAddress = wallets[0]?.address;
+
   useEffect(() => {
-    setIsLoading(true)
-    setError(null)
+    if (!walletAddress) {
+      setIsLoading(false);
+      return;
+    }
 
-    try {
-      const rawHistory = localStorage.getItem('automata_history');
-      if (rawHistory) {
-        const parsed = JSON.parse(rawHistory);
-
-        const mappedTxs: Transaction[] = parsed.map((record: any) => ({
+    setIsLoading(true);
+    setError(null);
+    
+    const fetchHistory = async () => {
+      try {
+        const dbHistory = await getHistoryFromDb(walletAddress);
+        
+        const mappedTxs: Transaction[] = dbHistory.map((record: any) => ({
           id: record.id,
-          type: record.type === 'FLOW_EXECUTION' ? 'FLOW' : record.type || 'FLOW',
-          date: new Date(record.timestamp).toLocaleString(),
-          title: record.description || 'Automata Execution',
-          fromNetwork: 'VARIOUS',
+          type: record.actionType || 'FLOW',
+          date: new Date(record.createdAt).toLocaleString(),
+          title: record.details?.steps ? `Executed ${record.details.steps} modules` : 'Automata Execution',
+          fromNetwork: 'VARIOUS', 
           toNetwork: 'VARIOUS',
           status: record.status || 'SUCCESS',
           hash: record.txHash || '0x0000000000000000000000000000000000000000'
         }));
-
+        
         setTransactions(mappedTxs);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load transaction history from database.');
+      } finally {
+        setTimeout(() => setIsLoading(false), 600);
       }
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load transaction history.');
-    } finally {
-      setTimeout(() => setIsLoading(false), 600);
-    }
-  }, [])
+    };
+
+    fetchHistory();
+  }, [walletAddress])
 
   const filtered =
     filter === 'ALL'

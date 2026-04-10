@@ -37,8 +37,11 @@ export function FlowBuilderContent() {
   const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Flow Saving & Loading State
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [loadDialogOpen, setLoadDialogOpen] = useState(false);
   const [flowName, setFlowName] = useState('');
+  const [savedFlows, setSavedFlows] = useState<any[]>([]);
 
   const engine = useAutomataEngine();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -67,6 +70,7 @@ export function FlowBuilderContent() {
     return ordered;
   }, [nodes, edges]);
 
+  // --- SAVE & LOAD LOGIC ---
   const handleSaveFlow = () => {
     const sequence = getOrderedSequence();
     if (!sequence) {
@@ -90,6 +94,29 @@ export function FlowBuilderContent() {
     toast.success('Sequence Saved', { description: `"${flow.name}" has been stored locally.` });
   };
 
+  const handleOpenLoad = () => {
+    const flows = JSON.parse(localStorage.getItem('automata_flows') || '[]');
+    setSavedFlows(flows);
+    setLoadDialogOpen(true);
+  };
+
+  const handleLoadFlow = (flow: any) => {
+    // Re-attach the dynamic onDelete function that we stripped during save
+    const restoredNodes = flow.nodes.map((n: any) => ({
+      ...n,
+      data: { ...n.data, onDelete: () => deleteNode(n.id) }
+    }));
+
+    setNodes(restoredNodes);
+    setEdges(flow.edges || []);
+    setLoadDialogOpen(false);
+    toast.success('Sequence Loaded', { description: `Loaded "${flow.name}" onto the canvas.` });
+
+    // Fit view after a short delay to allow React Flow to render
+    setTimeout(() => reactFlowInstance?.fitView({ padding: 0.5 }), 50);
+  };
+
+  // --- DRAG AND DROP ---
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
@@ -167,6 +194,7 @@ export function FlowBuilderContent() {
         )}
       </AnimatePresence>
 
+      {/* SAVE FLOW DIALOG */}
       <AnimatePresence>
         {saveDialogOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -178,6 +206,39 @@ export function FlowBuilderContent() {
               <div className="flex justify-end gap-3">
                 <button onClick={() => setSaveDialogOpen(false)} className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Cancel</button>
                 <button onClick={handleSaveFlow} className="bg-[#E91E8C] text-white px-6 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-[#E91E8C]/80 transition-colors">Save Sequence</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* LOAD FLOW DIALOG */}
+      <AnimatePresence>
+        {loadDialogOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLoadDialogOpen(false)} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="relative bg-[#12121A] border border-white/10 p-8 w-full max-w-md shadow-2xl flex flex-col max-h-[80vh]">
+              <h3 className="font-syne text-xl font-black uppercase tracking-widest mb-2">Load Flow</h3>
+              <p className="text-[10px] text-white/40 uppercase tracking-widest mb-6">Select a saved sequence to load.</p>
+
+              <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2 mb-6">
+                {savedFlows.length === 0 ? (
+                  <div className="text-[10px] text-white/20 uppercase tracking-widest text-center border border-dashed border-white/10 p-6">No saved flows found.</div>
+                ) : (
+                  savedFlows.map(flow => (
+                    <div key={flow.id} onClick={() => handleLoadFlow(flow)} className="bg-[#0A0A12] border border-white/10 p-4 cursor-pointer hover:border-[#E91E8C]/50 transition-colors group">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-bold text-white uppercase tracking-widest group-hover:text-[#E91E8C] transition-colors">{flow.name}</span>
+                        <span className="text-[9px] text-[#E91E8C] tracking-widest">{flow.nodes.length} Modules</span>
+                      </div>
+                      <div className="text-[8px] text-white/40 uppercase tracking-widest">{new Date(flow.savedAt).toLocaleString()}</div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 shrink-0">
+                <button onClick={() => setLoadDialogOpen(false)} className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors">Close</button>
               </div>
             </motion.div>
           </div>
@@ -197,7 +258,11 @@ export function FlowBuilderContent() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={() => setSaveDialogOpen(true)} className="px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase border border-white/10 hover:bg-white/5 transition-colors hidden md:block">Save Flow</button>
+            <div className="hidden md:flex items-center gap-2 mr-2 border-r border-white/10 pr-6">
+              <button onClick={handleOpenLoad} className="px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase border border-white/10 hover:bg-white/5 transition-colors">Load Flow</button>
+              <button onClick={() => setSaveDialogOpen(true)} className="px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase border border-white/10 hover:bg-white/5 transition-colors">Save Flow</button>
+            </div>
+
             <div className="flex bg-[#1A1A2E] p-1 border border-white/5">
               <button onClick={() => setView('visual')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'visual' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><Squares2X2Icon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Visual</span></button>
               <button onClick={() => setView('terminal')} className={`px-4 py-1.5 text-[9px] font-bold tracking-widest uppercase ${view === 'terminal' ? 'bg-[#E91E8C] text-white' : 'text-white/40 hover:text-white'}`}><CodeBracketIcon className="w-3 h-3 inline sm:mr-2" /> <span className="hidden sm:inline">Terminal</span></button>

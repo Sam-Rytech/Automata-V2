@@ -5,11 +5,14 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { runAgent, ConversationMessage } from './agent/agent';
 import { pollTransactionStatus } from './services/txMonitorService';
+import { PrismaClient } from '@prisma/client';
+
 
 dotenv.config();
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT ?? 3001;
+const prisma = new PrismaClient();
 
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000' }));
 app.use(express.json({ limit: '10mb' }));
@@ -67,6 +70,81 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+app.post('/api/flows', async (req, res) => {
+  const { walletAddress, name, description, actions } = req.body;
+  if (!walletAddress || !name || !actions) return res.status(400).json({ error: 'Missing required fields' });
+
+  try {
+    // 1. Ensure the user exists
+    const user = await prisma.user.upsert({
+      where: { walletAddress },
+      update: {},
+      create: { walletAddress },
+    });
+
+    // 2. Save the flow
+    const flow = await prisma.flow.create({
+      data: {
+        userId: user.id,
+        name,
+        description,
+        actions, // JSON object of the nodes/edges
+      },
+    });
+    return res.json(flow);
+  } catch (err: any) {
+    console.error('[/api/flows] Save Error:', err);
+    return res.status(500).json({ error: 'Failed to save flow to database.' });
+  }
+});
+
+// Get user flows
+app.get('/api/flows/:walletAddress', async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { walletAddress: req.params.walletAddress } });
+    if (!user) return res.json([]); // No user = no flows yet
+
+    const flows = await prisma.flow.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(flows);
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch flows.' });
+  }
+});
+
+// ── /api/history ───────────────────────────────────────────────────────────────
+
+// Save a transaction receipt
+app.post('/api/history', async (req, res) => {
+  const { walletAddress, txHash, chainId, actionType, status, details } = req.body;
+  if (!walletAddress || !actionType || !status) return res.status(400).json({ error: 'Missing required fields' });
+
+  try {
+    const tx = await prisma.transaction.create({
+      data: { walletAddress, txHash, chainId, actionType, status, details },
+    });
+    return res.json(tx);
+  } catch (err: any) {
+    console.error('[/api/history] Save Error:', err);
+    return res.status(500).json({ error: 'Failed to save transaction history.' });
+  }
+});
+
+// Get user history
+app.get('/api/history/:walletAddress', async (req, res) => {
+  try {
+    const history = await prisma.transaction.findMany({
+      where: { walletAddress: req.params.walletAddress },
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(history);
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch history.' });
+  }
+});
+
 // ── HTTP server ───────────────────────────────────────────────────────────────
 // WebSocket requires an underlying HTTP server — createServer wraps the Express
 // app so both HTTP and WebSocket share the same port.
@@ -105,7 +183,7 @@ wss.on('connection', (ws) => {
 
       } else {
         ws.send(JSON.stringify({
-          type:    'error',
+          type: 'error',
           message: 'Unknown message type or missing fields. Expected: { type: "monitor", txHash, chainId }',
         }));
       }

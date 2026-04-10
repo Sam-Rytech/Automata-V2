@@ -5,6 +5,7 @@ import { useWallets } from '@privy-io/react-auth';
 import { StatusState, ActionNodeData } from '@/types/flow';
 import { Node as ReactFlowNode } from 'reactflow';
 import { toast } from 'sonner';
+import { sendAgentMessage, UnsignedTx } from '@/lib/api';
 
 export function useAutomataEngine() {
   const { wallets } = useWallets();
@@ -16,12 +17,26 @@ export function useAutomataEngine() {
   const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
 
   const [planReviewData, setPlanReviewData] = useState<any | null>(null);
+  const [pendingTxs, setPendingTxs] = useState<UnsignedTx[]>([]);
   const [isSigningWallet, setIsSigningWallet] = useState(false);
 
   const addLog = (msg: string) => setTerminalLogs(prev => [...prev, msg]);
-  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  // --- CORE PROCESS RUNNER (GEMINI MOCKED) ---
+  // --- INTENT COMPILER ---
+  // Transforms visual nodes into a prompt the backend agent understands
+  const buildIntent = (sequence: ReactFlowNode<ActionNodeData>[]) => {
+    const actionDescriptions = sequence.map((node, i) => {
+      const d = node.data;
+      if (d.type === 'SWAP') return `Step ${i + 1}: Swap ${d.amount || '0'} ${d.fromToken || ''} to ${d.toToken || ''} on ${d.fromChain || 'Ethereum'}`;
+      if (d.type === 'BRIDGE') return `Step ${i + 1}: Bridge ${d.amount || '0'} ${d.fromToken || ''} from ${d.fromChain || 'Ethereum'} to ${d.toChain || ''}`;
+      if (d.type === 'STAKE') return `Step ${i + 1}: Stake ${d.amount || '0'} ${d.fromToken || ''} into ${d.protocol || ''} on ${d.fromChain || 'Ethereum'}`;
+      if (d.type === 'TRANSFER' || d.type === 'SEND') return `Step ${i + 1}: Send ${d.amount || '0'} ${d.fromToken || ''} to ${d.toAddress || ''} on ${d.fromChain || 'Ethereum'}`;
+      return '';
+    }).join('. ');
+    return `Generate transaction calldata for the following flow: ${actionDescriptions}. Return only the required transaction payload.`;
+  };
+
+  // --- LIVE BACKEND EXECUTION ---
   const runProcess = async (type: 'simulate' | 'execute', sequence: ReactFlowNode<ActionNodeData>[]) => {
     if (!sequence || sequence.length === 0) {
       setStatusState('error');
@@ -30,7 +45,15 @@ export function useAutomataEngine() {
       return;
     }
 
-    if (type === 'execute' && !activeWallet) {
+    const geminiKey = localStorage.getItem('gemini_api_key');
+    if (!geminiKey) {
+      setStatusState('error');
+      setStatusMessage('Missing Gemini API Key.');
+      toast.error('Configuration Required', { description: 'Please add your Gemini API Key in Settings.' });
+      return;
+    }
+
+    if (!activeWallet) {
       setStatusState('error');
       setStatusMessage('Please connect your wallet.');
       toast.error('Wallet Disconnected', { description: 'Please connect your wallet to execute.' });
@@ -39,92 +62,102 @@ export function useAutomataEngine() {
 
     setIsProcessing(true);
     setStatusState('thinking');
-    setStatusMessage(type === 'simulate' ? 'Simulating...' : 'Compiling Execution Plan...');
+    setStatusMessage('Compiling Execution Plan...');
     setTerminalLogs(['[SYS] Booting Automata Execution Engine v1.4...']);
 
-    await delay(600);
-    addLog(`[SYS] Parsed valid sequence of ${sequence.length} module(s)...`);
-    await delay(800);
-    addLog(`[NET] Transmitting intent to LLM Core (MOCK MODE)...`);
-    await delay(1200);
-    addLog(`[OPT] Calculating optimal routing pathways...`);
-
     try {
-      if (type === 'simulate') {
-        await delay(1500);
-        addLog(`[EST] Simulation Complete.`);
-        await delay(1000);
-        setIsProcessing(false);
-        setStatusState('success');
-        setStatusMessage('Simulation successful. Ready to execute.');
-        toast.success('Simulation Complete', { description: 'Estimated Gas: ~$0.42' });
-        setTimeout(() => { setStatusState('idle'); setStatusMessage('Ready'); }, 3000);
-      } else {
-        await delay(1500);
-        addLog(`[BLD] Valid transaction payload received. Generating Plan Review...`);
-        await delay(1000);
+      const intent = buildIntent(sequence);
+      addLog(`[SYS] Parsed sequence. Generated Intent: "${intent.substring(0, 50)}..."`);
+      addLog(`[NET] Transmitting to Automata Backend...`);
+
+      // Hitting your real Express backend via lib/api.ts
+      const result = await sendAgentMessage(intent, activeWallet.address, geminiKey);
+
+      if (result.unsignedTxs && result.unsignedTxs.length > 0) {
+        addLog(`[BLD] Valid transaction payload received from Agent. Generating Plan Review...`);
+        setPendingTxs(result.unsignedTxs);
+
         setIsProcessing(false);
         setStatusState('awaiting_approval');
         setStatusMessage('Awaiting User Approval...');
 
+        // Dynamically map backend UnsignedTx objects to the PlanReview UI
         setPlanReviewData({
-          steps: sequence.map((node, i) => ({
+          steps: result.unsignedTxs.map((tx, i) => ({
             stepNumber: i + 1,
-            description: `Execute ${node.data.type} operation on ${node.data.fromChain || 'Ethereum'}`,
-            estimatedFeeUSD: '0.' + (Math.floor(Math.random() * 50) + 10),
-            estimatedTimeSeconds: Math.floor(Math.random() * 20) + 5
+            description: tx.description || `Execute operation on ${tx.chainId}`,
+            estimatedFeeUSD: 'Network Standard',
+            estimatedTimeSeconds: 15
           })),
-          totalEstimatedFeeUSD: '$1.42',
-          estimatedTimeSeconds: 45,
-          warnings: ['Slippage tolerance is set to AUTO.']
+          totalEstimatedFeeUSD: 'Pending',
+          estimatedTimeSeconds: result.unsignedTxs.length * 15,
+          warnings: ['Review raw transaction parameters in your wallet provider.']
         });
+      } else {
+        throw new Error(result.response || 'Agent failed to return valid transaction data.');
       }
+
     } catch (error: any) {
       setIsProcessing(false);
       setStatusState('error');
       setStatusMessage(error.message || 'Execution failed.');
-      toast.error('System Error', { description: error.message || 'Execution failed.' });
+      toast.error('Backend Error', { description: error.message || 'Failed to fetch plan from agent.' });
     }
   };
 
   // --- REAL PRIVY EXECUTION ---
   const handleApprovePlan = async () => {
-    if (!activeWallet) {
-      toast.error('Execution Error', { description: 'Wallet lost connection.' });
+    if (!activeWallet || pendingTxs.length === 0) {
+      toast.error('Execution Error', { description: 'Wallet lost connection or payload is empty.' });
       return;
     }
 
     setStatusState('executing');
     setStatusMessage('Awaiting wallet signature...');
+
+    const historyDesc = planReviewData ? `Executed ${planReviewData.steps.length} module sequence` : 'Executed sequence';
     setPlanReviewData(null);
     setIsSigningWallet(true);
 
     try {
-      // 1. Get the real EIP-1193 Provider from Privy
       const provider = await activeWallet.getEthereumProvider();
+      let lastTxHash = '';
 
-      // 2. Since Gemini is mocked, we execute a SAFE 0 ETH test transaction to your own address.
-      // When Gemini is live, you will loop through the `pendingTxs` returned by the API instead.
-      const txHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          to: activeWallet.address, // Sending to yourself
-          value: '0x0',             // 0 ETH
-          from: activeWallet.address
-        }]
-      });
+      // Loop through and execute every real transaction returned by the agent
+      for (const tx of pendingTxs) {
+        lastTxHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            to: tx.to,
+            data: tx.data,
+            value: tx.value || '0x0',
+            from: activeWallet.address
+          }]
+        });
+      }
 
-      console.log('Transaction Successful. Hash:', txHash);
+      // --- TEMPORARY LOCAL HISTORY (Until we build the POST /history route) ---
+      const historyRecord = {
+        id: crypto.randomUUID(),
+        type: 'FLOW_EXECUTION',
+        status: 'SUCCESS',
+        description: historyDesc,
+        txHash: lastTxHash,
+        fee: 'Pending',
+        timestamp: new Date().toISOString(),
+      };
+      const existingHistory = JSON.parse(localStorage.getItem('automata_history') || '[]');
+      localStorage.setItem('automata_history', JSON.stringify([historyRecord, ...existingHistory]));
 
       setStatusState('success');
       setStatusMessage('Flow executed successfully.');
-      toast.success('Execution Complete', { description: `Tx Hash: ${txHash}` });
+      toast.success('Execution Complete', { description: `Tx Hash: ${lastTxHash}` });
+
     } catch (error: any) {
       console.error(error);
       setStatusState('error');
       setStatusMessage(error.message || 'Transaction rejected or failed.');
 
-      // Handle User Rejection vs actual RPC error
       if (error.code === 4001) {
         toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });
       } else {
@@ -132,6 +165,7 @@ export function useAutomataEngine() {
       }
     } finally {
       setIsSigningWallet(false);
+      setPendingTxs([]);
       setTimeout(() => {
         if (statusState !== 'error') {
           setStatusState('idle');
@@ -143,6 +177,7 @@ export function useAutomataEngine() {
 
   const handleCancelPlan = () => {
     setPlanReviewData(null);
+    setPendingTxs([]);
     setStatusState('idle');
     setStatusMessage('Execution aborted.');
     toast.warning('Execution Aborted', { description: 'The transaction plan was cancelled.' });

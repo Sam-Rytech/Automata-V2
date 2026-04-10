@@ -71,3 +71,49 @@ export async function sendAgentMessage(
 
   return res.json();
 }
+// --- DATABASE API WRAPPERS ---
+
+export async function saveFlowToDb(walletAddress: string, name: string, actions: any) {
+  const res = await fetch(`${API_BASE}/api/flows`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ walletAddress, name, actions, description: 'Created via Flow Builder' }),
+  });
+  if (!res.ok) throw new Error('Failed to save flow to database');
+  return res.json();
+}
+
+export async function getFlowsFromDb(walletAddress: string) {
+  const res = await fetch(`${API_BASE}/api/flows/${walletAddress}`);
+  if (!res.ok) throw new Error('Failed to fetch flows');
+  return res.json();
+}
+
+export async function saveHistoryToDb(
+  walletAddress: string,
+  txHash: string | undefined,
+  actionType: string,
+  status: string,
+  details: any
+) {
+  const res = await fetch(`${API_BASE}/api/history`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      walletAddress,
+      txHash,
+      chainId: details?.chainId || 'VARIOUS',
+      actionType,
+      status,
+      details
+    }),
+  });
+  if (!res.ok) throw new Error('Failed to save transaction history');
+  return res.json();
+}
+
+export async function getHistoryFromDb(walletAddress: string) {
+  const res = await fetch(`${API_BASE}/api/history/${walletAddress}`);
+  if (!res.ok) throw new Error('Failed to fetch history');
+  return res.json();
+}

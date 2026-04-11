@@ -1,212 +1,38 @@
 'use client';
 
 import { AuthGuard } from '@/components/AuthGuard';
-import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { StatusPanel } from '@/components/StatusPanel';
 import { PlanReview } from '@/components/PlanReview';
-import { StatusState, AgentPlan } from '@/types/status';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
-import { useWallets } from '@privy-io/react-auth';
-import { toast } from 'sonner';
-import { sendAgentMessage, UnsignedTx, saveHistoryToDb, submitStellarTx } from '@/lib/api';
-
-type Message = { id: string; role: 'user' | 'agent'; content: string };
+import { useState, useEffect } from 'react';
+import { useStellarWallet } from '@/hooks/useStellarWallet';
+import { useExecutionMode } from '@/hooks/useExecutionMode';
+import { useAgentChat } from '@/hooks/useAgentChat';
 
 function ChatPageContent() {
-  const { wallets } = useWallets();
-  const activeWallet = wallets?.[0];
-
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [status, setStatus] = useState<StatusState>('idle');
-  const [activePlan, setActivePlan] = useState<AgentPlan | null>(null);
-  const [pendingTxs, setPendingTxs] = useState<UnsignedTx[]>([]);
-  const [executionMode, setExecutionMode] = useState<'assisted' | 'autonomous'>('assisted');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const [sessionId] = useState(() => crypto.randomUUID());
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const savedMode = localStorage.getItem('automata_execution_mode');
-    if (savedMode === 'assisted' || savedMode === 'autonomous') {
-      setExecutionMode(savedMode);
-    }
-  }, []);
+  const { executionMode, setExecutionMode } = useExecutionMode();
+  const { freighterAddress, privyStellarWallet, connectFreighter, signAndSubmitStellar } = useStellarWallet();
+  const {
+    messages,
+    input,
+    setInput,
+    status,
+    activePlan,
+    pendingTxs,
+    scrollRef,
+    handleSend,
+    executePlan,
+    handleCancelPlan,
+  } = useAgentChat(executionMode, signAndSubmitStellar);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages, status, activePlan]);
-
-  const handleSend = async (customInput?: string) => {
-    const text = customInput || input;
-    if (!text.trim()) return;
-
-    const geminiKey = localStorage.getItem('gemini_api_key');
-    if (!geminiKey) {
-      toast.error('Configuration Required', { description: 'Please add your Gemini API Key in Settings.' });
-      return;
-    }
-
-    if (!activeWallet) {
-      toast.error('Wallet Disconnected', { description: 'Please connect your wallet to use the agent.' });
-      return;
-    }
-
-    const userMsg: Message = { id: Date.now().toString(), role: 'user', content: text };
-    setMessages(prev => [...prev, userMsg]);
-    setInput('');
-    setStatus('thinking');
-
-    try {
-      const result = await sendAgentMessage(text, activeWallet.address, geminiKey, sessionId);
-
-      if (!result.unsignedTxs || result.unsignedTxs.length === 0) {
-        setStatus('idle');
-        setMessages(prev => [...prev, {
-          id: Date.now().toString(),
-          role: 'agent',
-          content: result.reply || 'I have processed your request.'
-        }]);
-        return;
-      }
-
-      setPendingTxs(result.unsignedTxs);
-
-      const generatedPlan: AgentPlan = {
-        steps: result.unsignedTxs.map((tx, i) => ({
-          stepNumber: i + 1,
-          description: tx.description || `Execute operation on ${tx.chainId}`,
-          estimatedFeeUSD: 'Network Standard',
-          estimatedTimeSeconds: 15
-        })),
-        totalEstimatedFeeUSD: 'Pending',
-        estimatedTimeSeconds: result.unsignedTxs.length * 15,
-        warnings: ['Review transaction parameters before approving.']
-      };
-
-      if (executionMode === 'assisted') {
-        setActivePlan(generatedPlan);
-        setStatus('awaiting_approval');
-        setMessages(prev => [...prev, {
-          id: Date.now().toString(),
-          role: 'agent',
-          content: result.reply || 'I have compiled a transaction plan. Please review and approve.'
-        }]);
-      } else {
-        executePlan(result.unsignedTxs, generatedPlan);
-      }
-
-    } catch (error: any) {
-      setStatus('error');
-      toast.error('Agent Error', { description: error.message || 'Failed to communicate with LLM.' });
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'agent',
-        content: `Error: ${error.message || 'I encountered an issue processing that.'}`
-      }]);
-      setTimeout(() => setStatus('idle'), 3000);
-    }
-  };
-
-  const executePlan = async (txsToExecute = pendingTxs, plan = activePlan) => {
-    if (!activeWallet || txsToExecute.length === 0) return;
-
-    setActivePlan(null);
-    setStatus('executing');
-
-    const CHAIN_IDS: Record<string, number> = {
-      base: 8453,
-      celo: 42220,
-      ethereum: 1,
-    };
-
-    try {
-      let lastTxHash = '';
-
-      for (const tx of txsToExecute) {
-        if (tx.chainId === 'stellar') {
-          // ── Stellar signing path ────────────────────────────────
-          if (!tx.xdr) throw new Error('Missing XDR for Stellar transaction.');
-
-          // walletId is the Privy wallet ID — for embedded wallets it's
-          // accessible via activeWallet.id
-          const walletId = (activeWallet as any).id;
-          if (!walletId) throw new Error('Could not find Privy wallet ID for Stellar signing.');
-
-          lastTxHash = await submitStellarTx(tx.xdr, walletId);
-
-        } else {
-          // ── EVM signing path ────────────────────────────────────
-          const targetChainId = CHAIN_IDS[tx.chainId];
-          if (targetChainId) {
-            await activeWallet.switchChain(targetChainId);
-          }
-
-          const provider = await activeWallet.getEthereumProvider();
-          lastTxHash = await provider.request({
-            method: 'eth_sendTransaction',
-            params: [{
-              to: tx.to,
-              data: tx.data,
-              value: tx.value || '0x0',
-              from: activeWallet.address
-            }]
-          });
-        }
-      }
-
-      try {
-        await saveHistoryToDb(
-          activeWallet.address,
-          lastTxHash,
-          'AGENT_EXECUTION',
-          'SUCCESS',
-          { steps: plan?.steps?.length || txsToExecute.length, chainId: txsToExecute[0].chainId }
-        );
-      } catch (dbErr) {
-        console.error('Failed to log history to DB:', dbErr);
-      }
-
-      setStatus('success');
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'agent',
-        content: `Sequence completed successfully. Verification hash: ${lastTxHash}`
-      }]);
-      toast.success('Execution Complete', { description: `Tx Hash: ${lastTxHash}` });
-
-    } catch (error: any) {
-      setStatus('error');
-
-      try {
-        await saveHistoryToDb(activeWallet.address, undefined, 'AGENT_EXECUTION', 'FAILED', { error: error.message });
-      } catch (e) { }
-
-      if (error.code === 4001) {
-        toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'agent', content: 'Execution aborted by user.' }]);
-      } else {
-        toast.error('Transaction Failed', { description: error.message || 'Failed to execute.' });
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'agent', content: `Execution failed: ${error.message}` }]);
-      }
-    } finally {
-      setPendingTxs([]);
-      setTimeout(() => { if (status !== 'error') setStatus('idle'); }, 4000);
-    }
-  };
-
-  const handleCancelPlan = () => {
-    setActivePlan(null);
-    setPendingTxs([]);
-    setStatus('idle');
-    setMessages(prev => [...prev, { id: Date.now().toString(), role: 'agent', content: 'Plan discarded.' }]);
-    toast.info('Execution Aborted', { description: 'The transaction plan was discarded.' });
-  };
 
   return (
     <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden relative">
@@ -219,17 +45,35 @@ function ChatPageContent() {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm lg:hidden" />
             <motion.div initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} className="fixed top-0 left-0 h-full w-[260px] bg-[#0F0F1A] z-50 lg:hidden">
-              <Sidebar activeMode="chat" executionMode={executionMode} setExecutionMode={(m) => { setExecutionMode(m); localStorage.setItem('automata_execution_mode', m); }} />
+              <Sidebar activeMode="chat" executionMode={executionMode} setExecutionMode={setExecutionMode} />
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
       <div className="hidden lg:block shrink-0 z-40">
-        <Sidebar activeMode="chat" executionMode={executionMode} setExecutionMode={(m) => { setExecutionMode(m); localStorage.setItem('automata_execution_mode', m); }} />
+        <Sidebar activeMode="chat" executionMode={executionMode} setExecutionMode={setExecutionMode} />
       </div>
 
       <main className="flex-1 flex flex-col min-w-0">
+        {/* ── Stellar wallet status bar ── */}
+        <div className="border-b border-white/5 px-6 py-2 flex items-center justify-between bg-[#0F0F1A]">
+          <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+            Stellar:{' '}
+            {freighterAddress
+              ? <span className="text-green-400">Freighter {freighterAddress.slice(0, 6)}...{freighterAddress.slice(-4)}</span>
+              : privyStellarWallet
+                ? <span className="text-blue-400">Embedded Wallet Active</span>
+                : <span className="text-white/20">No Wallet</span>
+            }
+          </span>
+          {!freighterAddress && (
+            <button onClick={connectFreighter} className="font-mono text-[9px] uppercase tracking-widest text-[#E91E8C] hover:text-white transition-colors">
+              Connect Freighter
+            </button>
+          )}
+        </div>
+
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 custom-scrollbar">
           <div className="max-w-4xl mx-auto space-y-10 pb-10">
             {messages.length === 0 && (
@@ -248,6 +92,7 @@ function ChatPageContent() {
                 </div>
               </motion.div>
             )}
+
             <div className="space-y-10">
               {messages.map((m) => (
                 <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>

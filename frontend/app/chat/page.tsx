@@ -130,8 +130,24 @@ function ChatPageContent() {
       const provider = await activeWallet.getEthereumProvider();
       let lastTxHash = '';
 
+      // Chain ID map — must match what your backend returns in unsignedTx.chainId
+      const CHAIN_IDS: Record<string, string> = {
+        base: '0x2105',  // 8453
+        celo: '0xa4ec',  // 42220
+        ethereum: '0x1',     // 1
+      };
+
       // Execute sequentially
       for (const tx of txsToExecute) {
+        // Switch to the correct chain before signing
+        const targetChainId = CHAIN_IDS[tx.chainId];
+        if (targetChainId) {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: targetChainId }],
+          });
+        }
+
         lastTxHash = await provider.request({
           method: 'eth_sendTransaction',
           params: [{
@@ -142,7 +158,6 @@ function ChatPageContent() {
           }]
         });
       }
-
       // Save to Database History
       try {
         await saveHistoryToDb(

@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   icons: {
     icon: '/gemini-icon-logo.svg',
   },
+  // This tints the browser UI/Toolbar on mobile and some desktop browsers
+  themeColor: '#8B5CF6',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

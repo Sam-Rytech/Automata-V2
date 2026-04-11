@@ -208,3 +208,25 @@ wss.on('connection', (ws) => {
 server.listen(PORT, () => {
   console.log(`Automata backend running on port ${PORT} (HTTP + WebSocket)`);
 });
+// ── /api/stellar/sign-and-submit ──────────────────────────────────────────────
+// Called by the frontend after user approves a Stellar transaction plan.
+// Receives the unsigned XDR + the user's Privy wallet ID, signs via Privy
+// rawSign, and submits to Horizon. Returns the transaction hash.
+
+import { signAndSubmitStellarXdr } from './services/stellarSigningService';
+
+app.post('/api/stellar/sign-and-submit', async (req, res) => {
+  const { xdr, walletId } = req.body;
+
+  if (!xdr || !walletId) {
+    return res.status(400).json({ error: 'xdr and walletId are required.' });
+  }
+
+  try {
+    const txHash = await signAndSubmitStellarXdr(walletId, xdr);
+    return res.json({ txHash });
+  } catch (err: any) {
+    console.error('[/api/stellar/sign-and-submit] Error:', err);
+    return res.status(500).json({ error: err.message ?? 'Stellar transaction failed.' });
+  }
+});

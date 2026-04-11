@@ -10,7 +10,7 @@ import { StatusState, AgentPlan } from '@/types/status';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useWallets } from '@privy-io/react-auth';
 import { toast } from 'sonner';
-import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
+import { sendAgentMessage, UnsignedTx, saveHistoryToDb, submitStellarTx } from '@/lib/api';
 
 type Message = { id: string; role: 'user' | 'agent'; content: string };
 
@@ -26,13 +26,10 @@ function ChatPageContent() {
   const [executionMode, setExecutionMode] = useState<'assisted' | 'autonomous'>('assisted');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Keep track of the conversation context for the backend
   const [sessionId] = useState(() => crypto.randomUUID());
-
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Hydrate execution mode from settings
     const savedMode = localStorage.getItem('automata_execution_mode');
     if (savedMode === 'assisted' || savedMode === 'autonomous') {
       setExecutionMode(savedMode);
@@ -66,10 +63,8 @@ function ChatPageContent() {
     setStatus('thinking');
 
     try {
-      // 1. Hit the Live Backend
       const result = await sendAgentMessage(text, activeWallet.address, geminiKey, sessionId);
 
-      // 2. Handle Text-Only Reply
       if (!result.unsignedTxs || result.unsignedTxs.length === 0) {
         setStatus('idle');
         setMessages(prev => [...prev, {
@@ -80,7 +75,6 @@ function ChatPageContent() {
         return;
       }
 
-      // 3. Handle Transaction Payload
       setPendingTxs(result.unsignedTxs);
 
       const generatedPlan: AgentPlan = {
@@ -92,7 +86,7 @@ function ChatPageContent() {
         })),
         totalEstimatedFeeUSD: 'Pending',
         estimatedTimeSeconds: result.unsignedTxs.length * 15,
-        warnings: ['Review raw transaction parameters in your wallet provider.']
+        warnings: ['Review transaction parameters before approving.']
       };
 
       if (executionMode === 'assisted') {
@@ -104,7 +98,6 @@ function ChatPageContent() {
           content: result.reply || 'I have compiled a transaction plan. Please review and approve.'
         }]);
       } else {
-        // Autonomous mode skips the review panel (if backend/user allows it)
         executePlan(result.unsignedTxs, generatedPlan);
       }
 
@@ -135,29 +128,38 @@ function ChatPageContent() {
     try {
       let lastTxHash = '';
 
-      // Execute sequentially
       for (const tx of txsToExecute) {
-        // Use Privy's native switchChain — works for both embedded wallet AND MetaMask
-        const targetChainId = CHAIN_IDS[tx.chainId];
-        if (targetChainId) {
-          await activeWallet.switchChain(targetChainId);
+        if (tx.chainId === 'stellar') {
+          // ── Stellar signing path ────────────────────────────────
+          if (!tx.xdr) throw new Error('Missing XDR for Stellar transaction.');
+
+          // walletId is the Privy wallet ID — for embedded wallets it's
+          // accessible via activeWallet.id
+          const walletId = (activeWallet as any).id;
+          if (!walletId) throw new Error('Could not find Privy wallet ID for Stellar signing.');
+
+          lastTxHash = await submitStellarTx(tx.xdr, walletId);
+
+        } else {
+          // ── EVM signing path ────────────────────────────────────
+          const targetChainId = CHAIN_IDS[tx.chainId];
+          if (targetChainId) {
+            await activeWallet.switchChain(targetChainId);
+          }
+
+          const provider = await activeWallet.getEthereumProvider();
+          lastTxHash = await provider.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: tx.to,
+              data: tx.data,
+              value: tx.value || '0x0',
+              from: activeWallet.address
+            }]
+          });
         }
-
-        // Get provider AFTER chain switch so it reflects the correct network
-        const provider = await activeWallet.getEthereumProvider();
-
-        lastTxHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            to: tx.to,
-            data: tx.data,
-            value: tx.value || '0x0',
-            from: activeWallet.address
-          }]
-        });
       }
 
-      // Save to Database History
       try {
         await saveHistoryToDb(
           activeWallet.address,
@@ -171,18 +173,16 @@ function ChatPageContent() {
       }
 
       setStatus('success');
-      const agentMsg: Message = {
+      setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'agent',
         content: `Sequence completed successfully. Verification hash: ${lastTxHash}`
-      };
-      setMessages(prev => [...prev, agentMsg]);
+      }]);
       toast.success('Execution Complete', { description: `Tx Hash: ${lastTxHash}` });
 
     } catch (error: any) {
       setStatus('error');
 
-      // Log failure to Database
       try {
         await saveHistoryToDb(activeWallet.address, undefined, 'AGENT_EXECUTION', 'FAILED', { error: error.message });
       } catch (e) { }
@@ -241,7 +241,7 @@ function ChatPageContent() {
                     { id: '02', title: 'BRIDGE', desc: 'Bridge 50 USDC from Base to Celo via Wormhole.' }
                   ].map((s) => (
                     <button key={s.id} onClick={() => handleSend(s.desc)} className="text-left bg-[#1A1A2E]/40 border border-white/5 p-6 hover:border-[#E91E8C]/40 transition-all group rounded-none">
-                      <div className="font-mono text-[9px] text-[#E91E8C] tracking-[0.3em] mb-3 uppercase font-bold">{s.title} —— {s.id}</div>
+                      <div className="font-mono text-[9px] text-[#E91E8C] tracking-[0.3em] mb-3 uppercase font-bold">{s.title} — {s.id}</div>
                       <p className="font-mono text-xs text-white/60 group-hover:text-white transition-colors">{s.desc}</p>
                     </button>
                   ))}
@@ -258,7 +258,7 @@ function ChatPageContent() {
 
               {status === 'thinking' && (
                 <div className="flex flex-col items-start gap-4">
-                  <div className="font-mono text-[10px] text-[#E91E8C] font-black uppercase flex items-center gap-2"><span className="w-2 h-2 bg-[#E91E8C] animate-pulse" /> Automata Oracle —— Thinking</div>
+                  <div className="font-mono text-[10px] text-[#E91E8C] font-black uppercase flex items-center gap-2"><span className="w-2 h-2 bg-[#E91E8C] animate-pulse" /> Automata Oracle — Thinking</div>
                   <div className="font-mono text-xs text-white/40 space-y-1"><p>{`> Transmitting intent to LLM Core...`}</p><p>{`> Awaiting Agent compilation...`}</p></div>
                 </div>
               )}

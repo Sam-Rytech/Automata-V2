@@ -13,47 +13,29 @@ export type UnsignedTx = {
   data: string;         // hex-encoded calldata
   value: string;        // native token amount in wei (usually "0" for ERC-20)
   description: string;  // plain English description shown to user before signing
+  xdr?: string;         // Stellar only — unsigned XDR transaction envelope
 };
 
 // The shape of the full response from POST /api/chat
 export type AgentResponse = {
-  reply: string;            // the agent's plain-English reply
-  unsignedTxs: UnsignedTx[];   // transactions for user to sign (may be empty)
-  sessionId: string;           // session identifier for conversation continuity
+  reply: string;
+  unsignedTxs: UnsignedTx[];
+  sessionId: string;
 };
 
-/**
- * Send a message to the Automata AI agent.
- *
- * @param message       - What the user typed
- * @param walletAddress - The user's EVM wallet address (from Privy)
- * @param geminiApiKey  - The user's own Gemini API key (stored in localStorage)
- * @param sessionId     - Conversation session ID (pass null for a new conversation)
- */
 export async function sendAgentMessage(
   message: string,
   walletAddress: string,
   geminiApiKey: string,
   sessionId: string | null = null
 ): Promise<AgentResponse> {
-
-  if (!geminiApiKey) {
-    throw new Error('NO_API_KEY');
-  }
-
-  if (!walletAddress) {
-    throw new Error('NO_WALLET');
-  }
+  if (!geminiApiKey) throw new Error('NO_API_KEY');
+  if (!walletAddress) throw new Error('NO_WALLET');
 
   const res = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message,
-      walletAddress,
-      geminiApiKey,
-      sessionId: sessionId ?? undefined,
-    }),
+    body: JSON.stringify({ message, walletAddress, geminiApiKey, sessionId: sessionId ?? undefined }),
   });
 
   if (!res.ok) {
@@ -63,14 +45,34 @@ export async function sendAgentMessage(
       if (res.status === 429) errorMessage = 'The agent is busy. Please wait a moment and try again.';
       else if (res.status === 401) errorMessage = 'Your AI key is invalid. Update it in Settings.';
       else if (err.error) errorMessage = err.error;
-    } catch {
-      // if response body is not JSON, use the generic message
-    }
+    } catch { }
     throw new Error(errorMessage);
   }
 
   return res.json();
 }
+
+// Submit a signed Stellar transaction via the backend
+export async function submitStellarTx(xdr: string, walletId: string): Promise<string> {
+  const res = await fetch(`${API_BASE}/api/stellar/sign-and-submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ xdr, walletId }),
+  });
+
+  if (!res.ok) {
+    let errorMessage = 'Stellar transaction failed.';
+    try {
+      const err = await res.json();
+      if (err.error) errorMessage = err.error;
+    } catch { }
+    throw new Error(errorMessage);
+  }
+
+  const data = await res.json();
+  return data.txHash;
+}
+
 // --- DATABASE API WRAPPERS ---
 
 export async function saveFlowToDb(walletAddress: string, name: string, actions: any) {
@@ -99,14 +101,7 @@ export async function saveHistoryToDb(
   const res = await fetch(`${API_BASE}/api/history`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      walletAddress,
-      txHash,
-      chainId: details?.chainId || 'VARIOUS',
-      actionType,
-      status,
-      details
-    }),
+    body: JSON.stringify({ walletAddress, txHash, chainId: details?.chainId || 'VARIOUS', actionType, status, details }),
   });
   if (!res.ok) throw new Error('Failed to save transaction history');
   return res.json();

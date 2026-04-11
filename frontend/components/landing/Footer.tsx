@@ -10,7 +10,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:flex sm:gap-16 gap-y-8 gap-x-12 font-mono text-xs uppercase tracking-widest w-full md:w-auto mt-8 md:mt-0">
+        <div className="flex gap-16 font-mono text-xs uppercase tracking-widest">
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Model</div>
             <a href="#" className="text-white/40 hover:text-white transition-colors">Gemini 2.0 Flash</a>
@@ -31,9 +31,9 @@ export function Footer() {
         </div>
       </div>
       
-      <div className="max-w-[1400px] mx-auto mt-16 flex flex-col md:flex-row justify-between items-center gap-6 font-mono text-[10px] text-white/30 tracking-widest uppercase text-center md:text-left">
+      <div className="max-w-[1400px] mx-auto mt-16 flex justify-between items-center font-mono text-[10px] text-white/30 tracking-widest uppercase">
         <div>© 2026 AUTOMATA. ALL RIGHTS RESERVED.</div>
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex gap-4">
           <span>SYSTEM: ONLINE</span>
           <span>LATENCY: 42MS</span>
           <span>LAST OUT: NULL</span>

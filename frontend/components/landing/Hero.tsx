@@ -83,7 +83,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-[3rem] sm:text-[5rem] md:text-[7rem] font-black leading-[0.9] tracking-tighter mb-8 uppercase text-white drop-shadow-xl"
+          className="text-[11vw] sm:text-[5rem] md:text-[7rem] font-black leading-[0.9] tracking-tighter mb-8 uppercase text-white drop-shadow-xl"
         >
           One Message.<br />
           Every Chain.

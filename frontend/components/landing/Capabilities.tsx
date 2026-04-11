@@ -25,7 +25,7 @@ export function Capabilities() {
         <div className="font-mono text-white/50 text-[0.65rem] tracking-widest mb-6 uppercase">
           02 —— CAPABILITIES
         </div>
-        <h2 className="font-syne text-[3.5rem] md:text-[5rem] font-bold text-white leading-none uppercase tracking-tighter">
+        <h2 className="font-syne text-[2.5rem] sm:text-[3.5rem] md:text-[5rem] font-bold text-white leading-none uppercase tracking-tighter">
           Everything your<br />money needs.
         </h2>
       </div>

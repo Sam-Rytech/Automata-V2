@@ -8,7 +8,7 @@ export function HowItWorks() {
         <div className="font-mono text-white/50 text-sm tracking-widest mb-6 uppercase">
           01 —— How it works
         </div>
-        <h2 className="font-syne text-[3.5rem] md:text-[5rem] font-bold text-white leading-none uppercase tracking-tighter">
+        <h2 className="font-syne text-[2.5rem] sm:text-[3.5rem] md:text-[5rem] font-bold text-white leading-none uppercase tracking-tighter">
           Two ways to<br />move money.
         </h2>
       </div>

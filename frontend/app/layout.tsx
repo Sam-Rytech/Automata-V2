@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: 'Automata — Cross-Chain AI Agent',
   description: 'Swap, bridge, and stake across any chain. In plain English.',
   icons: {
-    icon: '/gemini-icon-logo.svg',
+    icon: '/Automata.ico',
   },
   // This tints the browser UI/Toolbar on mobile and some desktop browsers
   themeColor: '#8B5CF6',

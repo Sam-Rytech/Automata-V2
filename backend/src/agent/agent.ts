@@ -22,7 +22,8 @@ export async function runAgent(
   userMessage: string,
   apiKey: string,
   history: ConversationMessage[] = [],
-  walletAddress: string = '0x0000000000000000000000000000000000000000'
+  walletAddress: string = '0x0000000000000000000000000000000000000000',
+  stellarAddress?: string
 ): Promise<{ reply: string; updatedHistory: ConversationMessage[]; unsignedTxs: any[] }> {
 
   try {
@@ -41,10 +42,18 @@ export async function runAgent(
     ];
 
     const unsignedTxs: any[] = [];
+    const MAX_TOOL_ITERATIONS = 10;
+    let iterations = 0;
 
     let response = (await chat.sendMessage(userMessage)).response;
 
     while (response.functionCalls() && response.functionCalls()!.length > 0) {
+      if (iterations >= MAX_TOOL_ITERATIONS) {
+        console.warn('[Agent] Tool loop cap reached — breaking to prevent infinite loop');
+        break;
+      }
+      iterations++;
+
       const toolCalls = response.functionCalls()!;
 
       updatedHistory.push({
@@ -55,7 +64,7 @@ export async function runAgent(
       const toolResults: Part[] = await Promise.all(
         toolCalls.map(async (tc) => {
           console.log(`[Tool] ${tc.name}`, tc.args);
-          const result = await executeTool(tc.name, tc.args as Record<string, any>, walletAddress);
+          const result = await executeTool(tc.name, tc.args as Record<string, any>, walletAddress, stellarAddress);
 
           if (result.unsignedTx) {
             unsignedTxs.push(result.unsignedTx);

@@ -32,6 +32,7 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
     // Restore saved address on page load
     const savedAddress = localStorage.getItem('stellar_address');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedAddress) setStellarAddress(savedAddress);
 
     // Listen for disconnect events from the kit's built-in UI

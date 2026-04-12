@@ -17,19 +17,11 @@ const prisma = new PrismaClient();
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000' }));
 app.use(express.json({ limit: '10mb' }));
 
-// ── Session store ─────────────────────────────────────────────────────────────
-// Keyed by sessionId. Cleared after a transaction is built so the next message
-// starts a fresh context (avoids the agent re-using stale transaction history).
-
 const sessions = new Map<string, ConversationMessage[]>();
-
-// ── Health check ──────────────────────────────────────────────────────────────
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
-
-// ── /api/chat ─────────────────────────────────────────────────────────────────
 
 app.post('/api/chat', async (req, res) => {
   const { message, sessionId, geminiApiKey, walletAddress, stellarAddress } = req.body;
@@ -42,7 +34,6 @@ app.post('/api/chat', async (req, res) => {
 
   const history = sessions.get(sessionId) ?? [];
 
-  // Inject both EVM and Stellar addresses as context so the agent can use them in tool calls
   const contextualMessage = walletAddress
     ? `[User EVM wallet address: ${walletAddress}]${stellarAddress ? `\n[User Stellar wallet address: ${stellarAddress}]` : ''}\n${message}`
     : message;
@@ -52,10 +43,10 @@ app.post('/api/chat', async (req, res) => {
       contextualMessage,
       geminiApiKey,
       history,
-      walletAddress
+      walletAddress,
+      stellarAddress
     );
 
-    // Clear session once transactions are ready — next message is a fresh intent
     if (unsignedTxs.length > 0) {
       sessions.delete(sessionId);
     } else {
@@ -75,20 +66,18 @@ app.post('/api/flows', async (req, res) => {
   if (!walletAddress || !name || !actions) return res.status(400).json({ error: 'Missing required fields' });
 
   try {
-    // 1. Ensure the user exists
     const user = await prisma.user.upsert({
       where: { walletAddress },
       update: {},
       create: { walletAddress },
     });
 
-    // 2. Save the flow
     const flow = await prisma.flow.create({
       data: {
         userId: user.id,
         name,
         description,
-        actions, // JSON object of the nodes/edges
+        actions,
       },
     });
     return res.json(flow);
@@ -98,11 +87,10 @@ app.post('/api/flows', async (req, res) => {
   }
 });
 
-// Get user flows
 app.get('/api/flows/:walletAddress', async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { walletAddress: req.params.walletAddress } });
-    if (!user) return res.json([]); // No user = no flows yet
+    if (!user) return res.json([]);
 
     const flows = await prisma.flow.findMany({
       where: { userId: user.id },
@@ -114,9 +102,6 @@ app.get('/api/flows/:walletAddress', async (req, res) => {
   }
 });
 
-// ── /api/history ───────────────────────────────────────────────────────────────
-
-// Save a transaction receipt
 app.post('/api/history', async (req, res) => {
   const { walletAddress, txHash, chainId, actionType, status, details } = req.body;
   if (!walletAddress || !actionType || !status) return res.status(400).json({ error: 'Missing required fields' });
@@ -132,7 +117,6 @@ app.post('/api/history', async (req, res) => {
   }
 });
 
-// Get user history
 app.get('/api/history/:walletAddress', async (req, res) => {
   try {
     const history = await prisma.transaction.findMany({
@@ -145,27 +129,13 @@ app.get('/api/history/:walletAddress', async (req, res) => {
   }
 });
 
-// ── HTTP server ───────────────────────────────────────────────────────────────
-// WebSocket requires an underlying HTTP server — createServer wraps the Express
-// app so both HTTP and WebSocket share the same port.
-
 const server = createServer(app);
-
-// ── WebSocket server ──────────────────────────────────────────────────────────
-// Frontend connects here after signing a transaction to receive real-time status.
-//
-// Protocol:
-//   Client → Server:  { type: "monitor", txHash: "0x...", chainId: "base" }
-//   Server → Client:  { type: "status", txHash, chainId, status, confirmations, ... }
-//                     { type: "error",  message: "..." }
-//                     { type: "connected", message: "Automata WebSocket ready" }
 
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
   console.log('[WebSocket] Client connected');
 
-  // Confirm the connection immediately so the frontend doesn't have to guess
   ws.send(JSON.stringify({ type: 'connected', message: 'Automata WebSocket ready' }));
 
   ws.on('message', (data) => {
@@ -175,8 +145,6 @@ wss.on('connection', (ws) => {
       if (message.type === 'monitor' && message.txHash && message.chainId) {
         console.log(`[WebSocket] Monitoring: ${message.txHash} on ${message.chainId}`);
 
-        // Fire-and-forget — do NOT await. Awaiting would block this handler
-        // thread and prevent receiving further messages on this connection.
         pollTransactionStatus(ws, message.txHash, message.chainId).catch(err => {
           console.error('[WebSocket] pollTransactionStatus error:', err);
         });
@@ -201,9 +169,6 @@ wss.on('connection', (ws) => {
     console.error('[WebSocket] Error:', err);
   });
 });
-
-// ── Start server ──────────────────────────────────────────────────────────────
-// server.listen() instead of app.listen() — HTTP + WebSocket share the same port.
 
 server.listen(PORT, () => {
   console.log(`Automata backend running on port ${PORT} (HTTP + WebSocket)`);

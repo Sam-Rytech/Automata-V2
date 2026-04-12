@@ -90,7 +90,7 @@ export function FlowBuilderContent() {
       nodes: sequence.map((n, i) => ({ ...n, data: { ...n.data, stepIndex: i + 1, onDelete: undefined } })),
       edges
     };
-    
+
     try {
       await saveFlowToDb(walletAddress, flowName || 'Untitled Flow', flowData);
       setSaveDialogOpen(false);
@@ -115,15 +115,22 @@ export function FlowBuilderContent() {
     }
   };
 
+  // *************************
+
+  function deleteNode(id: string) {
+    setNodes(prev => prev.filter(n => n.id !== id));
+    setEdges(prev => prev.filter(e => e.source !== id && e.target !== id));
+  }
+
   const handleLoadFlow = (flow: any) => {
     // Prisma stores JSON in `flow.actions` based on our backend code
     const flowData = typeof flow.actions === 'string' ? JSON.parse(flow.actions) : flow.actions;
-    
+
     const restoredNodes = flowData.nodes.map((n: any) => ({
       ...n,
       data: { ...n.data, onDelete: () => deleteNode(n.id) }
     }));
-    
+
     setNodes(restoredNodes);
     setEdges(flowData.edges || []);
     setLoadDialogOpen(false);
@@ -172,10 +179,7 @@ export function FlowBuilderContent() {
     }
   }
 
-  function deleteNode(id: string) {
-    setNodes(prev => prev.filter(n => n.id !== id));
-    setEdges(prev => prev.filter(e => e.source !== id && e.target !== id));
-  }
+
 
   const updateNodeData = (id: string, field: string, value: string) => {
     setNodes(nds => nds.map(n => n.id === id ? { ...n, data: { ...n.data, [field]: value } } : n));

@@ -1,7 +1,7 @@
 import { USDC_ADDRESSES, getERC20Balance, getNativeBalance } from '../adapters/evm';
 import { getStellarBalances } from '../adapters/stellar';
 
-export async function getBalances(walletAddress: string): Promise<Record<string, Record<string, string>>> {
+export async function getBalances(walletAddress: string, stellarAddress?: string): Promise<Record<string, Record<string, string>>> {
   const result: Record<string, Record<string, string>> = {
     base: {},
     celo: {},
@@ -19,8 +19,9 @@ export async function getBalances(walletAddress: string): Promise<Record<string,
     result.ethereum.USDC = await getERC20Balance('ethereum', USDC_ADDRESSES.ethereum, evmAddress);
   }
 
-  if (walletAddress.startsWith('G')) {
-    result.stellar = await getStellarBalances(walletAddress);
+  const stellarAddr = stellarAddress || (walletAddress.startsWith('G') ? walletAddress : null);
+  if (stellarAddr) {
+    result.stellar = await getStellarBalances(stellarAddr);
   }
 
   return result;

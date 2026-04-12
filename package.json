@@ -172,7 +172,7 @@
     "tslib": "^2.8.1",
     "tweetnacl": "^1.0.3",
     "typed-array-buffer": "^1.0.3",
-    "typescript": "^6.0.2",
+    "typescript": "^5.0.0",
     "uint8array-tools": "^0.0.9",
     "undefsafe": "^2.0.5",
     "undici-types": "^6.21.0",

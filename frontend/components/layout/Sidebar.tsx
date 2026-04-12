@@ -10,6 +10,7 @@ import {
   DocumentTextIcon,
 } from '@heroicons/react/24/solid'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
+import { useStellar } from '../../app/StellarProvider'
 
 interface SidebarProps {
   activeMode: 'chat' | 'build' | 'history' | 'settings'
@@ -24,15 +25,17 @@ export function Sidebar({
 }: SidebarProps) {
   const { authenticated } = usePrivy()
   const { wallets } = useWallets()
+  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
 
-  // useWallets() returns all wallets Privy has provisioned for the user —
-  // both embedded (created on login) and externally connected wallets.
-  // This works for Google/email login (embedded wallet) and MetaMask alike.
+  // useWallets() returns all wallets Privy has provisioned for the user
   const walletAddress = wallets[0]?.address ?? null
-
-  const truncated = walletAddress
+  const truncatedPrivy = walletAddress
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
     : '—'
+
+  const truncatedStellar = stellarAddress
+    ? `${stellarAddress.slice(0, 6)}...${stellarAddress.slice(-4)}`
+    : null
 
   const navItems = [
     { name: 'Chat', icon: ChatBubbleLeftRightIcon, href: '/chat', id: 'chat' },
@@ -59,19 +62,48 @@ export function Sidebar({
           </h1>
         </Link>
 
-        {/* Connected Wallet — real address from Privy */}
-        <div className="bg-[#1A1A2E] p-3 flex items-center gap-3 border-l-2 border-[#E91E8C]">
+        {/* Connected Wallet 1 — EVM (Privy) */}
+        <div className="bg-[#1A1A2E] p-3 flex items-center gap-3 border-l-2 border-[#E91E8C] mb-2">
           <div className="w-8 h-8 bg-[#E91E8C] flex items-center justify-center shrink-0">
             <WalletIcon className="w-4 h-4 text-white" />
           </div>
           <div className="min-w-0">
             <div className="font-mono text-[9px] text-[#22C55E] tracking-[0.2em] uppercase mb-0.5 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full animate-pulse" />
-              {authenticated ? 'Connected' : 'Not connected'}
+              <span className={`w-1.5 h-1.5 rounded-full ${authenticated ? 'bg-[#22C55E] animate-pulse' : 'bg-white/30'}`} />
+              {authenticated ? 'EVM Ready' : 'EVM Offline'}
             </div>
             <div className="font-mono text-[11px] text-white font-bold uppercase truncate">
-              {truncated}
+              {truncatedPrivy}
             </div>
+          </div>
+        </div>
+
+        {/* Connected Wallet 2 — Stellar (Multi-Wallet) */}
+        <div className="bg-[#1A1A2E] p-3 flex items-center gap-3 border-l-2 border-[#6A0DAD]">
+          <div className="w-8 h-8 bg-[#6A0DAD] flex items-center justify-center shrink-0">
+            <WalletIcon className="w-4 h-4 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-mono text-[9px] tracking-[0.2em] uppercase mb-0.5 flex items-center gap-1 text-[#22C55E]">
+              <span className={`w-1.5 h-1.5 rounded-full ${stellarAddress ? 'bg-[#22C55E] animate-pulse' : 'bg-white/30'}`} />
+              {stellarAddress ? 'Stellar Ready' : 'Stellar Offline'}
+            </div>
+            {stellarAddress ? (
+              <div 
+                className="font-mono text-[11px] text-white font-bold uppercase truncate cursor-pointer hover:text-white/70"
+                onClick={disconnectStellar}
+                title="Click to disconnect"
+              >
+                {truncatedStellar}
+              </div>
+            ) : (
+              <button
+                onClick={connectStellar}
+                className="font-mono text-[10px] font-bold text-white/60 hover:text-white uppercase transition-colors text-left"
+              >
+                Connect Stellar
+              </button>
+            )}
           </div>
         </div>
       </div>

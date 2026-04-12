@@ -13,6 +13,7 @@ export type UnsignedTx = {
   data: string;         // hex-encoded calldata
   value: string;        // native token amount in wei (usually "0" for ERC-20)
   description: string;  // plain English description shown to user before signing
+  xdr?: string;         // Stellar only — unsigned XDR transaction envelope
 };
 
 // The shape of the full response from POST /api/chat
@@ -25,26 +26,25 @@ export type AgentResponse = {
 /**
  * Send a message to the Automata AI agent.
  *
- * @param message       - What the user typed
- * @param walletAddress - The user's EVM wallet address (from Privy)
- * @param geminiApiKey  - The user's own Gemini API key (stored in localStorage)
- * @param sessionId     - Conversation session ID (pass null for a new conversation)
+ * @param message        - What the user typed
+ * @param walletAddress  - The user's EVM wallet address (from Privy)
+ * @param geminiApiKey   - The user's own Gemini API key (stored in localStorage)
+ * @param sessionId      - Conversation session ID (pass null for a new conversation)
+ * @param stellarAddress - The user's Stellar wallet address (from Stellar Wallets Kit)
  */
 export async function sendAgentMessage(
   message: string,
   walletAddress: string,
   geminiApiKey: string,
-  sessionId: string | null = null
+  sessionId: string | null = null,
+  stellarAddress: string | null = null
 ): Promise<AgentResponse> {
-
   if (!geminiApiKey) {
     throw new Error('NO_API_KEY');
   }
-
   if (!walletAddress) {
     throw new Error('NO_WALLET');
   }
-
   const res = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -53,9 +53,9 @@ export async function sendAgentMessage(
       walletAddress,
       geminiApiKey,
       sessionId: sessionId ?? undefined,
+      stellarAddress: stellarAddress ?? undefined,
     }),
   });
-
   if (!res.ok) {
     let errorMessage = 'Something went wrong. Please try again.';
     try {
@@ -68,9 +68,9 @@ export async function sendAgentMessage(
     }
     throw new Error(errorMessage);
   }
-
   return res.json();
 }
+
 // --- DATABASE API WRAPPERS ---
 
 export async function saveFlowToDb(walletAddress: string, name: string, actions: any) {

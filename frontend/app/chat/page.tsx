@@ -11,12 +11,14 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useWallets } from '@privy-io/react-auth';
 import { toast } from 'sonner';
 import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
+import { useStellar } from '@/app/StellarProvider';
 
 type Message = { id: string; role: 'user' | 'agent'; content: string };
 
 function ChatPageContent() {
   const { wallets } = useWallets();
   const activeWallet = wallets?.[0];
+  const { stellarAddress, signStellarTransaction } = useStellar();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -26,13 +28,10 @@ function ChatPageContent() {
   const [executionMode, setExecutionMode] = useState<'assisted' | 'autonomous'>('assisted');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Keep track of the conversation context for the backend
   const [sessionId] = useState(() => crypto.randomUUID());
-
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Hydrate execution mode from settings
     const savedMode = localStorage.getItem('automata_execution_mode');
     if (savedMode === 'assisted' || savedMode === 'autonomous') {
       setExecutionMode(savedMode);
@@ -66,10 +65,14 @@ function ChatPageContent() {
     setStatus('thinking');
 
     try {
-      // 1. Hit the Live Backend
-      const result = await sendAgentMessage(text, activeWallet.address, geminiKey, sessionId);
+      const result = await sendAgentMessage(
+        text,
+        activeWallet.address,
+        geminiKey,
+        sessionId,
+        stellarAddress
+      );
 
-      // 2. Handle Text-Only Reply
       if (!result.unsignedTxs || result.unsignedTxs.length === 0) {
         setStatus('idle');
         setMessages(prev => [...prev, {
@@ -80,7 +83,6 @@ function ChatPageContent() {
         return;
       }
 
-      // 3. Handle Transaction Payload
       setPendingTxs(result.unsignedTxs);
 
       const generatedPlan: AgentPlan = {
@@ -104,7 +106,6 @@ function ChatPageContent() {
           content: result.reply || 'I have compiled a transaction plan. Please review and approve.'
         }]);
       } else {
-        // Autonomous mode skips the review panel (if backend/user allows it)
         executePlan(result.unsignedTxs, generatedPlan);
       }
 
@@ -135,26 +136,42 @@ function ChatPageContent() {
     try {
       let lastTxHash = '';
 
-      // Execute sequentially
       for (const tx of txsToExecute) {
-        // Use Privy's native switchChain — works for both embedded wallet AND MetaMask
-        const targetChainId = CHAIN_IDS[tx.chainId];
-        if (targetChainId) {
-          await activeWallet.switchChain(targetChainId);
+        if (tx.chainId === 'stellar') {
+          // ── Stellar signing path ──────────────────────────────────────────
+          if (!stellarAddress) {
+            throw new Error('No Stellar wallet connected. Please connect your Stellar wallet in the sidebar.');
+          }
+          if (!tx.xdr) {
+            throw new Error('No XDR found for Stellar transaction. The agent did not return a valid Stellar transaction.');
+          }
+
+          const signedXdr = await signStellarTransaction(tx.xdr);
+
+          const { Horizon, Transaction, Networks } = await import('@stellar/stellar-sdk');
+          const server = new Horizon.Server('https://horizon.stellar.org');
+          const horizonResult = await server.submitTransaction(
+            new Transaction(signedXdr, Networks.PUBLIC)
+          );
+          lastTxHash = horizonResult.hash;
+
+        } else {
+          // ── EVM signing path ──────────────────────────────────────────────
+          const targetChainId = CHAIN_IDS[tx.chainId];
+          if (targetChainId) {
+            await activeWallet.switchChain(targetChainId);
+          }
+          const provider = await activeWallet.getEthereumProvider();
+          lastTxHash = await provider.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: tx.to,
+              data: tx.data,
+              value: tx.value || '0x0',
+              from: activeWallet.address
+            }]
+          });
         }
-
-        // Get provider AFTER chain switch so it reflects the correct network
-        const provider = await activeWallet.getEthereumProvider();
-
-        lastTxHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            to: tx.to,
-            data: tx.data,
-            value: tx.value || '0x0',
-            from: activeWallet.address
-          }]
-        });
       }
 
       // Save to Database History
@@ -171,18 +188,16 @@ function ChatPageContent() {
       }
 
       setStatus('success');
-      const agentMsg: Message = {
+      setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'agent',
         content: `Sequence completed successfully. Verification hash: ${lastTxHash}`
-      };
-      setMessages(prev => [...prev, agentMsg]);
+      }]);
       toast.success('Execution Complete', { description: `Tx Hash: ${lastTxHash}` });
 
     } catch (error: any) {
       setStatus('error');
 
-      // Log failure to Database
       try {
         await saveHistoryToDb(activeWallet.address, undefined, 'AGENT_EXECUTION', 'FAILED', { error: error.message });
       } catch (e) { }

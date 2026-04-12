@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { LockClosedIcon, Bars3Icon } from '@heroicons/react/24/solid'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { toast } from 'sonner'
+import { useStellar } from '@/app/StellarProvider'
 
 const SECTIONS = [
   { id: 'ai-model', num: '01', title: 'AI Model' },
@@ -18,6 +19,7 @@ const SECTIONS = [
 function SettingsPageContent() {
   const { logout } = usePrivy()
   const { wallets } = useWallets()
+  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
 
   const walletAddress = wallets[0]?.address ?? null
   const displayAddress = walletAddress ?? 'No wallet connected'
@@ -220,12 +222,14 @@ function SettingsPageContent() {
                   <h3 className="font-syne text-2xl font-black uppercase tracking-widest mb-8">
                     Active Wallet
                   </h3>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 border border-white/5 bg-[#0A0A12] p-5">
+                  {/* EVM Wallet */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-4 border border-white/5 bg-[#0A0A12] p-5">
                     <div>
-                      <div className="text-[9px] text-white/40 tracking-[0.2em] uppercase mb-2">
-                        Current Address
+                      <div className="text-[9px] text-[#E91E8C] tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#E91E8C] animate-pulse" />
+                        EVM Wallet — Base · Celo · Ethereum
                       </div>
-                      <div className="text-sm sm:text-base font-bold uppercase tracking-widest text-white/90 break-all">
+                      <div className="text-sm font-bold uppercase tracking-widest text-white/90 break-all">
                         {displayAddress}
                       </div>
                     </div>
@@ -235,6 +239,34 @@ function SettingsPageContent() {
                     >
                       Disconnect
                     </button>
+                  </div>
+
+                  {/* Stellar Wallet */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 border border-white/5 bg-[#0A0A12] p-5">
+                    <div>
+                      <div className="text-[9px] text-[#6A0DAD] tracking-[0.2em] uppercase mb-2 flex items-center gap-2">
+                        <span className={`w-1.5 h-1.5 rounded-full ${stellarAddress ? 'bg-[#22C55E] animate-pulse' : 'bg-white/20'}`} />
+                        Stellar Wallet — XLM · USDC
+                      </div>
+                      <div className="text-sm font-bold uppercase tracking-widest text-white/90 break-all">
+                        {stellarAddress ?? 'Not connected'}
+                      </div>
+                    </div>
+                    {stellarAddress ? (
+                      <button
+                        onClick={disconnectStellar}
+                        className="border border-white/10 px-6 py-3 text-[9px] font-bold tracking-widest uppercase hover:bg-white/5 hover:border-[#EF4444]/40 hover:text-[#EF4444] transition-colors shrink-0"
+                      >
+                        Disconnect
+                      </button>
+                    ) : (
+                      <button
+                        onClick={connectStellar}
+                        className="border border-[#6A0DAD]/40 bg-[#6A0DAD]/10 px-6 py-3 text-[9px] font-bold tracking-widest uppercase text-[#6A0DAD] hover:bg-[#6A0DAD]/20 transition-colors shrink-0"
+                      >
+                        Connect Stellar
+                      </button>
+                    )}
                   </div>
                   <div>
                     <div className="text-[9px] text-white/40 tracking-[0.2em] uppercase mb-4">

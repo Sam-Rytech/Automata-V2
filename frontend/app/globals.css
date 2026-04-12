@@ -280,3 +280,17 @@
     background-size: 24px 24px;
   }
 }
+
+/* Stellar Wallets Kit — Automata Theme Override */
+stellar-wallets-modal {
+  --swk-background: #0F0F1A;
+  --swk-background-secondary: #1A1A2E;
+  --swk-color: #FFFFFF;
+  --swk-color-secondary: rgba(255, 255, 255, 0.4);
+  --swk-border-color: rgba(255, 255, 255, 0.08);
+  --swk-border-radius: 0px;
+  --swk-highlight-color: #E91E8C;
+  --swk-highlight-color-secondary: rgba(233, 30, 140, 0.1);
+  --swk-font-family: 'Courier New', monospace;
+  --swk-shadow: 0 0 40px rgba(233, 30, 140, 0.15);
+}

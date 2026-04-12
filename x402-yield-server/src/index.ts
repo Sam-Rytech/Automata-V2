@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { paymentMiddleware } from 'x402-express';
 
 dotenv.config();
 
@@ -11,17 +10,38 @@ const port = process.env.PORT || 3002;
 app.use(cors());
 app.use(express.json());
 
-// Cast the address string to viem's strict 0x string format
-const PAY_TO_ADDRESS = (process.env.PAYMENT_ADDRESS || '0x0000000000000000000000000000000000000000') as `0x${string}`;
+// Your Stellar receiving wallet address (Starts with G)
+const PAY_TO_ADDRESS = process.env.PAYMENT_ADDRESS || 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
 
-// Configure the x402 middleware
-// This intercepts requests to GET /api/yield and demands $0.001 USDC on Base
-app.use(paymentMiddleware(PAY_TO_ADDRESS, {
-  "GET /api/yield": {
-    price: "$0.001",
-    network: "base"
+// Stellar USDC Soroban Contract ID (Mainnet)
+const STELLAR_USDC_CONTRACT = 'CCW67TSZV3NEJEXQCESSVDTZEQB2B4CEPMU74WPEVN2KPEV5J66KILUI';
+
+// Custom x402 Middleware for Stellar
+// Notice we use express.Request instead of a named import to bypass the ESM/CJS issue
+const stellarX402Middleware = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+  const paymentHeader = req.headers['x-payment'] || req.headers['authorization'];
+  
+  if (!paymentHeader) {
+    // Send strict x402 standard payload
+    res.status(402).json({
+      x402Version: 1,
+      error: "X-PAYMENT header is required",
+      accepts: [{
+        scheme: "exact",
+        network: "stellar",
+        maxAmountRequired: "10000", // $0.001 in stroops
+        resource: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+        payTo: PAY_TO_ADDRESS,
+        asset: STELLAR_USDC_CONTRACT,
+        maxTimeoutSeconds: 60
+      }]
+    });
+    return;
   }
-}));
+  
+  // If we reach here, the agent has provided a payment receipt.
+  next();
+};
 
 // Unprotected Health Check
 app.get('/health', (req, res) => {
@@ -29,8 +49,7 @@ app.get('/health', (req, res) => {
 });
 
 // Protected Yield Data Route 
-// If a request makes it here, the x402 payment was successful
-app.get('/api/yield', (req, res) => {
+app.get('/api/yield', stellarX402Middleware, (req, res) => {
   const yieldData = {
     timestamp: new Date().toISOString(),
     rates: [
@@ -45,5 +64,5 @@ app.get('/api/yield', (req, res) => {
 
 app.listen(port, () => {
   console.log(`x402 Yield Server running on port ${port}`);
-  console.log(`Payment required: $0.001 USDC on Base for /api/yield`);
+  console.log(`Payment required: $0.001 USDC (10000 stroops) on Stellar for /api/yield`);
 });

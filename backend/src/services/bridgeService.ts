@@ -1,26 +1,16 @@
-// backend/src/services/bridgeService.ts
-// Step 4.2 — Circle CCTP V2 real bridge transactions
-// Builds approve + depositForBurn unsigned calldata for EVM-to-EVM USDC bridging.
-// Stellar bridging deferred to Phase 5.
-
-import { encodeFunctionData, parseUnits } from 'viem';
-
-// ---------------------------------------------------------------------------
-// Contract addresses — mainnet and testnet sets.
-// Toggle via NODE_ENV: 'production' = mainnet, anything else = testnet.
-// ---------------------------------------------------------------------------
+import { encodeFunctionData, parseUnits, decodeEventLog } from 'viem';
+import { baseClient } from '../utils/rpc';
+import { startBridgeRelay } from './stellarBridgeRelay';
 
 const IS_MAINNET = process.env.NODE_ENV === 'production';
 
 const TOKEN_MESSENGER: Record<string, `0x${string}`> = IS_MAINNET
   ? {
-      // Mainnet TokenMessenger addresses
       base:     '0x1682Ae6375C4E4A97e4B583BC394c861A46D8962',
       celo:     '0x2B4069517957735bE00ceE0fadAE88a26365528f',
       ethereum: '0xBd3fa81B58Ba92a82136038B25aDec7066af3155',
     }
   : {
-      // Testnet TokenMessenger addresses (Base Sepolia / Celo Alfajores / Eth Sepolia)
       base:     '0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5',
       celo:     '0x877B0900F3c46d91CDBDB76E4a0C7B67B1640E13',
       ethereum: '0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5',
@@ -28,29 +18,22 @@ const TOKEN_MESSENGER: Record<string, `0x${string}`> = IS_MAINNET
 
 const USDC_ADDRESS: Record<string, `0x${string}`> = IS_MAINNET
   ? {
-      // Mainnet USDC addresses
       base:     '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
       celo:     '0xcebA9300f2b948710d2653dD7B07f33A8B32118C',
       ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     }
   : {
-      // Testnet USDC addresses
       base:     '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
       celo:     '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
       ethereum: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
     };
 
-// CCTP domain IDs — same on mainnet and testnet
 const CCTP_DOMAIN: Record<string, number> = {
   ethereum: 0,
   base:     6,
   celo:     7,
-  stellar:  4, // reserved — EVM flow not applicable
+  stellar:  4,
 };
-
-// ---------------------------------------------------------------------------
-// ABI fragments
-// ---------------------------------------------------------------------------
 
 const ERC20_APPROVE_ABI = [
   {
@@ -78,17 +61,82 @@ const DEPOSIT_FOR_BURN_ABI = [
   },
 ] as const;
 
-// ---------------------------------------------------------------------------
-// Helper: EVM address → bytes32 (left-padded with zeros to 32 bytes)
-// ---------------------------------------------------------------------------
+const MESSAGE_SENT_ABI = [
+  {
+    name: 'MessageSent',
+    type: 'event',
+    inputs: [{ name: 'message', type: 'bytes', indexed: false }],
+  },
+] as const;
 
 function addressToBytes32(address: string): `0x${string}` {
   const clean = address.toLowerCase().replace('0x', '');
   return `0x${clean.padStart(64, '0')}`;
 }
 
+// Stellar recipient address → bytes32 using raw public key bytes
+function stellarAddressToBytes32(stellarAddress: string): `0x${string}` {
+  const { StrKey } = require('@stellar/stellar-sdk');
+  const rawBytes = StrKey.decodeEd25519PublicKey(stellarAddress) as Buffer;
+  return `0x${rawBytes.toString('hex').padStart(64, '0')}`;
+}
+
 // ---------------------------------------------------------------------------
-// Main exported function — signature must match toolExecutor.ts expectations
+// Called by the frontend after burn tx confirms — extracts message and starts relay
+// ---------------------------------------------------------------------------
+
+export async function handleBurnConfirmed(params: {
+  burnTxHash:       string;
+  recipientAddress: string;
+  amount:           string;
+  onSuccess?: (txHash: string) => void;
+  onError?:   (err: Error)     => void;
+}): Promise<void> {
+  try {
+    const receipt = await baseClient.getTransactionReceipt({
+      hash: params.burnTxHash as `0x${string}`,
+    });
+
+    // Find the MessageSent event log from the Message Transmitter contract
+    let message: string | null = null;
+    for (const log of receipt.logs) {
+      try {
+        const decoded = decodeEventLog({
+          abi: MESSAGE_SENT_ABI,
+          data: log.data,
+          topics: log.topics,
+        });
+        message = (decoded.args as any).message as string;
+        break;
+      } catch {
+        continue;
+      }
+    }
+
+    if (!message) {
+      throw new Error('MessageSent event not found in burn transaction logs');
+    }
+
+    const { keccak256 } = await import('viem');
+    const messageHash = keccak256(message as `0x${string}`);
+
+    await startBridgeRelay({
+      messageHash,
+      message,
+      recipientAddress: params.recipientAddress,
+      amount:           params.amount,
+      onSuccess:        params.onSuccess,
+      onError:          params.onError,
+    });
+
+  } catch (err: any) {
+    console.error('[Bridge] handleBurnConfirmed error:', err);
+    params.onError?.(err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Main exported function
 // ---------------------------------------------------------------------------
 
 export async function buildBridgeTx(params: {
@@ -101,17 +149,6 @@ export async function buildBridgeTx(params: {
 
   const { fromChain, toChain, amount, walletAddress, recipientAddress } = params;
 
-  // ── Validation ────────────────────────────────────────────────────────────
-
-  if (toChain === 'stellar') {
-    return {
-      error: true,
-      message:
-        'Bridging to Stellar uses a different flow that is not yet live. ' +
-        'You can bridge USDC between Base, Celo, and Ethereum today.',
-    };
-  }
-
   if (!TOKEN_MESSENGER[fromChain]) {
     return {
       error: true,
@@ -122,7 +159,7 @@ export async function buildBridgeTx(params: {
   if (CCTP_DOMAIN[toChain] === undefined) {
     return {
       error: true,
-      message: `Bridging to "${toChain}" is not supported. Supported: base, celo, ethereum.`,
+      message: `Bridging to "${toChain}" is not supported.`,
     };
   }
 
@@ -133,20 +170,17 @@ export async function buildBridgeTx(params: {
     };
   }
 
-  // ── Parse amount ──────────────────────────────────────────────────────────
-
   let amountInUnits: bigint;
   try {
-    amountInUnits = parseUnits(amount, 6); // USDC = 6 decimals
+    amountInUnits = parseUnits(amount, 6);
   } catch {
     return {
       error: true,
-      message: `Invalid amount: "${amount}". Use a number like "10" or "50.5".`,
+      message: `Invalid amount: "${amount}".`,
     };
   }
 
-  // ── Transaction 1: approve ────────────────────────────────────────────────
-  // User approves TokenMessenger to pull their USDC before the burn.
+  // ── Approve tx ────────────────────────────────────────────────────────────
 
   const approveData = encodeFunctionData({
     abi: ERC20_APPROVE_ABI,
@@ -163,11 +197,14 @@ export async function buildBridgeTx(params: {
     txType:      'approve',
   };
 
-  // ── Transaction 2: depositForBurn ─────────────────────────────────────────
-  // Burns the USDC on the source chain. Circle attests the burn, then the
-  // frontend builds the mint tx on the destination chain (Phase B — Phase 5).
+  // ── Burn tx ───────────────────────────────────────────────────────────────
+  // For Stellar recipients, encode the Stellar public key as bytes32.
+  // For EVM recipients, left-pad the EVM address as bytes32.
 
-  const mintRecipient    = addressToBytes32(recipientAddress);
+  const mintRecipient = toChain === 'stellar'
+    ? stellarAddressToBytes32(recipientAddress)
+    : addressToBytes32(recipientAddress);
+
   const destinationDomain = CCTP_DOMAIN[toChain];
 
   const burnData = encodeFunctionData({
@@ -182,35 +219,33 @@ export async function buildBridgeTx(params: {
   });
 
   const burnTx = {
-    to:          TOKEN_MESSENGER[fromChain],
-    data:        burnData,
-    value:       '0',
-    chainId:     fromChain,
-    description: `Send ${amount} USDC from ${fromChain} to ${toChain}`,
-    txType:      'burn',
+    to:               TOKEN_MESSENGER[fromChain],
+    data:             burnData,
+    value:            '0',
+    chainId:          fromChain,
+    description:      `Send ${amount} USDC from ${fromChain} to ${toChain}`,
+    txType:           'burn',
+    // Metadata the frontend passes back to /api/bridge/relay after burn confirms
+    bridgeMeta: {
+      recipientAddress,
+      amount,
+      toChain,
+    },
   };
 
-  // ── Return both transactions + metadata ───────────────────────────────────
-
   return {
+    description: `Move ${amount} USDC from ${fromChain} to ${toChain}`,
+    unsignedTx:  approveTx,
     unsignedTxs: [approveTx, burnTx],
     summary: {
       fromChain,
       toChain,
       amount,
-      fromToken:              'USDC',
-      toToken:                'USDC',
-      estimatedTimeSeconds:   90,
-      estimatedFeeUSD:        '< $0.01', // CCTP has no bridge fee — user pays gas only
-      note:
-        `Two steps: first authorise, then send. ` +
-        `Your USDC will arrive on ${toChain} in about 90 seconds.`,
-    },
-    // Stored for the frontend to build the mint tx (Phase B) after burn confirms
-    cctpMintInfo: {
-      destinationChain:   toChain,
-      recipientAddress,
-      destinationDomain,
+      estimatedTimeSeconds: 90,
+      estimatedFeeUSD:      '< $0.01',
+      note: toChain === 'stellar'
+        ? `Your USDC will arrive on Stellar automatically in about 90 seconds after you confirm.`
+        : `Two steps: first authorise, then send. Your USDC arrives in about 90 seconds.`,
     },
   };
 }

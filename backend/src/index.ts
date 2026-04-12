@@ -5,8 +5,8 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { runAgent, ConversationMessage } from './agent/agent';
 import { pollTransactionStatus } from './services/txMonitorService';
+import { handleBurnConfirmed } from './services/bridgeService';
 import { PrismaClient } from '@prisma/client';
-
 
 dotenv.config();
 
@@ -59,6 +59,33 @@ app.post('/api/chat', async (req, res) => {
     console.error('[/api/chat] Error:', err);
     return res.status(500).json({ error: err.message ?? 'Agent execution failed.' });
   }
+});
+
+// ── /api/bridge/relay ─────────────────────────────────────────────────────────
+// Called by the frontend after the burn tx confirms on Base.
+// Starts the background relay that polls Circle and mints USDC on Stellar.
+
+app.post('/api/bridge/relay', async (req, res) => {
+  const { burnTxHash, recipientAddress, amount } = req.body;
+
+  if (!burnTxHash || !recipientAddress || !amount) {
+    return res.status(400).json({ error: 'burnTxHash, recipientAddress, and amount are required.' });
+  }
+
+  // Respond immediately — relay runs in background
+  res.json({ status: 'relay_started', burnTxHash });
+
+  handleBurnConfirmed({
+    burnTxHash,
+    recipientAddress,
+    amount,
+    onSuccess: (txHash) => {
+      console.log(`[Bridge] Stellar mint complete: ${txHash}`);
+    },
+    onError: (err) => {
+      console.error(`[Bridge] Relay failed for ${burnTxHash}:`, err);
+    },
+  });
 });
 
 app.post('/api/flows', async (req, res) => {

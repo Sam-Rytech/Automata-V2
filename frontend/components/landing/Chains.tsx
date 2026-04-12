@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 export function Chains() {
   const chains = [
     {
-      name: 'base',
-      hoverTextClass: 'hover:text-[#0000FE]',
-      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(0,0,254,0.4)]',
-      src: '/base_logos.jpeg',
+      name: 'STELLAR',
+      hoverTextClass: 'hover:text-white',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]',
+      src: '/stellar-xlm-logo.svg',
     },
     {
       name: 'CELO',
@@ -27,10 +27,10 @@ export function Chains() {
       src: '/ethereum-eth-logo.svg',
     },
     {
-      name: 'STELLAR',
-      hoverTextClass: 'hover:text-white',
-      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]',
-      src: '/stellar-xlm-logo.svg',
+      name: 'base',
+      hoverTextClass: 'hover:text-[#0000FE]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(0,0,254,0.4)]',
+      src: '/base_logos.jpeg',
     },
     {
       name: 'SOLANA',

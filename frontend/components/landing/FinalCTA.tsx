@@ -1,7 +1,24 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import DarkVeil from '../DarkVeil';
+import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
 
 export function FinalCTA() {
+  const router = useRouter();
+  const { login, authenticated, ready } = usePrivy();
+
+  const handleLaunch = () => {
+    if (!ready) return;
+    if (authenticated) {
+      router.push('/build');
+    } else {
+      localStorage.setItem('postLoginRedirect', '/build');
+      login();
+    }
+  };
+
   return (
     <section className="relative min-h-[80vh] flex flex-col justify-center py-40 px-4 bg-[var(--bg-primary)] overflow-hidden border-t border-[var(--border-subtle)]">
       
@@ -37,7 +54,7 @@ export function FinalCTA() {
           Every chain.
         </h2>
         
-        <Button size="lg" className="w-[280px]">
+        <Button size="lg" className="w-[280px]" onClick={handleLaunch}>
           Launch Automata
         </Button>
       </div>

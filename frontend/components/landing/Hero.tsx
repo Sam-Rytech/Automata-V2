@@ -1,10 +1,23 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import DarkVeil from '../DarkVeil';
+import { useRouter } from 'next/navigation';
+import { usePrivy } from '@privy-io/react-auth';
 
 export function Hero() {
+  const router = useRouter();
+  const { login, authenticated, ready } = usePrivy();
+
+  const handleAction = (destination: string) => {
+    if (!ready) return;
+    if (authenticated) {
+      router.push(destination);
+    } else {
+      localStorage.setItem('postLoginRedirect', destination);
+      login();
+    }
+  };
   return (
     <section className="relative min-h-[95vh] w-full bg-[var(--bg-primary)] overflow-hidden flex flex-col justify-center">
 
@@ -105,18 +118,18 @@ export function Hero() {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4"
         >
-          <Link href="/chat" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent">
+          <div className="w-full sm:w-auto block">
+            <button onClick={() => handleAction('/chat')} className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center">
               <span className="tech-corners-extra" />
               Start Chatting
             </button>
-          </Link>
-          <Link href="/build" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button">
+          </div>
+          <div className="w-full sm:w-auto block">
+            <button onClick={() => handleAction('/build')} className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button flex items-center justify-center">
               <span className="tech-corners-extra" />
               Build a Flow
             </button>
-          </Link>
+          </div>
         </motion.div>
 
       </div>

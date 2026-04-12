@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Syne, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
@@ -21,9 +21,16 @@ export const metadata: Metadata = {
   title: 'Automata — Cross-Chain AI Agent',
   description: 'Swap, bridge, and stake across any chain. In plain English.',
   icons: {
-    icon: '/Automata.ico',
+    icon: [
+      { url: '/Automata.png', type: 'image/png' },
+      { url: '/Automata.ico', type: 'image/x-icon' }
+    ],
+    shortcut: '/Automata.ico',
+    apple: '/Automata.png',
   },
-  // This tints the browser UI/Toolbar on mobile and some desktop browsers
+};
+
+export const viewport: Viewport = {
   themeColor: '#8B5CF6',
 };
 

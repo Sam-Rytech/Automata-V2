@@ -2,6 +2,50 @@
 import { motion } from 'framer-motion';
 
 export function Chains() {
+  const chains = [
+    {
+      name: 'base',
+      hoverTextClass: 'hover:text-[#0000FE]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(0,0,254,0.4)]',
+      src: '/base_logos.jpeg',
+    },
+    {
+      name: 'CELO',
+      hoverTextClass: 'hover:text-[#FCFF52]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(252,255,82,0.3)]',
+      src: '/celo-celo-logo.svg',
+      textSvg: (
+        <svg viewBox="0 0 114 26" fill="none" className="h-[14px] lg:h-5 shrink-0 transition-all duration-300">
+          <path fillRule="evenodd" clipRule="evenodd" d="M25.9538 0H0.435547V25.682H25.9533V16.7172H21.7184C20.2586 19.9876 16.9728 22.2654 13.2125 22.2654C8.02853 22.2654 3.83037 18.0039 3.83037 12.823C3.83037 7.64221 8.02853 3.41712 13.2125 3.41712C17.0457 3.41712 20.3315 5.76873 21.7919 9.11197H25.9538V0ZM50.6663 16.7167C49.1698 19.987 45.9205 22.2647 42.1242 22.2649C37.086 22.2649 32.9608 18.2234 32.7783 13.1898H54.9012V0H29.3829V25.6814H54.9012V16.7167H50.6663ZM50.9934 10.0303H33.1782H33.1777C34.3093 5.80518 38.0696 3.41716 42.122 3.41716C46.1743 3.41716 49.6793 5.65795 50.9934 10.0303ZM110.005 12.8225C110.005 18.0398 105.843 22.2649 100.659 22.2649C95.5115 22.2649 91.3133 18.0033 91.3133 12.8225C91.3133 7.64169 95.4753 3.4166 100.659 3.4166C105.843 3.4166 110.005 7.60527 110.005 12.8225ZM113.436 0H87.918V25.682H113.436V0ZM80.4927 16.7167H84.7276V25.6814H58.2969V0H62.6046V12.8225C62.6046 18.5543 66.8395 22.2284 71.8772 22.2284C75.7833 22.2284 79.2148 20.0974 80.4927 16.7172V16.7167Z" fill="currentColor"/>
+        </svg>
+      )
+    },
+    {
+      name: 'ETHEREUM',
+      hoverTextClass: 'hover:text-[#627EEA]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(98,126,234,0.4)]',
+      src: '/ethereum-eth-logo.svg',
+    },
+    {
+      name: 'STELLAR',
+      hoverTextClass: 'hover:text-white',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]',
+      src: '/stellar-xlm-logo.svg',
+    },
+    {
+      name: 'SOLANA',
+      hoverTextClass: 'hover:text-[#14F195]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(20,241,149,0.4)]',
+      src: '/solana-sol-logo.svg',
+    },
+    {
+      name: 'STACKS',
+      hoverTextClass: 'hover:text-[#5546FF]',
+      hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(85,70,255,0.4)]',
+      src: '/stacks-stx-logo.svg',
+    }
+  ];
+
   return (
     <section id="chains" className="py-24 border-y border-[var(--border-subtle)] bg-[#0F0F1A]/80 backdrop-blur-md relative z-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
@@ -16,75 +60,30 @@ export function Chains() {
           </h2>
         </div>
 
-        {/* Logos Row */}
-        <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-20">
-
-          {/* BASE (Blue - #0052FF) */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
-                       hover:text-[#0052FF] hover:drop-shadow-[0_0_15px_rgba(0,82,255,0.4)] group"
-          >
-            {/* Base Logo: Solid circle with hollow center */}
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 shrink-0">
-              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.5c-3.59 0-6.5-2.91-6.5-6.5S8.41 5.5 12 5.5s6.5 2.91 6.5 6.5-2.91 6.5-6.5 6.5z" />
-            </svg>
-            <span className="font-syne font-bold text-xl tracking-widest">BASE</span>
-          </motion.div>
-
-          {/* CELO (Yellow/Gold - #FCFF52) */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
-                       hover:text-[#FCFF52] hover:drop-shadow-[0_0_15px_rgba(252,255,82,0.3)] group"
-          >
-            {/* Celo Logo: Interlocking rings */}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-9 h-9 shrink-0">
-              <circle cx="8" cy="12" r="6" />
-              <circle cx="16" cy="12" r="6" />
-            </svg>
-            <span className="font-syne font-bold text-xl tracking-widest">CELO</span>
-          </motion.div>
-
-          {/* ETHEREUM (Blue/Grey - #627EEA) */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
-                       hover:text-[#627EEA] hover:drop-shadow-[0_0_15px_rgba(98,126,234,0.4)] group"
-          >
-            {/* Ethereum Logo: Classic Octahedron */}
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 shrink-0">
-              <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
-            </svg>
-            <span className="font-syne font-bold text-xl tracking-widest">ETHEREUM</span>
-          </motion.div>
-
-          {/* STELLAR (White/Bright - #FFFFFF) */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
-                       hover:text-white hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] group"
-          >
-            {/* Stellar Logo: Minimalist planetary ring representation */}
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 shrink-0">
-              <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8zm4.5-9.5H7.5v-1h9z" />
-              <path d="M15.536 14.464a.5.5 0 0 0-.707 0L12 17.293l-2.828-2.829a.5.5 0 1 0-.707.707L12 18.707l3.536-3.536a.5.5 0 0 0 0-.707z" />
-            </svg>
-            <span className="font-syne font-bold text-xl tracking-widest">STELLAR</span>
-          </motion.div>
-
-          {/* SOLANA (Green - #14F195) */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
-                       hover:text-[#14F195] hover:drop-shadow-[0_0_15px_rgba(20,241,149,0.4)] group"
-          >
-            {/* Solana Logo: The three stacked, angled bars */}
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 shrink-0">
-              <path d="M3.7 4.5h16.6l-3.7 4H0l3.7-4zm16.6 6.5l-3.7 4H0l3.7-4h16.6zM0 15.5l3.7-4h16.6l-3.7 4H0z" />
-            </svg>
-            <span className="font-syne font-bold text-xl tracking-widest">SOLANA</span>
-          </motion.div>
+        {/* Logos Grid / Row */}
+        <div className="grid grid-cols-2 gap-y-10 gap-x-2 place-items-center sm:grid-cols-3 lg:flex lg:flex-row lg:flex-nowrap lg:items-center lg:justify-center lg:gap-12 xl:gap-20">
+          
+          {chains.map((chain) => (
+            <motion.div
+              key={chain.name}
+              whileHover={{ scale: 1.05 }}
+              className={`flex items-center gap-2 lg:gap-3 text-white/30 transition-all duration-300 cursor-pointer drop-shadow-none 
+                         ${chain.hoverTextClass} ${chain.hoverShadowClass} group justify-center`}
+            >
+              <img 
+                src={chain.src} 
+                alt={`${chain.name} logo`} 
+                className="w-6 h-6 lg:w-8 lg:h-8 shrink-0 object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+              />
+              {chain.textSvg ? (
+                chain.textSvg
+              ) : (
+                <span className="font-syne font-bold uppercase text-sm lg:text-xl tracking-widest whitespace-nowrap">
+                  {chain.name}
+                </span>
+              )}
+            </motion.div>
+          ))}
 
         </div>
       </div>

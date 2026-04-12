@@ -7,7 +7,6 @@ import { useRef, useEffect } from 'react';
 export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
-  const loginIntentRef = useRef(false);
 
   const handleLaunch = () => {
     if (!ready) return; // SDK not ready yet — ignore the click
@@ -15,14 +14,18 @@ export function LandingNav() {
     if (authenticated) {
       router.push('/build');
     } else {
-      loginIntentRef.current = true;
+      localStorage.setItem('postLoginRedirect', '/build');
       login();
     }
   };
 
   useEffect(() => {
-    if (ready && authenticated && loginIntentRef.current) {
-      router.push('/build');
+    if (ready && authenticated) {
+      const redirect = localStorage.getItem('postLoginRedirect');
+      if (redirect) {
+        localStorage.removeItem('postLoginRedirect');
+        router.push(redirect);
+      }
     }
   }, [ready, authenticated, router]);
 

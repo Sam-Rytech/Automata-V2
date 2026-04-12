@@ -24,18 +24,23 @@ export async function executeTool(
         return { data: await getYieldRates({ chain: args.chain, token: args.token }) };
       case 'build_bridge_tx': {
         const result = await buildBridgeTx(args as { fromChain: string; toChain: string; amount: string; walletAddress: string; recipientAddress: string });
-        return { data: result.description, unsignedTx: result.unsignedTx };
+        const r = result as any;
+        if (r.error) return { data: r };
+        return { data: r.description, unsignedTx: r.unsignedTx };
       }
       case 'build_swap_tx': {
-        const result = await buildSwapTx(args);
+        const result = await buildSwapTx(args) as any;
+        if (result.error) return { data: result };
         return { data: result.description, unsignedTx: result.unsignedTx };
       }
       case 'build_stake_tx': {
-        const result = await buildStakeTx(args as { chain: string; protocol: string; token: string; amount: string; walletAddress: string });
+        const result = await buildStakeTx(args as { chain: string; protocol: string; token: string; amount: string; walletAddress: string }) as any;
+        if (result.error) return { data: result };
         return { data: result.description, unsignedTx: result.unsignedTx };
       }
       case 'build_transfer_tx': {
-        const result = await buildTransferTx(args);
+        const result = await buildTransferTx(args) as any;
+        if (result.error) return { data: result };
         return { data: result.description, unsignedTx: result.unsignedTx };
       }
       case 'estimate_fees':

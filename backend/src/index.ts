@@ -32,7 +32,7 @@ app.get('/health', (_req, res) => {
 // ── /api/chat ─────────────────────────────────────────────────────────────────
 
 app.post('/api/chat', async (req, res) => {
-  const { message, sessionId, geminiApiKey, walletAddress } = req.body;
+  const { message, sessionId, geminiApiKey, walletAddress, stellarAddress } = req.body;
 
   if (!message || !sessionId || !geminiApiKey) {
     return res.status(400).json({
@@ -42,9 +42,9 @@ app.post('/api/chat', async (req, res) => {
 
   const history = sessions.get(sessionId) ?? [];
 
-  // Inject the wallet address as context so the agent can use it in tool calls
+  // Inject both EVM and Stellar addresses as context so the agent can use them in tool calls
   const contextualMessage = walletAddress
-    ? `[User wallet address: ${walletAddress}]\n${message}`
+    ? `[User EVM wallet address: ${walletAddress}]${stellarAddress ? `\n[User Stellar wallet address: ${stellarAddress}]` : ''}\n${message}`
     : message;
 
   try {

@@ -10,6 +10,7 @@ export const AGENT_TOOLS: Tool[] = [
           type: 'OBJECT' as any,
           properties: {
             walletAddress: { type: 'STRING' as any, description: 'The 0x or Stellar address to check' },
+            stellarAddress: { type: 'STRING' as any, description: 'The Stellar G address if available separately' },
           },
           required: ['walletAddress'],
         },
@@ -59,17 +60,21 @@ export const AGENT_TOOLS: Tool[] = [
       },
       {
         name: 'build_swap_tx',
-        description: 'Build an unsigned swap transaction using LI.FI. Use for non-USDC assets or when CCTP is not available.',
+        description: 'Build an unsigned swap transaction. For Stellar swaps (e.g. XLM to USDC on Stellar DEX), set fromChain to "stellar" and omit routeId. For EVM swaps, provide routeId from get_route.',
         parameters: {
           type: 'OBJECT' as any,
           properties: {
-            routeId:       { type: 'STRING' as any, description: 'Route ID returned by get_route' },
+            routeId:       { type: 'STRING' as any, description: 'Route ID from get_route. Required for EVM swaps, omit for Stellar swaps.' },
             walletAddress: { type: 'STRING' as any, description: 'Sender wallet address' },
-            fromToken:     { type: 'STRING' as any, description: 'Token to swap from' },
-            toToken:       { type: 'STRING' as any, description: 'Token to swap to' },
-            fromChain:     { type: 'STRING' as any, description: 'Chain to swap on' },
+            fromAddress:   { type: 'STRING' as any, description: 'Stellar sender address (required for Stellar swaps)' },
+            fromToken:     { type: 'STRING' as any, description: 'Token to swap from (e.g. XLM, USDC)' },
+            toToken:       { type: 'STRING' as any, description: 'Token to swap to (e.g. USDC, XLM)' },
+            fromChain:     { type: 'STRING' as any, description: 'Chain to swap on: base, celo, ethereum, or stellar' },
+            toChain:       { type: 'STRING' as any, description: 'Destination chain (for cross-chain swaps)' },
+            amount:        { type: 'STRING' as any, description: 'Amount to swap' },
+            minDestAmount: { type: 'STRING' as any, description: 'Minimum amount to receive (slippage protection, required for Stellar swaps)' },
           },
-          required: ['routeId', 'walletAddress', 'fromToken', 'toToken', 'fromChain'],
+          required: ['walletAddress', 'fromToken', 'toToken', 'fromChain', 'amount'],
         },
       },
       {

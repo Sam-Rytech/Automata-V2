@@ -1,6 +1,7 @@
 import { LandingNav } from "@/components/landing/LandingNav";
 import { Hero } from "@/components/landing/Hero";
 import { Models } from "@/components/landing/Models";
+import { X402Banner } from "@/components/landing/X402Banner";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Capabilities } from "@/components/landing/Capabilities";
 import { Chains } from "@/components/landing/Chains";
@@ -13,6 +14,7 @@ export default function HomePage() {
       <LandingNav />
       <Hero />
       <Models />
+      <X402Banner />
       <HowItWorks />
       <Capabilities />
       <Chains />

@@ -1,12 +1,13 @@
 import { getBalances } from '../services/balanceService';
 import { getRoute } from '../services/routeService';
-import { getYieldRates } from '../services/yieldService';
+// import { getYieldRates } from '../services/yieldService';
 import { buildBridgeTx } from '../services/bridgeService';
 import { buildSwapTx } from '../services/swapService';
 import { buildStakeTx } from '../services/stakeService';
 import { buildTransferTx } from '../services/transferService';
 import { estimateFees } from '../services/feeService';
 import { resolveRecipient } from '../services/resolverService';
+import { X402PaymentHandler } from '../services/X402PaymentHandler';
 
 export async function executeTool(
   toolName: string,
@@ -20,8 +21,32 @@ export async function executeTool(
         return { data: await getBalances(args.walletAddress || walletAddress, args.stellarAddress || stellarAddress) };
       case 'get_route':
         return { data: await getRoute(args) };
-      case 'get_yield_rates':
-        return { data: await getYieldRates({ chain: args.chain, token: args.token }) };
+        
+      // --- PHASE 3: THE AUTONOMOUS PAYMENT INJECTION ---
+      case 'get_yield_rates': {
+        console.log(`[Tool] Agent executing get_yield_rates for ${args.token} on ${args.chain}`);
+        
+        const handler = new X402PaymentHandler();
+        // Pointing straight to your production Railway server
+        const url = 'https://automata-x402-production.up.railway.app/api/yield'; 
+        
+        try {
+            // The handler catches the 402, pays 0.001 USDC, and retries!
+            const yieldData = await handler.fetchProtectedData(url);
+            
+            return { 
+                data: {
+                    system_notice: "You just paid 0.001 USDC autonomously via the Stellar Mainnet to unlock this premium API data.",
+                    rates: yieldData.rates
+                }
+            };
+        } catch (error: any) {
+            console.error("Failed to fetch yield data:", error.message);
+            return { data: { error: "Failed to fetch premium yield data due to a payment or network error." } };
+        }
+      }
+      // -------------------------------------------------
+
       case 'build_bridge_tx': {
         const result = await buildBridgeTx(args as { fromChain: string; toChain: string; amount: string; walletAddress: string; recipientAddress: string });
         const r = result as any;

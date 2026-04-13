@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { runAgent, ConversationMessage } from './agent/agent';
 import { pollTransactionStatus } from './services/txMonitorService';
-import { handleBurnConfirmed } from './services/bridgeService';
+import { handleBurnConfirmed, pollAttestation, buildReceiveMessageTx } from './services/bridgeService';
 import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
@@ -61,9 +61,61 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// ── /api/bridge/attest ────────────────────────────────────────────────────────
+// Called by the frontend after the burn tx confirms on an EVM chain.
+// Polls Circle Iris V2 until attestation is complete, then returns the
+// unsigned receiveMessage (mint) tx for the user to sign on the destination chain.
+// This is what makes the bridge feel like one user action — they sign burn,
+// wait ~90 seconds, then sign mint. No manual steps in between.
+
+app.post('/api/bridge/attest', async (req, res) => {
+  const { burnTxHash, sourceChain, destinationChain, recipientAddress, amount } = req.body;
+
+  if (!burnTxHash || !sourceChain || !destinationChain || !recipientAddress || !amount) {
+    return res.status(400).json({
+      error: 'burnTxHash, sourceChain, destinationChain, recipientAddress, and amount are required.',
+    });
+  }
+
+  const CCTP_DOMAIN: Record<string, number> = {
+    ethereum: 0,
+    base:     6,
+    celo:     7,
+    stellar:  27,
+  };
+
+  const sourceDomain = CCTP_DOMAIN[sourceChain];
+  if (sourceDomain === undefined) {
+    return res.status(400).json({ error: `Unsupported source chain: ${sourceChain}` });
+  }
+
+  try {
+    console.log(`[Bridge Attest] Polling for ${burnTxHash} on ${sourceChain} → ${destinationChain}`);
+
+    const { message, attestation } = await pollAttestation(sourceDomain, burnTxHash);
+
+    const mintTx = buildReceiveMessageTx({
+      destinationChain,
+      message,
+      attestation,
+      amount,
+    });
+
+    return res.json({
+      status:    'attested',
+      unsignedTx: mintTx,
+    });
+
+  } catch (err: any) {
+    console.error('[/api/bridge/attest] Error:', err);
+    return res.status(500).json({ error: err.message ?? 'Attestation failed.' });
+  }
+});
+
 // ── /api/bridge/relay ─────────────────────────────────────────────────────────
-// Called by the frontend after the burn tx confirms on Base.
+// Called by the frontend after the burn tx confirms on Base → Stellar.
 // Starts the background relay that polls Circle and mints USDC on Stellar.
+// Deferred until Circle publishes verified Stellar mainnet contract addresses.
 
 app.post('/api/bridge/relay', async (req, res) => {
   const { burnTxHash, recipientAddress, amount } = req.body;
@@ -72,7 +124,6 @@ app.post('/api/bridge/relay', async (req, res) => {
     return res.status(400).json({ error: 'burnTxHash, recipientAddress, and amount are required.' });
   }
 
-  // Respond immediately — relay runs in background
   res.json({ status: 'relay_started', burnTxHash });
 
   handleBurnConfirmed({

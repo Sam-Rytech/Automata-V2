@@ -26,7 +26,7 @@ export function NodeConfigContent({
     up('amount', '0');
     up('fromChain', 'Ethereum');
     up('fromToken', 'ETH');
-    if (node.data.type === 'BRIDGE') up('toChain', 'Base');
+    if (node.data.type === 'BRIDGE') { up('toChain', 'Base'); up('toToken', ''); }
     if (node.data.type === 'SWAP') up('toToken', 'USDC');
     if (node.data.type === 'STAKE') up('protocol', 'Aave');
     if (node.data.type === 'TRANSFER' || node.data.type === 'SEND') up('toAddress', '');
@@ -39,15 +39,26 @@ export function NodeConfigContent({
         <label className="text-[8px] text-white/40 tracking-[0.2em] uppercase">{label}</label>
         <span className="text-[8px] text-[#E91E8C] tracking-widest uppercase">[{currentVal || 'SELECT'}]</span>
       </div>
-      <div onClick={() => setActiveDropdown(activeDropdown === field ? null : field)} className="bg-[#0F0F1A] border border-white/10 p-3.5 flex justify-between items-center cursor-pointer hover:border-[#E91E8C]/50 transition-colors">
-        <span className="text-xs font-bold text-white">{currentVal || `Select ${label}`}</span>
-        <ChevronDownIcon className="w-3 h-3 text-white/40" />
+      <div className="bg-[#0F0F1A] border border-white/10 p-3.5 flex justify-between items-center focus-within:border-[#E91E8C]/50 transition-colors relative">
+        <input
+          type="text"
+          value={currentVal || ''}
+          onChange={(e) => updateNode(node.id, field, e.target.value)}
+          onFocus={() => setActiveDropdown(field)}
+          onBlur={() => setTimeout(() => setActiveDropdown(null), 200)}
+          placeholder={`Type or select...`}
+          className="bg-transparent border-none outline-none text-xs font-bold w-full text-white placeholder:text-white/40"
+        />
+        <ChevronDownIcon
+          className="w-3 h-3 text-white/40 cursor-pointer ml-2 shrink-0"
+          onClick={() => setActiveDropdown(activeDropdown === field ? null : field)}
+        />
       </div>
       <AnimatePresence>
         {activeDropdown === field && (
-          <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="absolute top-full left-0 w-full bg-[#1A1A2E] border border-white/10 z-50 shadow-2xl max-h-48 overflow-y-auto custom-scrollbar">
+          <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="absolute top-full left-0 w-full bg-[#1A1A2E] border border-white/10 z-50 shadow-2xl max-h-48 overflow-y-auto custom-scrollbar mt-1">
             {options.map(opt => (
-              <div key={opt} onClick={() => up(field, opt)} className="p-3.5 text-[10px] font-bold text-white hover:bg-[#E91E8C]/20 hover:text-[#E91E8C] cursor-pointer border-b border-white/5 uppercase tracking-widest">
+              <div key={opt} onMouseDown={() => up(field, opt)} className="p-3.5 text-[10px] font-bold text-white hover:bg-[#E91E8C]/20 hover:text-[#E91E8C] cursor-pointer border-b border-white/5 uppercase tracking-widest">
                 {opt}
               </div>
             ))}
@@ -86,7 +97,7 @@ export function NodeConfigContent({
           {node.data.type === 'STAKE' && renderDropdown('protocol', 'Protocol', PROTOCOLS, node.data.protocol || '')}
 
           {renderDropdown('fromToken', node.data.type === 'BRIDGE' ? 'Token' : 'Source Token', ASSETS, node.data.fromToken || '')}
-          {node.data.type === 'SWAP' && renderDropdown('toToken', 'Target Token', ASSETS, node.data.toToken || '')}
+          {(node.data.type === 'SWAP' || node.data.type === 'BRIDGE') && renderDropdown('toToken', 'Target Token', ASSETS, node.data.toToken || '')}
 
           <div className="space-y-2">
             <label className="text-[8px] text-white/40 tracking-[0.2em] uppercase">Execution Amount</label>

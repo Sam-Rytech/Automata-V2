@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/solid'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useStellar } from '../../app/StellarProvider'
+import { useBalances } from '../../hooks/useBalances'
 
 interface SidebarProps {
   activeMode: 'chat' | 'build' | 'history' | 'settings'
@@ -29,6 +30,7 @@ export function Sidebar({
 
   // useWallets() returns all wallets Privy has provisioned for the user
   const walletAddress = wallets[0]?.address ?? null
+  const { data: balances, isLoading: isBalancesLoading } = useBalances(walletAddress, stellarAddress)
   const truncatedPrivy = walletAddress
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
     : '—'
@@ -133,16 +135,22 @@ export function Sidebar({
             </div>
             <div className="space-y-3">
               {[
-                { t: 'USDC (Base)', v: '1,240.50' },
-                { t: 'USDC (Celo)', v: '45.00' },
-                { t: 'XLM (Stellar)', v: '892.12' },
+                { t: 'USDC (Base)', v: balances?.baseUSDC || '0.00' },
+                { t: 'ETH (Base)', v: balances?.baseETH || '0.00' },
+                { t: 'USDC (Celo)', v: balances?.celoUSDC || '0.00' },
+                { t: 'CELO (Celo)', v: balances?.celoNative || '0.00' },
+                { t: 'XLM (Stellar)', v: balances?.stellarXLM || '0.00' },
               ].map((b, i) => (
                 <div
                   key={i}
-                  className="flex justify-between font-mono text-[11px] uppercase"
+                  className="flex justify-between font-mono text-[11px] uppercase items-center"
                 >
                   <span className="text-white/40">{b.t}</span>
-                  <span className="text-white font-bold">{b.v}</span>
+                  {isBalancesLoading ? (
+                    <div className="h-3 w-12 bg-white/10 rounded animate-pulse" />
+                  ) : (
+                    <span className="text-white font-bold">{b.v}</span>
+                  )}
                 </div>
               ))}
             </div>

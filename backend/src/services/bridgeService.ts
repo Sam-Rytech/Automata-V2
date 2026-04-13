@@ -1,39 +1,40 @@
 import { encodeFunctionData, parseUnits, decodeEventLog } from 'viem';
-import { baseClient } from '../utils/rpc';
+import { baseClient, celoClient, ethClient } from '../utils/rpc';
 import { startBridgeRelay } from './stellarBridgeRelay';
 
-const IS_MAINNET = process.env.NODE_ENV === 'production';
+// ---------------------------------------------------------------------------
+// CCTP V2 contract addresses — identical across all chains via CREATE2
+// Verified on Basescan and Etherscan April 2026
+// ---------------------------------------------------------------------------
 
-const TOKEN_MESSENGER: Record<string, `0x${string}`> = IS_MAINNET
-  ? {
-      base:     '0x1682Ae6375C4E4A97e4B583BC394c861A46D8962',
-      celo:     '0x2B4069517957735bE00ceE0fadAE88a26365528f',
-      ethereum: '0xBd3fa81B58Ba92a82136038B25aDec7066af3155',
-    }
-  : {
-      base:     '0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5',
-      celo:     '0x877B0900F3c46d91CDBDB76E4a0C7B67B1640E13',
-      ethereum: '0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5',
-    };
+const TOKEN_MESSENGER_V2: Record<string, `0x${string}`> = {
+  base:     '0x28b5a0e9C621a5BADaa536219b3a228C8168cF5d',
+  celo:     '0x28b5a0e9C621a5BADaa536219b3a228C8168cF5d',
+  ethereum: '0x28b5a0e9C621a5BADaa536219b3a228C8168cF5d',
+};
 
-const USDC_ADDRESS: Record<string, `0x${string}`> = IS_MAINNET
-  ? {
-      base:     '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-      celo:     '0xcebA9300f2b948710d2653dD7B07f33A8B32118C',
-      ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    }
-  : {
-      base:     '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-      celo:     '0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B',
-      ethereum: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
-    };
+const MESSAGE_TRANSMITTER_V2: Record<string, `0x${string}`> = {
+  base:     '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64',
+  celo:     '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64',
+  ethereum: '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64',
+};
+
+const USDC_ADDRESS: Record<string, `0x${string}`> = {
+  base:     '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  celo:     '0xcebA9300f2b948710d2653dD7B07f33A8B32118C',
+  ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+};
 
 const CCTP_DOMAIN: Record<string, number> = {
   ethereum: 0,
   base:     6,
   celo:     7,
-  stellar:  4,
+  stellar:  27,
 };
+
+// ---------------------------------------------------------------------------
+// ABI fragments
+// ---------------------------------------------------------------------------
 
 const ERC20_APPROVE_ABI = [
   {
@@ -61,6 +62,18 @@ const DEPOSIT_FOR_BURN_ABI = [
   },
 ] as const;
 
+const RECEIVE_MESSAGE_ABI = [
+  {
+    name: 'receiveMessage',
+    type: 'function',
+    inputs: [
+      { name: 'message',     type: 'bytes' },
+      { name: 'attestation', type: 'bytes' },
+    ],
+    outputs: [{ name: 'success', type: 'bool' }],
+  },
+] as const;
+
 const MESSAGE_SENT_ABI = [
   {
     name: 'MessageSent',
@@ -69,20 +82,103 @@ const MESSAGE_SENT_ABI = [
   },
 ] as const;
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 function addressToBytes32(address: string): `0x${string}` {
   const clean = address.toLowerCase().replace('0x', '');
   return `0x${clean.padStart(64, '0')}`;
 }
 
-// Stellar recipient address → bytes32 using raw public key bytes
 function stellarAddressToBytes32(stellarAddress: string): `0x${string}` {
   const { StrKey } = require('@stellar/stellar-sdk');
   const rawBytes = StrKey.decodeEd25519PublicKey(stellarAddress) as Buffer;
   return `0x${rawBytes.toString('hex').padStart(64, '0')}`;
 }
 
+function getEvmClientForChain(chain: string) {
+  switch (chain) {
+    case 'base':     return baseClient;
+    case 'celo':     return celoClient;
+    case 'ethereum': return ethClient;
+    default: throw new Error(`Unsupported chain: ${chain}`);
+  }
+}
+
 // ---------------------------------------------------------------------------
-// Called by the frontend after burn tx confirms — extracts message and starts relay
+// Circle Iris V2 attestation polling
+// GET https://iris-api.circle.com/v2/messages/{sourceDomain}?transactionHash={burnTxHash}
+// ---------------------------------------------------------------------------
+
+const IRIS_API = 'https://iris-api.circle.com/v2/messages';
+const POLL_INTERVAL_MS  = 5_000;
+const MAX_POLL_ATTEMPTS = 60; // 5 minutes max
+
+export async function pollAttestation(
+  sourceDomain: number,
+  burnTxHash: string
+): Promise<{ message: string; attestation: string }> {
+  for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
+    try {
+      const url = `${IRIS_API}/${sourceDomain}?transactionHash=${burnTxHash}`;
+      const res  = await fetch(url);
+      const json = await res.json() as any;
+
+      if (
+        json?.messages?.[0]?.status === 'complete' &&
+        json?.messages?.[0]?.attestation &&
+        json?.messages?.[0]?.message
+      ) {
+        console.log(`[Bridge] Attestation complete for ${burnTxHash}`);
+        return {
+          message:     json.messages[0].message     as string,
+          attestation: json.messages[0].attestation as string,
+        };
+      }
+
+      console.log(`[Bridge] Awaiting attestation (attempt ${attempt + 1})...`);
+    } catch (err) {
+      console.error('[Bridge] Attestation poll error:', err);
+    }
+
+    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
+  }
+
+  throw new Error(`Attestation timed out after ${MAX_POLL_ATTEMPTS} attempts for ${burnTxHash}`);
+}
+
+// ---------------------------------------------------------------------------
+// Build the receiveMessage (mint) tx for the destination chain
+// Called after attestation is complete
+// ---------------------------------------------------------------------------
+
+export function buildReceiveMessageTx(params: {
+  destinationChain: string;
+  message:          string;
+  attestation:      string;
+  amount:           string;
+}): any {
+  const { destinationChain, message, attestation, amount } = params;
+
+  const data = encodeFunctionData({
+    abi: RECEIVE_MESSAGE_ABI,
+    functionName: 'receiveMessage',
+    args: [message as `0x${string}`, attestation as `0x${string}`],
+  });
+
+  return {
+    to:          MESSAGE_TRANSMITTER_V2[destinationChain],
+    data,
+    value:       '0',
+    chainId:     destinationChain,
+    description: `Claim ${amount} USDC on ${destinationChain}`,
+    txType:      'mint',
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Called by the frontend after burn tx confirms — for Stellar relay only
 // ---------------------------------------------------------------------------
 
 export async function handleBurnConfirmed(params: {
@@ -97,7 +193,6 @@ export async function handleBurnConfirmed(params: {
       hash: params.burnTxHash as `0x${string}`,
     });
 
-    // Find the MessageSent event log from the Message Transmitter contract
     let message: string | null = null;
     for (const log of receipt.logs) {
       try {
@@ -136,7 +231,7 @@ export async function handleBurnConfirmed(params: {
 }
 
 // ---------------------------------------------------------------------------
-// Main exported function
+// Main exported function — builds approve + burn txs
 // ---------------------------------------------------------------------------
 
 export async function buildBridgeTx(params: {
@@ -149,7 +244,7 @@ export async function buildBridgeTx(params: {
 
   const { fromChain, toChain, amount, walletAddress, recipientAddress } = params;
 
-  if (!TOKEN_MESSENGER[fromChain]) {
+  if (!TOKEN_MESSENGER_V2[fromChain]) {
     return {
       error: true,
       message: `Bridging from "${fromChain}" is not supported. Supported: base, celo, ethereum.`,
@@ -160,6 +255,13 @@ export async function buildBridgeTx(params: {
     return {
       error: true,
       message: `Bridging to "${toChain}" is not supported.`,
+    };
+  }
+
+  if (toChain === 'stellar') {
+    return {
+      error: true,
+      message: 'Native USDC bridging to Stellar via Circle CCTP V2 is coming soon. In the meantime I can bridge your USDC to Celo or Ethereum, or swap it to XLM on Stellar\'s DEX. Which would you prefer?',
     };
   }
 
@@ -180,12 +282,12 @@ export async function buildBridgeTx(params: {
     };
   }
 
-  // ── Approve tx ────────────────────────────────────────────────────────────
+  // ── TX 1: approve ─────────────────────────────────────────────────────────
 
   const approveData = encodeFunctionData({
     abi: ERC20_APPROVE_ABI,
     functionName: 'approve',
-    args: [TOKEN_MESSENGER[fromChain], amountInUnits],
+    args: [TOKEN_MESSENGER_V2[fromChain], amountInUnits],
   });
 
   const approveTx = {
@@ -197,14 +299,9 @@ export async function buildBridgeTx(params: {
     txType:      'approve',
   };
 
-  // ── Burn tx ───────────────────────────────────────────────────────────────
-  // For Stellar recipients, encode the Stellar public key as bytes32.
-  // For EVM recipients, left-pad the EVM address as bytes32.
+  // ── TX 2: depositForBurn ──────────────────────────────────────────────────
 
-  const mintRecipient = toChain === 'stellar'
-    ? stellarAddressToBytes32(recipientAddress)
-    : addressToBytes32(recipientAddress);
-
+  const mintRecipient     = addressToBytes32(recipientAddress);
   const destinationDomain = CCTP_DOMAIN[toChain];
 
   const burnData = encodeFunctionData({
@@ -219,17 +316,18 @@ export async function buildBridgeTx(params: {
   });
 
   const burnTx = {
-    to:               TOKEN_MESSENGER[fromChain],
-    data:             burnData,
-    value:            '0',
-    chainId:          fromChain,
-    description:      `Send ${amount} USDC from ${fromChain} to ${toChain}`,
-    txType:           'burn',
-    // Metadata the frontend passes back to /api/bridge/relay after burn confirms
+    to:          TOKEN_MESSENGER_V2[fromChain],
+    data:        burnData,
+    value:       '0',
+    chainId:     fromChain,
+    description: `Send ${amount} USDC from ${fromChain} to ${toChain}`,
+    txType:      'burn',
     bridgeMeta: {
+      sourceChain:      fromChain,
+      destinationChain: toChain,
+      sourceDomain:     CCTP_DOMAIN[fromChain],
       recipientAddress,
       amount,
-      toChain,
     },
   };
 
@@ -243,9 +341,7 @@ export async function buildBridgeTx(params: {
       amount,
       estimatedTimeSeconds: 90,
       estimatedFeeUSD:      '< $0.01',
-      note: toChain === 'stellar'
-        ? `Your USDC will arrive on Stellar automatically in about 90 seconds after you confirm.`
-        : `Two steps: first authorise, then send. Your USDC arrives in about 90 seconds.`,
+      note: `Two steps: first authorise, then send. Your USDC arrives on ${toChain} in about 90 seconds.`,
     },
   };
 }

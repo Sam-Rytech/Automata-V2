@@ -5,8 +5,8 @@ import { saveHistoryToDb, UnsignedTx } from '@/lib/api';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://automata-backend-production.up.railway.app';
 
 const CHAIN_IDS: Record<string, number> = {
-  base: 8453,
-  celo: 42220,
+  base:     8453,
+  celo:     42220,
   ethereum: 1,
 };
 
@@ -33,7 +33,7 @@ export function useTransactionExecutor() {
     try {
       for (const tx of txsToExecute) {
         if (tx.chainId === 'stellar') {
-          // ── Stellar signing path ──────────────────────────────────────────
+          // ── Stellar signing path ────────────────────────────────────────
           if (!stellarContext.address) {
             throw new Error('No Stellar wallet connected. Please connect your Stellar wallet in the sidebar.');
           }
@@ -51,7 +51,7 @@ export function useTransactionExecutor() {
           lastTxHash = horizonResult.hash;
 
         } else {
-          // ── EVM signing path ──────────────────────────────────────────────
+          // ── EVM signing path ────────────────────────────────────────────
           const targetChainId = CHAIN_IDS[tx.chainId];
           if (targetChainId) {
             await activeWallet.switchChain(targetChainId);
@@ -60,15 +60,70 @@ export function useTransactionExecutor() {
           lastTxHash = await provider.request({
             method: 'eth_sendTransaction',
             params: [{
-              to: tx.to,
-              data: tx.data,
+              to:    tx.to,
+              data:  tx.data,
               value: tx.value || '0x0',
-              from: activeWallet.address
+              from:  activeWallet.address,
             }]
           });
 
-          // ── Bridge relay trigger ──────────────────────────────────────────
           const meta = (tx as any).bridgeMeta;
+
+          // ── EVM-to-EVM bridge attest flow ───────────────────────────────
+          // After the burn tx confirms, poll Circle Iris for attestation,
+          // then present the mint tx to the user to sign on the destination chain.
+          // This is what completes the bridge — without this the USDC is burned
+          // but never minted on the other side.
+          if (
+            meta?.destinationChain &&
+            meta?.destinationChain !== 'stellar' &&
+            (tx as any).txType === 'burn'
+          ) {
+            console.log(`[Bridge] Burn confirmed: ${lastTxHash}. Polling for attestation...`);
+
+            const attestRes = await fetch(`${BACKEND_URL}/api/bridge/attest`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                burnTxHash:       lastTxHash,
+                sourceChain:      meta.sourceChain,
+                destinationChain: meta.destinationChain,
+                recipientAddress: meta.recipientAddress || activeWallet.address,
+                amount:           meta.amount,
+              }),
+            });
+
+            if (!attestRes.ok) {
+              throw new Error(`Attestation failed: ${await attestRes.text()}`);
+            }
+
+            const { unsignedTx: mintTx } = await attestRes.json();
+
+            if (!mintTx) {
+              throw new Error('No mint transaction returned from attestation.');
+            }
+
+            // Switch to destination chain and sign the mint tx
+            const destChainId = CHAIN_IDS[meta.destinationChain];
+            if (destChainId) {
+              await activeWallet.switchChain(destChainId);
+            }
+
+            const mintProvider = await activeWallet.getEthereumProvider();
+            lastTxHash = await mintProvider.request({
+              method: 'eth_sendTransaction',
+              params: [{
+                to:    mintTx.to,
+                data:  mintTx.data,
+                value: mintTx.value || '0x0',
+                from:  activeWallet.address,
+              }]
+            });
+
+            console.log(`[Bridge] Mint tx submitted on ${meta.destinationChain}: ${lastTxHash}`);
+          }
+
+          // ── Stellar relay trigger ───────────────────────────────────────
           if (meta?.toChain === 'stellar' && (tx as any).txType === 'burn') {
             const recipientAddr = meta.recipientAddress || stellarContext.address;
             if (recipientAddr) {
@@ -76,12 +131,12 @@ export function useTransactionExecutor() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  burnTxHash: lastTxHash,
+                  burnTxHash:       lastTxHash,
                   recipientAddress: recipientAddr,
-                  amount: meta.amount,
+                  amount:           meta.amount,
                 }),
               }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
-              
+
               if (onBridgeRelayStarted) {
                 onBridgeRelayStarted();
               }
@@ -90,7 +145,7 @@ export function useTransactionExecutor() {
         }
       }
 
-      // ── Database History Hookup ───────────────────────────────────────
+      // ── Database history ────────────────────────────────────────────────
       try {
         await saveHistoryToDb(
           activeWallet.address,
@@ -106,12 +161,11 @@ export function useTransactionExecutor() {
       return lastTxHash;
 
     } catch (error: any) {
-      // Log failure to DB before re-throwing to the UI
       try {
         await saveHistoryToDb(activeWallet.address, undefined, sourceContext.type, 'FAILED', { error: error.message });
       } catch (e) { }
-      
-      throw error; 
+
+      throw error;
     }
   };
 

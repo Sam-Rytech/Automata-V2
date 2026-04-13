@@ -11,7 +11,7 @@ export const PALETTE_ITEMS = [
   { type: 'STAKE' as ActionType, desc: 'Deposit for yield' },
 ];
 
-export const CHAINS = ['Ethereum', 'Base', 'Arbitrum', 'Optimism', 'Celo', 'Stellar'];
-export const ASSETS = ['USDC', 'ETH', 'WETH', 'DAI', 'USDT', 'CELO'];
+export const CHAINS = ['Ethereum', 'Base', 'Solana', 'Celo', 'Stellar'];
+export const ASSETS = ['USDC', 'ETH', 'SOL', 'XLM', 'USDT', 'CELO', 'STX'];
 export const PROTOCOLS = ['Aave', 'Mento', 'Compound'];
 export const SLIPPAGE = ['0.1%', '0.5%', '1.0%', 'AUTO'];

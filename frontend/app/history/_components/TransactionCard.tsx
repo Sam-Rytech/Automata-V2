@@ -18,6 +18,27 @@ export const STATUS_COLORS: Record<string, string> = {
   FAILED: '#EF4444',
 };
 
+export function getExplorerUrl(network: string, hash: string): string {
+  const normalizedNetwork = network.toUpperCase();
+  switch (normalizedNetwork) {
+    case 'STELLAR':
+      return `https://stellar.expert/explorer/public/tx/${hash}`;
+    case 'SOLANA':
+      return `https://explorer.solana.com/tx/${hash}`;
+    case 'BASE':
+      return `https://basescan.org/tx/${hash}`;
+    case 'POLYGON':
+      return `https://polygonscan.com/tx/${hash}`;
+    case 'STACKS':
+      return `https://explorer.hiro.so/txid/${hash}`;
+    case 'CELO':
+      return `https://celoscan.io/tx/${hash}`;
+    case 'ETHEREUM':
+    default:
+      return `https://etherscan.io/tx/${hash}`;
+  }
+}
+
 export interface Transaction {
   id: string;
   type: string;
@@ -99,7 +120,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
           {tx.status}
         </div>
         <a
-          href={`https://etherscan.io/tx/${tx.hash}`}
+          href={getExplorerUrl(tx.fromNetwork, tx.hash)}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 text-[10px] text-white/40 hover:text-white transition-colors tracking-widest"

@@ -5,11 +5,15 @@ import { useWallets } from '@privy-io/react-auth';
 import { StatusState, ActionNodeData } from '@/types/flow';
 import { Node as ReactFlowNode } from 'reactflow';
 import { toast } from 'sonner';
-import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
+import { sendAgentMessage, UnsignedTx } from '@/lib/api';
+import { useStellar } from '@/app/StellarProvider';
+import { useTransactionExecutor } from '@/app/hooks/useTransactionExecutor';
 
 export function useAutomataEngine() {
   const { wallets } = useWallets();
   const activeWallet = wallets?.[0];
+  const { stellarAddress, signStellarTransaction } = useStellar();
+  const { executeSequence } = useTransactionExecutor();
 
   const [statusState, setStatusState] = useState<StatusState>('idle');
   const [statusMessage, setStatusMessage] = useState<string>('Ready');
@@ -67,7 +71,7 @@ export function useAutomataEngine() {
       addLog(`[SYS] Parsed sequence. Generated Intent: "${intent.substring(0, 50)}..."`);
       addLog(`[NET] Transmitting to Automata Backend...`);
 
-      const result = await sendAgentMessage(intent, activeWallet.address, geminiKey, crypto.randomUUID());
+      const result = await sendAgentMessage(intent, activeWallet.address, geminiKey, crypto.randomUUID(), stellarAddress);
 
       if (result.unsignedTxs && result.unsignedTxs.length > 0) {
         addLog(`[BLD] Valid transaction payload received from Agent. Generating Plan Review...`);
@@ -106,41 +110,28 @@ export function useAutomataEngine() {
     setStatusState('executing');
     setStatusMessage('Awaiting wallet signature...');
 
-    // Cache details for DB
     const stepCount = planReviewData?.steps?.length || 0;
-    const detailsCache = { steps: stepCount, chainId: pendingTxs[0]?.chainId || 'VARIOUS' };
-
+    
     setPlanReviewData(null);
     setIsSigningWallet(true);
 
     try {
-      const provider = await activeWallet.getEthereumProvider();
-      let lastTxHash = '';
-
-      for (const tx of pendingTxs) {
-        lastTxHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [{
-            to: tx.to,
-            data: tx.data,
-            value: tx.value || '0x0',
-            from: activeWallet.address
-          }]
-        });
-      }
-
-      // --- DATABASE HISTORY HOOKUP ---
-      try {
-        await saveHistoryToDb(
-          activeWallet.address,
-          lastTxHash,
-          'FLOW',
-          'SUCCESS',
-          detailsCache
-        );
-      } catch (dbErr) {
-        console.error('Failed to log history to DB:', dbErr);
-      }
+      const lastTxHash = await executeSequence(
+        pendingTxs,
+        activeWallet,
+        {
+          address: stellarAddress,
+          signTransaction: signStellarTransaction
+        },
+        {
+          type: 'FLOW',
+          stepCount: stepCount
+        },
+        () => {
+           // Bridge relay started callback
+           addLog(`[NET] Bridge relay started in background...`);
+        }
+      );
 
       setStatusState('success');
       setStatusMessage('Flow executed successfully.');
@@ -150,11 +141,6 @@ export function useAutomataEngine() {
       console.error(error);
       setStatusState('error');
       setStatusMessage(error.message || 'Transaction rejected or failed.');
-
-      // Log failure to DB as well
-      try {
-        await saveHistoryToDb(activeWallet.address, undefined, 'FLOW', 'FAILED', detailsCache);
-      } catch (e) { }
 
       if (error.code === 4001) {
         toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });

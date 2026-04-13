@@ -10,10 +10,9 @@ import { StatusState, AgentPlan } from '@/types/status';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useWallets } from '@privy-io/react-auth';
 import { toast } from 'sonner';
-import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
+import { sendAgentMessage, UnsignedTx } from '@/lib/api';
 import { useStellar } from '@/app/StellarProvider';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://automata-backend-production.up.railway.app';
+import { useTransactionExecutor } from '@/app/hooks/useTransactionExecutor';
 
 type Message = { id: string; role: 'user' | 'agent'; content: string };
 
@@ -21,6 +20,7 @@ function ChatPageContent() {
   const { wallets } = useWallets();
   const activeWallet = wallets?.[0];
   const { stellarAddress, signStellarTransaction } = useStellar();
+  const { executeSequence } = useTransactionExecutor();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -129,91 +129,27 @@ function ChatPageContent() {
     setActivePlan(null);
     setStatus('executing');
 
-    const CHAIN_IDS: Record<string, number> = {
-      base: 8453,
-      celo: 42220,
-      ethereum: 1,
-    };
-
     try {
-      let lastTxHash = '';
-
-      for (const tx of txsToExecute) {
-        if (tx.chainId === 'stellar') {
-          // ── Stellar signing path ──────────────────────────────────────────
-          if (!stellarAddress) {
-            throw new Error('No Stellar wallet connected. Please connect your Stellar wallet in the sidebar.');
-          }
-          if (!tx.xdr) {
-            throw new Error('No XDR found for Stellar transaction.');
-          }
-
-          const signedXdr = await signStellarTransaction(tx.xdr);
-
-          const { Horizon, Transaction, Networks } = await import('@stellar/stellar-sdk');
-          const server = new Horizon.Server('https://horizon.stellar.org');
-          const horizonResult = await server.submitTransaction(
-            new Transaction(signedXdr, Networks.PUBLIC)
-          );
-          lastTxHash = horizonResult.hash;
-
-        } else {
-          // ── EVM signing path ──────────────────────────────────────────────
-          const targetChainId = CHAIN_IDS[tx.chainId];
-          if (targetChainId) {
-            await activeWallet.switchChain(targetChainId);
-          }
-          const provider = await activeWallet.getEthereumProvider();
-          lastTxHash = await provider.request({
-            method: 'eth_sendTransaction',
-            params: [{
-              to: tx.to,
-              data: tx.data,
-              value: tx.value || '0x0',
-              from: activeWallet.address
-            }]
-          });
-
-          // ── Bridge relay trigger ──────────────────────────────────────────
-          // If this is a CCTP burn tx destined for Stellar, start the relay.
-          // The relay runs in the background — user has already signed their
-          // one and only transaction.
-          const meta = (tx as any).bridgeMeta;
-          if (meta?.toChain === 'stellar' && (tx as any).txType === 'burn') {
-            const recipientAddr = meta.recipientAddress || stellarAddress;
-            if (recipientAddr) {
-              fetch(`${BACKEND_URL}/api/bridge/relay`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  burnTxHash:       lastTxHash,
-                  recipientAddress: recipientAddr,
-                  amount:           meta.amount,
-                }),
-              }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
-
-              setMessages(prev => [...prev, {
-                id: Date.now().toString(),
-                role: 'agent',
-                content: `Burn confirmed. Your USDC is on its way to Stellar — this happens automatically in the background. No further action needed. You will receive it in approximately 90 seconds.`
-              }]);
-            }
-          }
+      const lastTxHash = await executeSequence(
+        txsToExecute,
+        activeWallet,
+        {
+          address: stellarAddress,
+          signTransaction: signStellarTransaction
+        },
+        {
+          type: 'AGENT_EXECUTION',
+          stepCount: plan?.steps?.length || txsToExecute.length
+        },
+        () => {
+          // Bridge relay started callback
+          setMessages(prev => [...prev, {
+            id: Date.now().toString(),
+            role: 'agent',
+            content: `Burn confirmed. Your USDC is on its way to Stellar — this happens automatically in the background. No further action needed. You will receive it in approximately 90 seconds.`
+          }]);
         }
-      }
-
-      // Save to Database History
-      try {
-        await saveHistoryToDb(
-          activeWallet.address,
-          lastTxHash,
-          'AGENT_EXECUTION',
-          'SUCCESS',
-          { steps: plan?.steps?.length || txsToExecute.length, chainId: txsToExecute[0].chainId }
-        );
-      } catch (dbErr) {
-        console.error('Failed to log history to DB:', dbErr);
-      }
+      );
 
       setStatus('success');
       setMessages(prev => [...prev, {
@@ -225,11 +161,6 @@ function ChatPageContent() {
 
     } catch (error: any) {
       setStatus('error');
-
-      try {
-        await saveHistoryToDb(activeWallet.address, undefined, 'AGENT_EXECUTION', 'FAILED', { error: error.message });
-      } catch (e) { }
-
       if (error.code === 4001) {
         toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });
         setMessages(prev => [...prev, { id: Date.now().toString(), role: 'agent', content: 'Execution aborted by user.' }]);

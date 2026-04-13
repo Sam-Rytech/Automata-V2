@@ -163,7 +163,7 @@ function SettingsPageContent() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     {[
-                      { id: 'gemini', name: 'Gemini 1.5', provider: 'Google Deepmind' },
+                      { id: 'gemini', name: 'Gemini 2.5', provider: 'Google Deepmind' },
                       { id: 'gpt4', name: 'GPT-4O', provider: 'OpenAI' },
                       { id: 'claude', name: 'Claude 3.5', provider: 'Anthropic' },
                     ].map((model) => (

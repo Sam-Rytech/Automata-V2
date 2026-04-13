@@ -24,12 +24,19 @@ export function useStellar() {
   return useContext(StellarContext);
 }
 
+let isKitInitialized = false;
+
 export function StellarProvider({ children }: { children: React.ReactNode }) {
   const [stellarAddress, setStellarAddress] = useState<string | null>(null);
 
   useEffect(() => {
     // Initialize the singleton once on mount
-    StellarWalletsKit.init({ modules: defaultModules() });
+    if (!isKitInitialized) {
+      StellarWalletsKit.init({
+        modules: defaultModules(),
+      });
+      isKitInitialized = true;
+    }
 
     // Restore saved address on page load
     const savedAddress = localStorage.getItem('stellar_address');

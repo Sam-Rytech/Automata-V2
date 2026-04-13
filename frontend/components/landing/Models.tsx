@@ -41,7 +41,7 @@ export function Models() {
                 WebkitMaskPosition: 'center'
               }}
             />
-            <span className="font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#10A37F] group-hover:drop-shadow-[0_0_15px_rgba(16,163,127,0.4)]">
+            <span className="hidden sm:block font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#10A37F] group-hover:drop-shadow-[0_0_15px_rgba(16,163,127,0.4)]">
               GPT
             </span>
           </motion.div>
@@ -56,7 +56,7 @@ export function Models() {
               alt="Claude"
               className="w-8 h-8 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
             />
-            <span className="font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#D97757] group-hover:drop-shadow-[0_0_15px_rgba(217,119,87,0.4)]">
+            <span className="hidden sm:block font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#D97757] group-hover:drop-shadow-[0_0_15px_rgba(217,119,87,0.4)]">
               CLAUDE
             </span>
           </motion.div>
@@ -71,7 +71,7 @@ export function Models() {
               alt="Gemini"
               className="w-7 h-7 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
             />
-            <span className="font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#5684D1] group-hover:drop-shadow-[0_0_15px_rgba(86,132,209,0.4)]">
+            <span className="hidden sm:block font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#5684D1] group-hover:drop-shadow-[0_0_15px_rgba(86,132,209,0.4)]">
               GEMINI
             </span>
           </motion.div>

@@ -110,10 +110,10 @@ function SettingsPageContent() {
               Settings
             </h2>
             <div className="font-mono text-[10px] text-[#22C55E] tracking-[0.2em] uppercase flex items-center gap-4">
-              <span>// NODE: AKURE-01</span>
+              <span>// NODE: SEARCHING...</span>
               <span className="hidden sm:inline">■</span>
               <span className="hidden sm:inline">
-                LAT: 7.2507° N, LON: 5.2069° E
+                LAT: _____° N, LON: ____° E
               </span>
             </div>
           </div>

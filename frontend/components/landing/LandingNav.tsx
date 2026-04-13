@@ -43,7 +43,7 @@ export function LandingNav() {
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-base uppercase tracking-wider h-11 px-8 relative"
+            className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-xs sm:text-base uppercase tracking-wider h-9 sm:h-11 px-4 sm:px-8 relative"
             onClick={handleLaunch}
           >
             <span className="tech-corners-extra" />

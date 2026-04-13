@@ -13,7 +13,7 @@ export function Footer() {
         <div className="flex gap-16 font-mono text-xs uppercase tracking-widest">
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Model</div>
-            <a href="#" className="text-white/40 hover:text-white transition-colors">Gemini 2.0 Flash</a>
+            <a href="#" className="text-white/40 hover:text-white transition-colors">Gemini 2.5 Flash</a>
             <a href="#" className="text-white/40 hover:text-white transition-colors">Documentation</a>
             <a href="#" className="text-white/40 hover:text-white transition-colors">Architecture</a>
           </div>
@@ -25,7 +25,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Legal</div>
-            <a href="#" className="text-white/40 hover:text-white transition-colors">Telemetry</a>
+            <a href="#" className="text-white/40 hover:text-white transition-colors">Cipher Grids</a>
             <a href="#" className="text-white/40 hover:text-white transition-colors">Terms</a>
           </div>
         </div>

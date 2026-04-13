@@ -195,20 +195,30 @@ function SettingsPageContent() {
                     <label className="block text-[9px] text-[#E91E8C] tracking-[0.2em] font-bold uppercase mb-3">
                       Google Gemini API Key
                     </label>
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start">
                       <input
                         type="password"
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
                         placeholder="Enter your API key..."
-                        className="flex-1 bg-[#0A0A12] border border-white/10 px-5 py-4 text-sm font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-[#E91E8C]/50 transition-colors"
+                        className="flex-1 w-full bg-[#0A0A12] border border-white/10 px-5 py-4 text-sm font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-[#E91E8C]/50 transition-colors"
                       />
-                      <button
-                        onClick={saveApiKey}
-                        className="bg-[#E91E8C] text-white px-10 py-4 font-syne font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors whitespace-nowrap"
-                      >
-                        Save Configuration
-                      </button>
+                      <div className="flex flex-col gap-3 w-full sm:w-auto">
+                        <button
+                          onClick={saveApiKey}
+                          className="bg-[#E91E8C] w-full text-white px-10 py-4 font-syne font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors whitespace-nowrap"
+                        >
+                          Save Configuration
+                        </button>
+                        <a
+                          href="https://aistudio.google.com/api-keys"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="border border-white/10 text-white/60 w-full px-10 py-3 text-center font-syne font-bold uppercase text-[9px] tracking-[0.2em] hover:bg-white/5 hover:text-white transition-colors whitespace-nowrap"
+                        >
+                          Get API Key ↗
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>

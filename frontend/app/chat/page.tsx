@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import { sendAgentMessage, UnsignedTx, saveHistoryToDb } from '@/lib/api';
 import { useStellar } from '@/app/StellarProvider';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://automata-backend-production.up.railway.app';
+
 type Message = { id: string; role: 'user' | 'agent'; content: string };
 
 function ChatPageContent() {
@@ -143,7 +145,7 @@ function ChatPageContent() {
             throw new Error('No Stellar wallet connected. Please connect your Stellar wallet in the sidebar.');
           }
           if (!tx.xdr) {
-            throw new Error('No XDR found for Stellar transaction. The agent did not return a valid Stellar transaction.');
+            throw new Error('No XDR found for Stellar transaction.');
           }
 
           const signedXdr = await signStellarTransaction(tx.xdr);
@@ -171,6 +173,32 @@ function ChatPageContent() {
               from: activeWallet.address
             }]
           });
+
+          // ── Bridge relay trigger ──────────────────────────────────────────
+          // If this is a CCTP burn tx destined for Stellar, start the relay.
+          // The relay runs in the background — user has already signed their
+          // one and only transaction.
+          const meta = (tx as any).bridgeMeta;
+          if (meta?.toChain === 'stellar' && (tx as any).txType === 'burn') {
+            const recipientAddr = meta.recipientAddress || stellarAddress;
+            if (recipientAddr) {
+              fetch(`${BACKEND_URL}/api/bridge/relay`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  burnTxHash:       lastTxHash,
+                  recipientAddress: recipientAddr,
+                  amount:           meta.amount,
+                }),
+              }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
+
+              setMessages(prev => [...prev, {
+                id: Date.now().toString(),
+                role: 'agent',
+                content: `Burn confirmed. Your USDC is on its way to Stellar — this happens automatically in the background. No further action needed. You will receive it in approximately 90 seconds.`
+              }]);
+            }
+          }
         }
       }
 
@@ -191,7 +219,7 @@ function ChatPageContent() {
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'agent',
-        content: `Sequence completed successfully. Verification hash: ${lastTxHash}`
+        content: `Sequence completed. Verification hash: ${lastTxHash}`
       }]);
       toast.success('Execution Complete', { description: `Tx Hash: ${lastTxHash}` });
 

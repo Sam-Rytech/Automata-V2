@@ -1,35 +1,39 @@
 // backend/src/services/yieldService.ts
-// Step 4.3 — Real Aave V3 APY reads + Mento estimated rate
-// Reads currentLiquidityRate from Aave V3 Pool contract via viem.
-// Mento rate is a calibrated estimate (TODO Phase 5: replace with real read).
+// Phase 2 — LI.FI Earn API integration + existing Aave V3 APY reads
 
-import { createPublicClient, http, parseAbi } from 'viem';
-import { base, baseSepolia, mainnet, sepolia } from 'viem/chains';
+import { createPublicClient, http, parseAbi } from 'viem'
+import { base, baseSepolia, mainnet, sepolia } from 'viem/chains'
 
-const IS_MAINNET = process.env.NODE_ENV === 'production';
+const IS_MAINNET = process.env.NODE_ENV === 'production'
+const LIFI_INTEGRATOR_ID = process.env.LIFI_INTEGRATOR_ID ?? ''
+const LIFI_BASE_URL = 'https://li.fi/v1'
 
 // ---------------------------------------------------------------------------
-// In-memory cache — 5 minutes TTL.
-// Aave rates change slowly. Caching avoids hammering RPC on every agent call.
+// In-memory cache — 5 minutes TTL for yield rates
+// Quote cache uses 55-second TTL (quotes expire in ~60s)
 // ---------------------------------------------------------------------------
 
-type CacheEntry = { data: any; expiresAt: number };
-const cache = new Map<string, CacheEntry>();
-const CACHE_TTL_MS = 5 * 60 * 1000;
+type CacheEntry = { data: any; expiresAt: number }
+const cache = new Map<string, CacheEntry>()
+const CACHE_TTL_MS = 5 * 60 * 1000
+const QUOTE_TTL_MS = 55 * 1000
 
 function getCached(key: string): any | null {
-  const entry = cache.get(key);
-  if (!entry) return null;
-  if (Date.now() > entry.expiresAt) { cache.delete(key); return null; }
-  return entry.data;
+  const entry = cache.get(key)
+  if (!entry) return null
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key)
+    return null
+  }
+  return entry.data
 }
 
-function setCache(key: string, data: any): void {
-  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+function setCache(key: string, data: any, ttl = CACHE_TTL_MS): void {
+  cache.set(key, { data, expiresAt: Date.now() + ttl })
 }
 
 // ---------------------------------------------------------------------------
-// Aave V3 Pool ABI — only the getReserveData function we need
+// Aave V3 Pool ABI
 // ---------------------------------------------------------------------------
 
 const AAVE_POOL_ABI = parseAbi([
@@ -49,14 +53,13 @@ const AAVE_POOL_ABI = parseAbi([
     'uint128 accruedToTreasury, ' +
     'uint128 unbacked, ' +
     'uint128 isolationModeTotalDebt' +
-  ')',
-]);
+    ')',
+])
 
-// ---------------------------------------------------------------------------
-// Aave V3 contract addresses — mainnet and testnet
-// ---------------------------------------------------------------------------
-
-const AAVE_POOLS: Record<string, { poolAddress: `0x${string}`; usdcAddress: `0x${string}`; chain: any }> = IS_MAINNET
+const AAVE_POOLS: Record<
+  string,
+  { poolAddress: `0x${string}`; usdcAddress: `0x${string}`; chain: any }
+> = IS_MAINNET
   ? {
       base: {
         poolAddress: '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5',
@@ -80,129 +83,242 @@ const AAVE_POOLS: Record<string, { poolAddress: `0x${string}`; usdcAddress: `0x$
         usdcAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
         chain: sepolia,
       },
-    };
-
-// ---------------------------------------------------------------------------
-// Helper: convert Aave ray-scaled rate to APY percentage
-// ray = 1e27. Simplified formula: accurate to ±0.1% for display.
-// ---------------------------------------------------------------------------
+    }
 
 function rayToAPY(ray: bigint): number {
-  const rateDecimal = Number(ray) / 1e27;
-  return parseFloat((rateDecimal * 100).toFixed(2));
+  const rateDecimal = Number(ray) / 1e27
+  return parseFloat((rateDecimal * 100).toFixed(2))
 }
-
-// ---------------------------------------------------------------------------
-// Read Aave V3 APY for one chain
-// ---------------------------------------------------------------------------
 
 async function getAaveAPY(
   chainKey: string
-): Promise<{ protocol: string; chain: string; token: string; apy: number; tvlNote: string } | null> {
+): Promise<{
+  protocol: string
+  chain: string
+  token: string
+  apy: number
+  tvlNote: string
+} | null> {
+  const cacheKey = `aave_${chainKey}`
+  const cached = getCached(cacheKey)
+  if (cached) return cached
 
-  const cacheKey = `aave_${chainKey}`;
-  const cached = getCached(cacheKey);
-  if (cached) return cached;
-
-  const config = AAVE_POOLS[chainKey];
-  if (!config) return null;
+  const config = AAVE_POOLS[chainKey]
+  if (!config) return null
 
   try {
     const client = createPublicClient({
       chain: config.chain,
-      transport: http(chainKey === 'base' ? process.env.BASE_RPC_URL : process.env.ETH_RPC_URL),
-    });
+      transport: http(
+        chainKey === 'base' ? process.env.BASE_RPC_URL : process.env.ETH_RPC_URL
+      ),
+    })
 
-    const reserveData = await client.readContract({
+    const reserveData = (await client.readContract({
       address: config.poolAddress,
       abi: AAVE_POOL_ABI,
       functionName: 'getReserveData',
       args: [config.usdcAddress],
-    }) as any;
+    })) as any
 
-    // currentLiquidityRate is the 3rd field in the tuple (index 2).
-    // Handle both named-object and positional-array return shapes across viem versions.
     const liquidityRate: bigint =
       (reserveData as any).currentLiquidityRate ??
       (reserveData as any)[2] ??
-      BigInt(0);
+      BigInt(0)
 
-    const apy = rayToAPY(liquidityRate);
+    const apy = rayToAPY(liquidityRate)
 
     const result = {
       protocol: 'Aave V3',
-      chain:    chainKey,
-      token:    'USDC',
+      chain: chainKey,
+      token: 'USDC',
       apy,
-      tvlNote:  'Battle-tested. Largest DeFi lending protocol.',
-    };
+      tvlNote: 'Battle-tested. Largest DeFi lending protocol.',
+    }
 
-    setCache(cacheKey, result);
-    return result;
-
+    setCache(cacheKey, result)
+    return result
   } catch (err) {
-    console.error(`[yieldService] Failed to read Aave APY for ${chainKey}:`, err);
-    return null;
+    console.error(
+      `[yieldService] Failed to read Aave APY for ${chainKey}:`,
+      err
+    )
+    return null
   }
 }
 
-// ---------------------------------------------------------------------------
-// Main exported function
-// toolExecutor calls: getYieldRates({ chain, token })
-// ---------------------------------------------------------------------------
-
 export async function getYieldRates(params: {
-  chain?: string;
-  token?: string;
+  chain?: string
+  token?: string
 }): Promise<any> {
+  const chain = typeof params === 'object' ? params.chain : (params as any)
 
-  // Support both object params (new) and positional args (legacy stub signature)
-  const chain = typeof params === 'object' ? params.chain : (params as any);
-  const token = typeof params === 'object' ? params.token : (arguments as any)[1];
+  const results: any[] = []
 
-  const results: any[] = [];
-
-  const chainsToCheck = chain && chain !== 'all'
-    ? [chain]
-    : ['base', 'ethereum', 'celo'];
+  const chainsToCheck =
+    chain && chain !== 'all' ? [chain] : ['base', 'ethereum', 'celo']
 
   for (const c of chainsToCheck) {
     if (c === 'base' || c === 'ethereum') {
-      const aaveData = await getAaveAPY(c);
-      if (aaveData) results.push(aaveData);
+      const aaveData = await getAaveAPY(c)
+      if (aaveData) results.push(aaveData)
     }
 
     if (c === 'celo') {
-      // TODO Phase 5: Replace with real Mento protocol read.
-      // Mento's yield comes from holding cUSD — the exact rate is not queryable
-      // via a single contract call without multi-step BiPoolManager reads.
       results.push({
-        protocol:  'Mento',
-        chain:     'celo',
-        token:     'cUSD',
-        apy:       4.50,
-        tvlNote:   "Celo's native stablecoin protocol.",
+        protocol: 'Mento',
+        chain: 'celo',
+        token: 'cUSD',
+        apy: 4.5,
+        tvlNote: "Celo's native stablecoin protocol.",
         isEstimate: true,
-      });
+      })
     }
   }
 
   if (results.length === 0) {
     return {
-      error:   true,
+      error: true,
       message: `No yield rates available for ${chain ?? 'any chain'} right now. Try again in a moment.`,
-    };
+    }
   }
 
-  // Best rate first
-  results.sort((a, b) => b.apy - a.apy);
+  results.sort((a, b) => b.apy - a.apy)
 
   return {
-    rates:             results,
+    rates: results,
     topRecommendation: results[0],
-    note: results.some(r => r.isEstimate)
+    note: results.some((r) => r.isEstimate)
       ? 'Mento rate is estimated. Aave rates are live from the blockchain.'
       : 'All rates are live from the blockchain.',
     cachedUntil: new Date(Date.now() + CACHE_TTL_MS).toISOString(),
-  };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// LI.FI Earn API — shared fetch helper
+// ---------------------------------------------------------------------------
+
+async function lifiFetch(
+  path: string,
+  options: RequestInit = {}
+): Promise<any> {
+  const url = `${LIFI_BASE_URL}${path}`
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-lifi-integrator': LIFI_INTEGRATOR_ID,
+      ...(options.headers ?? {}),
+    },
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`LI.FI API error ${res.status}: ${body}`)
+  }
+
+  return res.json()
+}
+
+// ---------------------------------------------------------------------------
+// getYieldOpportunities — GET /v1/opportunities
+// ---------------------------------------------------------------------------
+
+export async function getYieldOpportunities(
+  chain?: string,
+  token?: string,
+  protocol?: string
+): Promise<any[]> {
+  const params = new URLSearchParams()
+  if (chain) params.set('chain', chain)
+  if (token) params.set('token', token)
+  if (protocol) params.set('protocol', protocol)
+
+  const query = params.toString() ? `?${params.toString()}` : ''
+  const data = await lifiFetch(`/opportunities${query}`)
+
+  const opportunities: any[] = data.opportunities ?? data ?? []
+
+  // Sort by APY descending
+  return opportunities.sort((a, b) => {
+    const apyA = parseFloat(a.apy ?? a.apyBase ?? '0')
+    const apyB = parseFloat(b.apy ?? b.apyBase ?? '0')
+    return apyB - apyA
+  })
+}
+
+// ---------------------------------------------------------------------------
+// buildEarnDepositTx — POST /v1/quote
+// Quotes expire in ~60s. We stamp expiresAt and refuse stale quotes.
+// ---------------------------------------------------------------------------
+
+export async function buildEarnDepositTx(
+  opportunityId: string,
+  walletAddress: string,
+  amountHuman: number,
+  tokenDecimals: number
+): Promise<{ approvalTx: any; depositTx: any; expiresAt: number }> {
+  // Convert human-readable amount to smallest unit
+  // USDC = 6 decimals, ETH = 18 — never hardcode 18 for USDC
+  const amountSmallest = BigInt(
+    Math.round(amountHuman * 10 ** tokenDecimals)
+  ).toString()
+
+  const body = {
+    opportunityId,
+    walletAddress,
+    amount: amountSmallest,
+  }
+
+  const data = await lifiFetch('/quote', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+
+  // Quotes expire in ~60s — stamp our own deadline 55s from now as a safety margin
+  const expiresAt = Date.now() + QUOTE_TTL_MS
+
+  return {
+    approvalTx: data.approvalTx ?? null,
+    depositTx: data.depositTx ?? data.transactionRequest ?? null,
+    expiresAt,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// getEarnPositions — GET /v1/positions
+// ---------------------------------------------------------------------------
+
+export async function getEarnPositions(walletAddress: string): Promise<any[]> {
+  const data = await lifiFetch(
+    `/positions?walletAddress=${encodeURIComponent(walletAddress)}`
+  )
+  return data.positions ?? data ?? []
+}
+
+// ---------------------------------------------------------------------------
+// formatOpportunitiesForAgent — top 5 as a clean agent-readable string
+// ---------------------------------------------------------------------------
+
+export function formatOpportunitiesForAgent(opportunities: any[]): string {
+  if (!opportunities || opportunities.length === 0) {
+    return 'No yield opportunities found for the requested criteria.'
+  }
+
+  const top5 = opportunities.slice(0, 5)
+
+  return top5
+    .map((op, i) => {
+      const apy = parseFloat(op.apy ?? op.apyBase ?? '0').toFixed(2)
+      const tvl = op.tvlUsd
+        ? `$${(Number(op.tvlUsd) / 1_000_000).toFixed(1)}M TVL`
+        : 'TVL unknown'
+      const proto = op.protocol?.name ?? op.protocol ?? 'Unknown protocol'
+      const chain = op.chain?.name ?? op.chainId ?? 'Unknown chain'
+      const token = op.token?.symbol ?? op.symbol ?? 'Unknown token'
+
+      return `${i + 1}. ${proto} on ${chain} — ${token} — ${apy}% per year — ${tvl}`
+    })
+    .join('\n')
 }

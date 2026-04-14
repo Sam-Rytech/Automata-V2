@@ -13,8 +13,9 @@ import { toast } from 'sonner';
 import { sendAgentMessage, UnsignedTx } from '@/lib/api';
 import { useStellar } from '@/app/StellarProvider';
 import { useTransactionExecutor } from '@/app/hooks/useTransactionExecutor';
+import { YieldOpportunities, YieldOpportunity } from '@/components/YieldOpportunities';
 
-type Message = { id: string; role: 'user' | 'agent'; content: string };
+type Message = { id: string; role: 'user' | 'agent'; content: string; opportunities?: YieldOpportunity[] };
 
 function ChatPageContent() {
   const { wallets } = useWallets();
@@ -227,6 +228,16 @@ function ChatPageContent() {
                 <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className="font-mono text-[9px] text-white/30 font-bold uppercase mb-2 tracking-[0.2em]">{m.role === 'user' ? 'Operator' : 'Automata Oracle'}</div>
                   <div className={`p-5 sm:p-6 max-w-[95%] sm:max-w-[80%] font-mono text-xs sm:text-sm shadow-xl rounded-none ${m.role === 'user' ? 'bg-[#E91E8C]/[0.06] border border-[#E91E8C]/40 text-white shadow-[0_0_20px_rgba(233,30,140,0.1)]' : 'bg-[#1A1A2E] border border-white/5 text-white/90'}`}>{m.content}</div>
+                  {m.opportunities && (
+                    <YieldOpportunities
+                      opportunities={m.opportunities}
+                      onDeposit={(opp) => {
+                        const protocol = opp.protocol || opp.project || "vault";
+                        const chain = opp.chain || "base";
+                        handleSend("Deposit into " + protocol + " on " + chain + " (opportunityId: " + opp.id + ")");
+                      }}
+                    />
+                  )}
                 </div>
               ))}
 

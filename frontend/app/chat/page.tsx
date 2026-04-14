@@ -81,7 +81,8 @@ function ChatPageContent() {
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
           role: 'agent',
-          content: result.reply || 'I have processed your request.'
+          content: result.reply || 'I have processed your request.',
+          opportunities: result.opportunities
         }]);
         return;
       }

@@ -20,7 +20,8 @@ export type UnsignedTx = {
 export type AgentResponse = {
   reply: string;            // the agent's plain-English reply
   unsignedTxs: UnsignedTx[];   // transactions for user to sign (may be empty)
-  sessionId: string;           // session identifier for conversation continuity
+  sessionId: string;
+  opportunities?: any[];// session identifier for conversation continuity
 };
 
 /**

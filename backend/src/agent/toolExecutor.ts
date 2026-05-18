@@ -1,18 +1,18 @@
-import { getBalances } from '../services/balanceService.js';
-import { getRoute } from '../services/routeService.js';
+import { getBalances } from '../services/balanceService.js'
+import { getRoute } from '../services/routeService.js'
 import {
   getYieldOpportunities,
   buildEarnDepositTx,
   getEarnPositions,
   formatOpportunitiesForAgent,
 } from '../services/yieldService.js'
-import { buildBridgeTx } from '../services/bridgeService.js';
-import { buildSwapTx } from '../services/swapService.js';
-import { buildStakeTx } from '../services/stakeService.js';
-import { buildTransferTx } from '../services/transferService.js';
-import { estimateFees } from '../services/feeService.js';
-import { resolveRecipient } from '../services/resolverService.js';
-import { X402PaymentHandler } from '../services/X402PaymentHandler.js';
+import { buildBridgeTx } from '../services/bridgeService.js'
+import { buildSwapTx } from '../services/swapService.js'
+import { buildStakeTx } from '../services/stakeService.js'
+import { buildTransferTx } from '../services/transferService.js'
+import { estimateFees } from '../services/feeService.js'
+import { resolveRecipient } from '../services/resolverService.js'
+import { X402PaymentHandler } from '../services/X402PaymentHandler.js'
 
 export async function executeTool(
   toolName: string,
@@ -175,7 +175,7 @@ export async function executeTool(
         return { data: { error: 'Unknown tool: ' + toolName } }
     }
   } catch (error: any) {
-    console.error('Tool execution error (' + toolName + '):', error);
-    return { data: { error: error.message || 'Tool execution failed' } };
+    console.error('Tool execution error (' + toolName + '):', error)
+    return { data: { error: error.message || 'Tool execution failed' } }
   }
 }

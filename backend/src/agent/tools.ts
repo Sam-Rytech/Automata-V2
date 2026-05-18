@@ -1,4 +1,4 @@
-import { Tool } from '@google/generative-ai';
+import { Tool } from '@google/generative-ai'
 import {
   getYieldOpportunities,
   buildEarnDepositTx,

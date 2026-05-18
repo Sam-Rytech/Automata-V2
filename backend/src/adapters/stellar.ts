@@ -7,8 +7,12 @@ import {
   TransactionBuilder,
   Transaction,
   BASE_FEE,
-} from '@stellar/stellar-sdk';
-import { horizonServer, sorobanServer, STELLAR_NETWORK_PASSPHRASE } from '../utils/rpc.js';
+} from '@stellar/stellar-sdk'
+import {
+  horizonServer,
+  sorobanServer,
+  STELLAR_NETWORK_PASSPHRASE,
+} from '../utils/rpc.js'
 
 // ---------------------------------------------------------------------------
 // stellar.ts — Stellar adapter.
@@ -29,33 +33,48 @@ import { horizonServer, sorobanServer, STELLAR_NETWORK_PASSPHRASE } from '../uti
 
 // ── 1. Known asset registry ──────────────────────────────────────────────────
 
-export const STELLAR_ASSETS: Record<string, { code: string; issuer: string | null }> = {
-  XLM:  { code: 'XLM',  issuer: null },
-  USDC: { code: 'USDC', issuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' },
-  EURC: { code: 'EURC', issuer: 'GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP' },
-  cKES: { code: 'cKES', issuer: 'GBHQNZT5HFMM5QXBKIVBX5CQGKXTZFB3K4BYHXM4FMXBCHKUYJ5BIQR' },
-  yXLM: { code: 'yXLM', issuer: 'GARDNV3Q7YGT4AKSDF25LT32YSCCW4EV22Y2TV3I2PU2MMXJTEDL5T55' },
-};
+export const STELLAR_ASSETS: Record<
+  string,
+  { code: string; issuer: string | null }
+> = {
+  XLM: { code: 'XLM', issuer: null },
+  USDC: {
+    code: 'USDC',
+    issuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+  },
+  EURC: {
+    code: 'EURC',
+    issuer: 'GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP',
+  },
+  cKES: {
+    code: 'cKES',
+    issuer: 'GBHQNZT5HFMM5QXBKIVBX5CQGKXTZFB3K4BYHXM4FMXBCHKUYJ5BIQR',
+  },
+  yXLM: {
+    code: 'yXLM',
+    issuer: 'GARDNV3Q7YGT4AKSDF25LT32YSCCW4EV22Y2TV3I2PU2MMXJTEDL5T55',
+  },
+}
 
 /** Returns a stellar-sdk Asset for a known symbol, or throws. */
 export function getStellarAsset(symbol: string): Asset {
-  const entry = STELLAR_ASSETS[symbol];
+  const entry = STELLAR_ASSETS[symbol]
   if (!entry) {
     throw new Error(
       `Unknown Stellar asset: "${symbol}". Known: ${Object.keys(STELLAR_ASSETS).join(', ')}`
-    );
+    )
   }
   return entry.issuer === null
     ? Asset.native()
-    : new Asset(entry.code, entry.issuer);
+    : new Asset(entry.code, entry.issuer)
 }
 
 // ── 2. Account state ─────────────────────────────────────────────────────────
 
 export interface StellarAccountInfo {
-  balances: Record<string, string>;
-  trustlines: string[];
-  sequence: string;
+  balances: Record<string, string>
+  trustlines: string[]
+  sequence: string
 }
 
 /**
@@ -66,30 +85,30 @@ export async function getStellarAccountInfo(
   publicKey: string
 ): Promise<StellarAccountInfo | null> {
   try {
-    const account = await horizonServer.loadAccount(publicKey);
-    const balances: Record<string, string> = {};
-    const trustlines: string[] = [];
+    const account = await horizonServer.loadAccount(publicKey)
+    const balances: Record<string, string> = {}
+    const trustlines: string[] = []
 
     for (const b of account.balances) {
       if (b.asset_type === 'native') {
-        balances['XLM'] = b.balance;
+        balances['XLM'] = b.balance
       } else {
-        const code   = (b as any).asset_code   as string;
-        const issuer = (b as any).asset_issuer as string;
-        const known  = Object.entries(STELLAR_ASSETS).find(
+        const code = (b as any).asset_code as string
+        const issuer = (b as any).asset_issuer as string
+        const known = Object.entries(STELLAR_ASSETS).find(
           ([, v]) => v.code === code && v.issuer === issuer
-        );
-        const label = known ? known[0] : `${code}:${issuer.slice(0, 8)}`;
-        balances[label] = b.balance;
-        trustlines.push(label);
+        )
+        const label = known ? known[0] : `${code}:${issuer.slice(0, 8)}`
+        balances[label] = b.balance
+        trustlines.push(label)
       }
     }
 
-    return { balances, trustlines, sequence: account.sequenceNumber() };
+    return { balances, trustlines, sequence: account.sequenceNumber() }
   } catch (error: any) {
-    if (error?.response?.status === 404) return null;
-    console.error('Stellar account load error:', error);
-    throw error;
+    if (error?.response?.status === 404) return null
+    console.error('Stellar account load error:', error)
+    throw error
   }
 }
 
@@ -97,8 +116,8 @@ export async function getStellarAccountInfo(
 export async function getStellarBalances(
   publicKey: string
 ): Promise<Record<string, string>> {
-  const info = await getStellarAccountInfo(publicKey);
-  return info?.balances ?? {};
+  const info = await getStellarAccountInfo(publicKey)
+  return info?.balances ?? {}
 }
 
 // ── 3. Classic payment XDR ───────────────────────────────────────────────────
@@ -109,18 +128,20 @@ export async function buildStellarTransfer(
   assetSymbol: string,
   amount: string
 ): Promise<string> {
-  const sourceAccount = await horizonServer.loadAccount(fromPublicKey);
-  const asset = getStellarAsset(assetSymbol);
+  const sourceAccount = await horizonServer.loadAccount(fromPublicKey)
+  const asset = getStellarAsset(assetSymbol)
 
   const tx = new TransactionBuilder(sourceAccount, {
     fee: BASE_FEE,
     networkPassphrase: STELLAR_NETWORK_PASSPHRASE,
   })
-    .addOperation(Operation.payment({ destination: toPublicKey, asset, amount }))
+    .addOperation(
+      Operation.payment({ destination: toPublicKey, asset, amount })
+    )
     .setTimeout(30)
-    .build();
+    .build()
 
-  return tx.toXDR();
+  return tx.toXDR()
 }
 
 // ── 4. Path payment XDR (on-chain DEX swap) ──────────────────────────────────
@@ -134,8 +155,8 @@ export async function buildStellarPathPayment(
   minDestAmount: string,
   path: string[] = []
 ): Promise<string> {
-  const sourceAccount = await horizonServer.loadAccount(fromPublicKey);
-  const stellarPath = path.map(getStellarAsset);
+  const sourceAccount = await horizonServer.loadAccount(fromPublicKey)
+  const stellarPath = path.map(getStellarAsset)
 
   const tx = new TransactionBuilder(sourceAccount, {
     fee: BASE_FEE,
@@ -143,18 +164,18 @@ export async function buildStellarPathPayment(
   })
     .addOperation(
       Operation.pathPaymentStrictSend({
-        sendAsset:   getStellarAsset(sendAsset),
+        sendAsset: getStellarAsset(sendAsset),
         sendAmount,
         destination: toPublicKey,
-        destAsset:   getStellarAsset(destAsset),
-        destMin:     minDestAmount,
-        path:        stellarPath,
+        destAsset: getStellarAsset(destAsset),
+        destMin: minDestAmount,
+        path: stellarPath,
       })
     )
     .setTimeout(30)
-    .build();
+    .build()
 
-  return tx.toXDR();
+  return tx.toXDR()
 }
 
 // ── 5. Trustline management XDR ──────────────────────────────────────────────
@@ -164,8 +185,8 @@ export async function buildOpenTrustline(
   assetSymbol: string,
   limit?: string
 ): Promise<string> {
-  const account = await horizonServer.loadAccount(accountPublicKey);
-  const asset = getStellarAsset(assetSymbol);
+  const account = await horizonServer.loadAccount(accountPublicKey)
+  const asset = getStellarAsset(assetSymbol)
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
@@ -178,18 +199,18 @@ export async function buildOpenTrustline(
       })
     )
     .setTimeout(30)
-    .build();
+    .build()
 
-  return tx.toXDR();
+  return tx.toXDR()
 }
 
 export async function hasTrustline(
   publicKey: string,
   assetSymbol: string
 ): Promise<boolean> {
-  if (assetSymbol === 'XLM') return true;
-  const info = await getStellarAccountInfo(publicKey);
-  return info?.trustlines.includes(assetSymbol) ?? false;
+  if (assetSymbol === 'XLM') return true
+  const info = await getStellarAccountInfo(publicKey)
+  return info?.trustlines.includes(assetSymbol) ?? false
 }
 
 // ── 6. Soroban simulation ─────────────────────────────────────────────────────
@@ -197,7 +218,7 @@ export async function hasTrustline(
 export async function simulateSorobanTx(
   transaction: Transaction
 ): Promise<SorobanRpc.Api.SimulateTransactionResponse> {
-  return sorobanServer.simulateTransaction(transaction);
+  return sorobanServer.simulateTransaction(transaction)
 }
 
 // ── 7. Fee-bumped XDR ────────────────────────────────────────────────────────
@@ -207,14 +228,14 @@ export function buildFeeBumpTx(
   feeSourcePublicKey: string,
   baseFeeStroops: number = 200
 ): string {
-  const innerTx = new Transaction(innerXdr, STELLAR_NETWORK_PASSPHRASE);
+  const innerTx = new Transaction(innerXdr, STELLAR_NETWORK_PASSPHRASE)
 
   const feeBumpTx = TransactionBuilder.buildFeeBumpTransaction(
     feeSourcePublicKey,
     String(baseFeeStroops),
     innerTx,
     STELLAR_NETWORK_PASSPHRASE
-  );
+  )
 
-  return feeBumpTx.toXDR();
+  return feeBumpTx.toXDR()
 }

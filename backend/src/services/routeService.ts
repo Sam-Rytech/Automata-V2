@@ -1,19 +1,19 @@
-import { createConfig, getRoutes } from '@lifi/sdk';
-import { horizonServer } from '../utils/rpc.js';
-import { getStellarAsset } from '../adapters/stellar.js';
+import { createConfig, getRoutes } from '@lifi/sdk'
+import { horizonServer } from '../utils/rpc.js'
+import { getStellarAsset } from '../adapters/stellar.js'
 
 createConfig({
   integrator: 'automata',
   apiKey: process.env.LIFI_API_KEY || undefined,
-});
+})
 
-const routeCache = new Map<string, any>();
+const routeCache = new Map<string, any>()
 
 const CHAIN_IDS: Record<string, number> = {
   base: 8453,
   celo: 42220,
   ethereum: 1,
-};
+}
 
 const TOKEN_ADDRESSES: Record<string, Record<string, string>> = {
   USDC: {
@@ -34,7 +34,7 @@ const TOKEN_ADDRESSES: Record<string, Record<string, string>> = {
   CKES: {
     celo: '0x456a3D042C0DbD3db53D5489e98dFb038553B0d0',
   },
-};
+}
 
 const TOKEN_DECIMALS: Record<string, number> = {
   USDC: 6,
@@ -42,7 +42,7 @@ const TOKEN_DECIMALS: Record<string, number> = {
   CELO: 18,
   CUSD: 18,
   CKES: 18,
-};
+}
 
 // ── Stellar DEX price estimate via Horizon order book ────────────────────────
 
@@ -52,27 +52,32 @@ async function getStellarExpectedOutput(
   amount: string
 ): Promise<{ estimatedOutput: string; routeId: string } | { error: string }> {
   try {
-    const selling = getStellarAsset(fromToken);
-    const buying  = getStellarAsset(toToken);
+    const selling = getStellarAsset(fromToken)
+    const buying = getStellarAsset(toToken)
 
-    const orderbook = await horizonServer.orderbook(selling, buying).limit(5).call();
+    const orderbook = await horizonServer
+      .orderbook(selling, buying)
+      .limit(5)
+      .call()
 
     if (!orderbook.asks || orderbook.asks.length === 0) {
-      return { error: `No liquidity found on Stellar DEX for ${fromToken} → ${toToken}` };
+      return {
+        error: `No liquidity found on Stellar DEX for ${fromToken} → ${toToken}`,
+      }
     }
 
     // Best ask price = how much toToken you get per fromToken
-    const bestPrice = parseFloat(orderbook.asks[0].price);
-    const inputAmount = parseFloat(amount);
-    const estimatedOutput = (inputAmount * bestPrice).toFixed(7);
+    const bestPrice = parseFloat(orderbook.asks[0].price)
+    const inputAmount = parseFloat(amount)
+    const estimatedOutput = (inputAmount * bestPrice).toFixed(7)
 
     // Generate a synthetic routeId for Stellar so the agent has something to reference
-    const routeId = `stellar-${fromToken}-${toToken}-${Date.now()}`;
+    const routeId = `stellar-${fromToken}-${toToken}-${Date.now()}`
 
-    return { estimatedOutput, routeId };
+    return { estimatedOutput, routeId }
   } catch (error: any) {
-    console.error('Stellar orderbook error:', error);
-    return { error: `Failed to fetch Stellar DEX price: ${error.message}` };
+    console.error('Stellar orderbook error:', error)
+    return { error: `Failed to fetch Stellar DEX price: ${error.message}` }
   }
 }
 
@@ -86,9 +91,9 @@ export async function getRoute(params: any): Promise<any> {
       params.fromToken,
       params.toToken,
       params.amount
-    );
+    )
 
-    if ('error' in result) return result;
+    if ('error' in result) return result
 
     return {
       routeId: result.routeId,
@@ -96,36 +101,50 @@ export async function getRoute(params: any): Promise<any> {
       estimatedFeeUSD: '~$0.00',
       estimatedTimeSeconds: 5,
       steps: [{ stepNumber: 1, description: 'Stellar DEX path payment' }],
-    };
+    }
   }
 
   // ── EVM route via LI.FI ───────────────────────────────────────────────────
-  if (params.fromChain?.toLowerCase() === 'stellar' || params.toChain?.toLowerCase() === 'stellar') {
+  if (
+    params.fromChain?.toLowerCase() === 'stellar' ||
+    params.toChain?.toLowerCase() === 'stellar'
+  ) {
     return {
-      error: 'Cross-chain Stellar routing is not yet supported. Use build_bridge_tx for USDC bridging.',
-    };
+      error:
+        'Cross-chain Stellar routing is not yet supported. Use build_bridge_tx for USDC bridging.',
+    }
   }
 
-  const fromChainId = CHAIN_IDS[params.fromChain.toLowerCase()];
-  const toChainId   = CHAIN_IDS[params.toChain.toLowerCase()];
+  const fromChainId = CHAIN_IDS[params.fromChain.toLowerCase()]
+  const toChainId = CHAIN_IDS[params.toChain.toLowerCase()]
 
   if (!fromChainId || !toChainId) {
-    return { error: `Unsupported chain pair: ${params.fromChain} to ${params.toChain}` };
+    return {
+      error: `Unsupported chain pair: ${params.fromChain} to ${params.toChain}`,
+    }
   }
 
-  const fromTokenAddress = TOKEN_ADDRESSES[params.fromToken.toUpperCase()]?.[params.fromChain.toLowerCase()];
-  const toTokenAddress   = TOKEN_ADDRESSES[params.toToken.toUpperCase()]?.[params.toChain.toLowerCase()];
+  const fromTokenAddress =
+    TOKEN_ADDRESSES[params.fromToken.toUpperCase()]?.[
+      params.fromChain.toLowerCase()
+    ]
+  const toTokenAddress =
+    TOKEN_ADDRESSES[params.toToken.toUpperCase()]?.[
+      params.toChain.toLowerCase()
+    ]
 
   if (!fromTokenAddress || !toTokenAddress) {
-    return { error: `Token not supported on requested chain.` };
+    return { error: `Token not supported on requested chain.` }
   }
 
-  const decimals = TOKEN_DECIMALS[params.fromToken.toUpperCase()];
+  const decimals = TOKEN_DECIMALS[params.fromToken.toUpperCase()]
   if (decimals === undefined) {
-    return { error: `Unknown decimals for token: ${params.fromToken}` };
+    return { error: `Unknown decimals for token: ${params.fromToken}` }
   }
 
-  const fromAmount = BigInt(Math.round(parseFloat(params.amount) * Math.pow(10, decimals))).toString();
+  const fromAmount = BigInt(
+    Math.round(parseFloat(params.amount) * Math.pow(10, decimals))
+  ).toString()
 
   try {
     const routesResult = await getRoutes({
@@ -135,36 +154,42 @@ export async function getRoute(params: any): Promise<any> {
       toTokenAddress,
       fromAmount,
       fromAddress: params.walletAddress,
-    });
+    })
 
     if (!routesResult.routes || routesResult.routes.length === 0) {
-      return { error: 'No routes found for this request. Try a different token pair or a larger amount.' };
+      return {
+        error:
+          'No routes found for this request. Try a different token pair or a larger amount.',
+      }
     }
 
-    const bestRoute = routesResult.routes[0];
-    routeCache.set(bestRoute.id, bestRoute);
+    const bestRoute = routesResult.routes[0]
+    routeCache.set(bestRoute.id, bestRoute)
 
-    const toDecimals = TOKEN_DECIMALS[params.toToken.toUpperCase()] || 18;
-    const estimatedOutputHuman = (Number(bestRoute.toAmount) / Math.pow(10, toDecimals)).toFixed(4);
+    const toDecimals = TOKEN_DECIMALS[params.toToken.toUpperCase()] || 18
+    const estimatedOutputHuman = (
+      Number(bestRoute.toAmount) / Math.pow(10, toDecimals)
+    ).toFixed(4)
 
     return {
       routeId: bestRoute.id,
       estimatedOutput: estimatedOutputHuman,
       estimatedFeeUSD: bestRoute.gasCostUSD || '0.00',
       estimatedTimeSeconds: bestRoute.steps.reduce(
-        (acc: number, step: any) => acc + step.estimate.executionDuration, 0
+        (acc: number, step: any) => acc + step.estimate.executionDuration,
+        0
       ),
       steps: bestRoute.steps.map((step: any, idx: number) => ({
         stepNumber: idx + 1,
         description: `Execute via ${step.tool}`,
       })),
-    };
+    }
   } catch (error: any) {
-    console.error('LI.FI getRoutes error:', error);
-    return { error: `Failed to fetch route from LI.FI: ${error.message}` };
+    console.error('LI.FI getRoutes error:', error)
+    return { error: `Failed to fetch route from LI.FI: ${error.message}` }
   }
 }
 
 export function getCachedRoute(routeId: string): any {
-  return routeCache.get(routeId);
+  return routeCache.get(routeId)
 }

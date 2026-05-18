@@ -44,23 +44,27 @@ const stellarX402Middleware = (req: express.Request, res: express.Response, next
 };
 
 // Unprotected Health Check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
+app.get('/health', (req: express.Request, res: express.Response) => {
+  res.json({ status: 'ok' })
+})
 
 // Protected Yield Data Route 
-app.get('/api/yield', stellarX402Middleware, (req, res) => {
-  const yieldData = {
-    timestamp: new Date().toISOString(),
-    rates: [
-      { protocol: 'Aave', network: 'Base', asset: 'USDC', apy: '4.2%' },
-      { protocol: 'Mento', network: 'Celo', asset: 'USDC', apy: '6.8%' },
-      { protocol: 'Aave', network: 'Ethereum', asset: 'USDC', apy: '3.1%' },
-    ]
-  };
-  
-  res.json(yieldData);
-});
+app.get(
+  '/api/yield',
+  stellarX402Middleware,
+  (req: express.Request, res: express.Response) => {
+    const yieldData = {
+      timestamp: new Date().toISOString(),
+      rates: [
+        { protocol: 'Aave', network: 'Base', asset: 'USDC', apy: '4.2%' },
+        { protocol: 'Mento', network: 'Celo', asset: 'USDC', apy: '6.8%' },
+        { protocol: 'Aave', network: 'Ethereum', asset: 'USDC', apy: '3.1%' },
+      ],
+    }
+
+    res.json(yieldData)
+  }
+)
 
 app.listen(port, () => {
   console.log(`x402 Yield Server running on port ${port}`);

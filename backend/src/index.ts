@@ -3,9 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
-import { runAgent, ConversationMessage } from './agent/agent';
-import { pollTransactionStatus } from './services/txMonitorService';
-import { handleBurnConfirmed, pollAttestation, buildReceiveMessageTx } from './services/bridgeService';
+import { runAgent, ConversationMessage } from './agent/agent.js';
+import { pollTransactionStatus } from './services/txMonitorService.js';
+import { handleBurnConfirmed, pollAttestation, buildReceiveMessageTx } from './services/bridgeService.js';
 import { PrismaClient } from '@prisma/client';
 
 dotenv.config();

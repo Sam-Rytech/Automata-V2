@@ -1,18 +1,18 @@
-import { getBalances } from '../services/balanceService';
-import { getRoute } from '../services/routeService';
+import { getBalances } from '../services/balanceService.js';
+import { getRoute } from '../services/routeService.js';
 import {
   getYieldOpportunities,
   buildEarnDepositTx,
   getEarnPositions,
   formatOpportunitiesForAgent,
-} from '../services/yieldService'
-import { buildBridgeTx } from '../services/bridgeService';
-import { buildSwapTx } from '../services/swapService';
-import { buildStakeTx } from '../services/stakeService';
-import { buildTransferTx } from '../services/transferService';
-import { estimateFees } from '../services/feeService';
-import { resolveRecipient } from '../services/resolverService';
-import { X402PaymentHandler } from '../services/X402PaymentHandler';
+} from '../services/yieldService.js'
+import { buildBridgeTx } from '../services/bridgeService.js';
+import { buildSwapTx } from '../services/swapService.js';
+import { buildStakeTx } from '../services/stakeService.js';
+import { buildTransferTx } from '../services/transferService.js';
+import { estimateFees } from '../services/feeService.js';
+import { resolveRecipient } from '../services/resolverService.js';
+import { X402PaymentHandler } from '../services/X402PaymentHandler.js';
 
 export async function executeTool(
   toolName: string,

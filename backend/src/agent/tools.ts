@@ -3,7 +3,7 @@ import {
   getYieldOpportunities,
   buildEarnDepositTx,
   getEarnPositions,
-} from '../services/yieldService'
+} from '../services/yieldService.js'
 
 export const AGENT_TOOLS: Tool[] = [
   {

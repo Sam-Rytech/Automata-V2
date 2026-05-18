@@ -1,5 +1,5 @@
 import { parseUnits, formatUnits, erc20Abi } from 'viem';
-import { baseClient, celoClient, ethClient } from '../utils/rpc';
+import { baseClient, celoClient, ethClient } from '../utils/rpc.js';
 
 // ---------------------------------------------------------------------------
 // EVM adapter — shared utilities for Base, Celo, and Ethereum.

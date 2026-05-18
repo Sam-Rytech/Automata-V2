@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, Content, Part } from '@google/generative-ai';
-import { SYSTEM_PROMPT } from './prompts';
-import { AGENT_TOOLS } from './tools';
-import { executeTool } from './toolExecutor';
+import { SYSTEM_PROMPT } from './prompts.js';
+import { AGENT_TOOLS } from './tools.js';
+import { executeTool } from './toolExecutor.js';
 
 export type MessageRole = 'user' | 'model';
 

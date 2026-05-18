@@ -8,7 +8,7 @@ import {
   Transaction,
   BASE_FEE,
 } from '@stellar/stellar-sdk';
-import { horizonServer, sorobanServer, STELLAR_NETWORK_PASSPHRASE } from '../utils/rpc';
+import { horizonServer, sorobanServer, STELLAR_NETWORK_PASSPHRASE } from '../utils/rpc.js';
 
 // ---------------------------------------------------------------------------
 // stellar.ts — Stellar adapter.

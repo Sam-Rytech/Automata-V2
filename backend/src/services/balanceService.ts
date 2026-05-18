@@ -1,5 +1,5 @@
-import { USDC_ADDRESSES, getERC20Balance, getNativeBalance } from '../adapters/evm';
-import { getStellarBalances } from '../adapters/stellar';
+import { USDC_ADDRESSES, getERC20Balance, getNativeBalance } from '../adapters/evm.js';
+import { getStellarBalances } from '../adapters/stellar.js';
 
 export async function getBalances(walletAddress: string, stellarAddress?: string): Promise<Record<string, Record<string, string>>> {
   const result: Record<string, Record<string, string>> = {

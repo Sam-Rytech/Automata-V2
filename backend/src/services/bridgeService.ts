@@ -1,6 +1,6 @@
 import { encodeFunctionData, parseUnits, decodeEventLog } from 'viem';
-import { baseClient, celoClient, ethClient } from '../utils/rpc';
-import { startBridgeRelay } from './stellarBridgeRelay';
+import { baseClient, celoClient, ethClient } from '../utils/rpc.js';
+import { startBridgeRelay } from './stellarBridgeRelay.js';
 
 // ---------------------------------------------------------------------------
 // CCTP V2 contract addresses — identical across all chains via CREATE2

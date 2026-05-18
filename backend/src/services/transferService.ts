@@ -1,6 +1,6 @@
 import { parseUnits, encodeFunctionData, erc20Abi } from 'viem';
-import { USDC_ADDRESSES } from '../adapters/evm';
-import { buildStellarTransfer } from '../adapters/stellar';
+import { USDC_ADDRESSES } from '../adapters/evm.js';
+import { buildStellarTransfer } from '../adapters/stellar.js';
 
 export async function buildTransferTx(args: any): Promise<{ description: string; unsignedTx: any }> {
   if (args.token === 'USDC' && args.chain !== 'stellar') {

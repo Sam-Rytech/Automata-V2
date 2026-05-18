@@ -1,6 +1,6 @@
 import { getStepTransaction } from '@lifi/sdk';
-import { getCachedRoute } from './routeService';
-import { buildStellarPathPayment } from '../adapters/stellar';
+import { getCachedRoute } from './routeService.js';
+import { buildStellarPathPayment } from '../adapters/stellar.js';
 
 export async function buildSwapTx(params: any): Promise<any> {
   // ── Stellar DEX path payment ──────────────────────────────────────────────

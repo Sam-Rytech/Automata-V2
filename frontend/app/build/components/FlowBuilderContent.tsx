@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import ReactFlow, {
   addEdge, useNodesState, useEdgesState,
   Background, Controls, Connection,
@@ -101,19 +101,25 @@ export function FlowBuilderContent() {
     }
   };
 
-  const handleOpenLoad = async () => {
+  const handleOpenLoad = () => {
     if (!walletAddress) {
       toast.error('Wallet Required', { description: 'Please connect your wallet to load flows.' });
       return;
     }
-    try {
-      const flows = await getFlowsFromDb(walletAddress);
-      setSavedFlows(flows);
-      setLoadDialogOpen(true);
-    } catch (error) {
-      toast.error('Load Failed', { description: 'Could not fetch saved flows.' });
-    }
+    setLoadDialogOpen(true);
   };
+
+  // Fetch flows when the load dialog is opened
+  useEffect(() => {
+    if (loadDialogOpen && walletAddress) {
+      getFlowsFromDb(walletAddress)
+        .then(flows => setSavedFlows(flows))
+        .catch(error => {
+          console.error("Load flow error:", error);
+          toast.error('Load Failed', { description: 'Could not fetch saved flows.' });
+        });
+    }
+  }, [loadDialogOpen, walletAddress]);
 
   // *************************
 

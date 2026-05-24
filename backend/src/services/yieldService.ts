@@ -303,7 +303,7 @@ export async function buildEarnDepositTx(
   if (data.estimate?.approvalAddress) {
     approvalTx = {
       to: fromToken,
-      data: '0x095ea7b3' + data.estimate.approvalAddress.replace('0x', '').padStart(64, '0') + BigInt(amountSmallest).toString(16).padStart(64, '0')
+      data: `0x095ea7b3${data.estimate.approvalAddress.replace}`('0x', '').padStart(64, '0') + BigInt(amountSmallest).toString(16).padStart(64, '0')
     };
   }
 

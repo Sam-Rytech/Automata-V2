@@ -12,10 +12,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { WebSocket }       from 'ws';
 import { buildBridgeTx } from '../services/bridgeService';
-import { buildStakeTx }   from '../services/stakeService';
 import { getYieldRates }  from '../services/yieldService';
+import { buildStakeTx }   from '../services/stakeService';
+import { WebSocket }       from 'ws';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

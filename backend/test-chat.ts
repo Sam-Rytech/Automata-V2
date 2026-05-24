@@ -5,7 +5,7 @@ dotenv.config();
 
 async function testFullAgent() {
     // A natural language prompt that requires the agent to buy data
-    const userPrompt: string = "I have some USDC lying around. Can you check what the current yield rates are across different networks and tell me where I should put it?";
+    const userPrompt = "I have some USDC lying around. Can you check what the current yield rates are across different networks and tell me where I should put it?";
     
     console.log(`🗣️ User: "${userPrompt}"\n`);
     console.log("⏳ Waiting for Gemini AI to process and execute tools...\n");

@@ -29,7 +29,6 @@ export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
       <div
         className={`relative bg-[#12121A] border p-5 w-[240px] transition-all shadow-xl z-10
           ${selected ? 'bg-[#1A1A2E]/80' : 'hover:border-white/20'}
-        // FIXME: handle edge case when value is null
         `}
         style={{ borderColor: selected ? color : 'rgba(255,255,255,0.08)' }}
       >

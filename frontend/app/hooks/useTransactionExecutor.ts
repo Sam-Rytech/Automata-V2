@@ -123,7 +123,6 @@ export function useTransactionExecutor() {
             console.log(`[Bridge] Mint tx submitted on ${meta.destinationChain}: ${lastTxHash}`);
           }
 
-          // ── Stellar relay trigger ───────────────────────────────────────
           if (meta?.toChain === 'stellar' && (tx as any).txType === 'burn') {
             const recipientAddr = meta.recipientAddress || stellarContext.address;
             if (recipientAddr) {

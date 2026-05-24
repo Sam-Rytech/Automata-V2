@@ -1,15 +1,21 @@
 {
-  "name": "x402-yield-server",
+  "name": "@automata/x402-yield-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "An x402 server that provides yield data for the x402 protocol.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sam-Rytech/Automata-V2/tree/main/x402-yield-server.git"
+  },
+  "keywords": [
+    "X402 yield server"
+  ],
+  "author": "Sam_rytech",
   "license": "ISC",
   "type": "module",
   "dependencies": {

@@ -1,5 +1,5 @@
 {
-  "name": "@automata/x402-yield-server",
+  "name": "@agent-automata/x402-yield-server",
   "version": "1.0.0",
   "description": "An x402 server that provides yield data for the x402 protocol.",
   "main": "index.js",

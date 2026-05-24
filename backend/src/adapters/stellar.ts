@@ -61,7 +61,7 @@ export function getStellarAsset(symbol: string): Asset {
   const entry = STELLAR_ASSETS[symbol]
   if (!entry) {
     throw new Error(
-      `Unknown Stellar asset: "${symbol}". Known: ${Object.keys(STELLAR_ASSETS).join(', ')}`
+      `Unknown Stellar asset: '${symbol}'. Known: ${Object.keys(STELLAR_ASSETS).join(', ')}`
     )
   }
   return entry.issuer === null

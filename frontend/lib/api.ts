@@ -113,6 +113,11 @@ export async function saveHistoryToDb(
   return res.json();
 }
 
+/**
+ * getHistoryFromDb
+ * @param {*} walletAddress: string
+ * @returns {*}
+ */
 export async function getHistoryFromDb(walletAddress: string) {
   const res = await fetch(`${API_BASE}/api/history/${walletAddress}`);
   if (!res.ok) throw new Error('Failed to fetch history');

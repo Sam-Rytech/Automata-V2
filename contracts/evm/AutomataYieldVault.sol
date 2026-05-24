@@ -38,8 +38,8 @@ contract AutomataYieldVault {
     uint16  public performanceFeeBps; // taken on withdraw against profit, max 2000 (20%)
     address public feeRecipient;
 
-    uint256 private constant VIRTUAL_SHARES = 1;
-    uint256 private constant VIRTUAL_ASSETS = 1;
+    uint256 private constant VIRTUAL_SHARES = 1000;
+    uint256 private constant VIRTUAL_ASSETS = 1000;
 
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;

@@ -37,7 +37,7 @@ function ChatPageContent() {
   useEffect(() => {
     const savedMode = localStorage.getItem('automata_execution_mode');
     if (savedMode === 'assisted' || savedMode === 'autonomous') {
-      setExecutionMode(savedMode);
+      setExecutionMode(savedMode);,
     }
   }, []);
 

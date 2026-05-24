@@ -19,6 +19,10 @@ interface YieldOpportunitiesProps {
   onDeposit: (opportunity: YieldOpportunity) => void;
 }
 
+function getAPY(o: YieldOpportunity): number {
+  return o.apy ?? o.apyBase ?? 0;
+}
+
 function formatTVL(tvl?: number): string {
   if (!tvl) return "N/A";
   if (tvl >= 1_000_000_000) return `$${(tvl / 1_000_000_000).toFixed(2)}B`;
@@ -27,20 +31,16 @@ function formatTVL(tvl?: number): string {
   return `$${tvl.toFixed(0)}`;
 }
 
-function getAPY(o: YieldOpportunity): number {
-  return o.apy ?? o.apyBase ?? 0;
-}
-
 function getProtocol(o: YieldOpportunity): string {
   return o.protocol || o.project || 'Unknown Protocol';
 }
 
+export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunitiesProps) {
+  if (!opportunities || opportunities.length === 0) return null;
+
 function getChain(o: YieldOpportunity): string {
   return o.chain || 'Unknown Chain';
 }
-
-export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunitiesProps) {
-  if (!opportunities || opportunities.length === 0) return null;
 
   return (
     <motion.div

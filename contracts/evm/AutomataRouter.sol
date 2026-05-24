@@ -21,6 +21,7 @@ interface IERC20 {
 }
 
 contract AutomataRouter {
+    bool private _locked;
     struct Call {
         address target;
         uint256 value;
@@ -45,6 +46,20 @@ contract AutomataRouter {
         _;
     }
 
+    modifier nonReentrant() {
+        require(!_locked, "reentrant");
+        _locked = true;
+        _;
+        _locked = false;
+    }
+
+    function _safeTransfer(address token, address to, uint256 amount) internal {
+        (bool ok, bytes memory data) = token.call(
+            abi.encodeWithSelector(IERC20.transfer.selector, to, amount)
+        );
+        require(ok && (data.length == 0 || abi.decode(data, (bool))), "transfer failed");
+    }
+
     constructor(address _feeRecipient, uint16 _feeBps) {
         if (_feeBps > 100) revert FeeTooHigh();
         owner        = msg.sender;
@@ -62,6 +77,7 @@ contract AutomataRouter {
     function executeBatch(Call[] calldata calls, address[] calldata sweepTokens)
         external
         payable
+        nonReentrant
     {
         uint256 len = calls.length;
         for (uint256 i = 0; i < len; ++i) {
@@ -79,10 +95,10 @@ contract AutomataRouter {
             uint256 net  = bal - fee;
 
             if (fee > 0) {
-                IERC20(token).transfer(feeRecipient, fee);
+                _safeTransfer(token, feeRecipient, fee);
                 totalFee += fee;
             }
-            IERC20(token).transfer(msg.sender, net);
+            _safeTransfer(token, msg.sender, net);
 
             uint256 remaining = IERC20(token).balanceOf(address(this));
             if (remaining != 0) revert LeftoverBalance(token, remaining);
@@ -113,7 +129,7 @@ contract AutomataRouter {
             (bool sent, ) = to.call{value: amount}("");
             require(sent, "rescue native failed");
         } else {
-            IERC20(token).transfer(to, amount);
+            _safeTransfer(token, to, amount);
         }
     }
 

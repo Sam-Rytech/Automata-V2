@@ -38,6 +38,9 @@ contract AutomataYieldVault {
     uint16  public performanceFeeBps; // taken on withdraw against profit, max 2000 (20%)
     address public feeRecipient;
 
+    uint256 private constant VIRTUAL_SHARES = 1;
+    uint256 private constant VIRTUAL_ASSETS = 1;
+
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
@@ -84,20 +87,17 @@ contract AutomataYieldVault {
     }
 
     function convertToShares(uint256 assets) public view returns (uint256) {
-        uint256 supply = totalSupply;
-        uint256 tA     = totalAssets();
-        return (supply == 0 || tA == 0) ? assets : (assets * supply) / tA;
+        return (assets * (totalSupply + VIRTUAL_SHARES)) / (totalAssets() + VIRTUAL_ASSETS);
     }
 
     function convertToAssets(uint256 shares) public view returns (uint256) {
-        uint256 supply = totalSupply;
-        return supply == 0 ? shares : (shares * totalAssets()) / supply;
+        return (shares * (totalAssets() + VIRTUAL_ASSETS)) / (totalSupply + VIRTUAL_SHARES);
     }
 
     function deposit(uint256 assets, address receiver) external returns (uint256 shares) {
         if (assets == 0) revert ZeroAmount();
         shares = convertToShares(assets);
-        IERC20(asset).transferFrom(msg.sender, address(this), assets);
+        _safeTransferFrom(asset, msg.sender, address(this), assets);
         _mint(receiver, shares);
         principal[receiver] += assets;
 
@@ -128,11 +128,11 @@ contract AutomataYieldVault {
         if (grossAssets > userPrincipal && performanceFeeBps > 0) {
             uint256 profit = grossAssets - userPrincipal;
             fee = (profit * performanceFeeBps) / 10_000;
-            if (fee > 0) IERC20(asset).transfer(feeRecipient, fee);
+            if (fee > 0) _safeTransfer(asset, feeRecipient, fee);
         }
 
         assetsOut = grossAssets - fee;
-        IERC20(asset).transfer(receiver, assetsOut);
+        _safeTransfer(asset, receiver, assetsOut);
         emit Withdraw(msg.sender, receiver, assetsOut, shares, fee);
     }
 
@@ -182,9 +182,27 @@ contract AutomataYieldVault {
     }
 
     function _transfer(address from, address to, uint256 amount) internal {
+        uint256 fromBalance = balanceOf[from];
+        uint256 principalMoved = fromBalance > 0 ? (principal[from] * amount) / fromBalance : 0;
         balanceOf[from] -= amount;
         balanceOf[to]   += amount;
+        principal[from] -= principalMoved;
+        principal[to]   += principalMoved;
         emit Transfer(from, to, amount);
+    }
+
+    function _safeTransfer(address token, address to, uint256 amount) internal {
+        (bool ok, bytes memory data) = token.call(
+            abi.encodeWithSelector(IERC20.transfer.selector, to, amount)
+        );
+        require(ok && (data.length == 0 || abi.decode(data, (bool))), "transfer failed");
+    }
+
+    function _safeTransferFrom(address token, address from, address to, uint256 amount) internal {
+        (bool ok, bytes memory data) = token.call(
+            abi.encodeWithSelector(IERC20.transferFrom.selector, from, to, amount)
+        );
+        require(ok && (data.length == 0 || abi.decode(data, (bool))), "transferFrom failed");
     }
 
     function _mint(address to, uint256 amount) internal {

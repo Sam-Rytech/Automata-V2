@@ -30,7 +30,7 @@ export async function buildSwapTx(params: any): Promise<any> {
         unsignedTx: {
           chainId: 'stellar',
           to: fromAddress,
-          payload: '0x',
+          data: '0x',
           value: '0',
           xdr,
           description: `Swap ${amount} ${fromToken} → ${toToken} on Stellar DEX`,
@@ -79,7 +79,7 @@ export async function buildSwapTx(params: any): Promise<any> {
       description: actionDesc,
       unsignedTx: {
         to: txRequest.to,
-        payload: txRequest.payload,
+        data: txRequest.data,
         value: txRequest.value?.toString() || '0',
         chainId: chainName,
         description: actionDesc,

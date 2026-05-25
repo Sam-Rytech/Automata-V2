@@ -49,7 +49,7 @@ export function getEvmClient(chain: string) {
     case 'ethereum': return ethClient;
     default:
       throw new Error(
-        `Unsupported EVM chain: '${chain}'. Supported values: base, celo, ethereum`
+        `Unsupported EVM chain: "${chain}". Supported values: base, celo, ethereum`
       );
   }
 }

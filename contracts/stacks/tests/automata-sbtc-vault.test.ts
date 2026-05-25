@@ -71,7 +71,7 @@ describe("automata-sbtc-vault", () => {
   describe("withdraw", () => {
     beforeEach(() => {
       simnet.callPublicFn(
-        VAULT, 'deposit',
+        VAULT, "deposit",
         [tokenTrait, Cl.uint(500_000)],
         user,
       );

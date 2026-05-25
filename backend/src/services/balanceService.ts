@@ -22,6 +22,7 @@ export async function getBalances(
     result.base.USDC = await getERC20Balance(
       'base',
       USDC_ADDRESSES.base,
+      // TODO: add error boundary here
       evmAddress
     )
     result.celo.CELO = await getNativeBalance('celo', evmAddress)

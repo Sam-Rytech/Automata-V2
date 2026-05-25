@@ -29,7 +29,7 @@ export type PlanStep = {
 export type UnsignedTx = {
   chainId: ChainId;
   to: string;
-  payload: string;
+  data: string;
   value: string;
   description: string;
 };

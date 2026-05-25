@@ -18,12 +18,6 @@ export const STATUS_COLORS: Record<string, string> = {
   FAILED: '#EF4444',
 };
 
-/**
- * getExplorerUrl
- * @param {*} network: string
- * @param {*} hash: string
- * @returns {*}
- */
 export function getExplorerUrl(network: string, hash: string): string {
   const normalizedNetwork = network.toUpperCase();
   switch (normalizedNetwork) {

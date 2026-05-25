@@ -22,21 +22,21 @@ const COMPOSER_API = 'https://li.quest';
 // Service 1: Earn Data API (No auth required)
 async function earnFetch(path: string, options: RequestInit = {}): Promise<any> {
   const url = \`\${EARN_API}\${path}\`;
-  const response = await fetch(url, {
+  const res = await fetch(url, {
     ...options,
     headers: { 'Accept': 'application/json', ...(options.headers ?? {}) },
   });
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(\`Earn API error \${response.status}: \${body}\`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(\`Earn API error \${res.status}: \${body}\`);
   }
-  return response.json();
+  return res.json();
 }
 
 // Service 2: Composer (API Key required)
 async function composerFetch(path: string, options: RequestInit = {}): Promise<any> {
   const url = \`\${COMPOSER_API}\${path}\`;
-  const response = await fetch(url, {
+  const res = await fetch(url, {
     ...options,
     headers: {
       'Accept': 'application/json',
@@ -44,11 +44,11 @@ async function composerFetch(path: string, options: RequestInit = {}): Promise<a
       ...(options.headers ?? {}),
     },
   });
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(\`Composer API error \${response.status}: \${body}\`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(\`Composer API error \${res.status}: \${body}\`);
   }
-  return response.json();
+  return res.json();
 }
 
 // ---------------------------------------------------------------------------

@@ -1,8 +1,3 @@
-/**
- * resolveRecipient
- * @param {*} identifier: string
- * @returns {*}
- */
 export async function resolveRecipient(identifier: string): Promise<any> {
   if (identifier.endsWith('.eth')) {
     return { resolved: false, error: 'ENS resolution not yet implemented' };

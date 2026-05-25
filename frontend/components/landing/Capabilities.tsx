@@ -45,7 +45,7 @@ export function Capabilities() {
               Transfer USDC to any wallet on any network. Pay network costs directly in USDC.
             </p>
 
-            <div className='bg-[#0F0F1A]/80 p-4 border border-[#E91E8C]/20 flex flex-col gap-3 backdrop-blur-md rounded-none'>
+            <div className="bg-[#0F0F1A]/80 p-4 border border-[#E91E8C]/20 flex flex-col gap-3 backdrop-blur-md rounded-none">
               <div className="h-10 bg-[#0F0F1A] border border-white/10 px-3 flex items-center font-mono text-xs text-white/40 overflow-hidden relative rounded-none">
                 <motion.span
                   animate={{ opacity: [0, 1, 1, 0], x: [-10, 0, 0, 10] }}

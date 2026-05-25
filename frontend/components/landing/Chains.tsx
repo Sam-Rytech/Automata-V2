@@ -1,6 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
 
+/**
+ * Chains
+ * @returns {*}
+ */
 export function Chains() {
   const chains = [
     {

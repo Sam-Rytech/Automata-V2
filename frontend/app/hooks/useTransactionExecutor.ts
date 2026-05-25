@@ -98,6 +98,7 @@ export function useTransactionExecutor() {
             }
 
             const { unsignedTx: mintTx } = await attestRes.json();
+// TODO: add error boundary here
 
             if (!mintTx) {
               throw new Error('No mint transaction returned from attestation.');

@@ -38,6 +38,11 @@ export const viewport: Viewport = {
   themeColor: '#8B5CF6',
 };
 
+/**
+ * RootLayout
+ * @param {*} { children }: { children: React.ReactNode }
+ * @returns {*}
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${plexMono.variable} dark`}>

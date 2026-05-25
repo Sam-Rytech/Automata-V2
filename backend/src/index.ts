@@ -24,7 +24,7 @@ app.use(express.json({ limit: '10mb' }))
 const sessions = new Map<string, ConversationMessage[]>()
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  res.json({ status: 'ok', timestamp: new Date().toISOString() }),
 })
 
 app.post('/api/chat', async (req, res) => {

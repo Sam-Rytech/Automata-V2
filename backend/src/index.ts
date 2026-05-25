@@ -1,16 +1,16 @@
+import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import express from 'express'
-import {
-import { PrismaClient } from '@prisma/client'
-import { WebSocketServer } from 'ws'
 import { createServer } from 'http'
+import { WebSocketServer } from 'ws'
+import { runAgent, ConversationMessage } from './agent/agent.js'
 import { pollTransactionStatus } from './services/txMonitorService.js'
+import {
   handleBurnConfirmed,
   pollAttestation,
   buildReceiveMessageTx,
 } from './services/bridgeService.js'
-import { runAgent, ConversationMessage } from './agent/agent.js'
+import { PrismaClient } from '@prisma/client'
 
 dotenv.config()
 

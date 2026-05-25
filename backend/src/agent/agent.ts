@@ -11,8 +11,8 @@ export interface ConversationMessage {
 }
 
 function sanitizeHistory(history: ConversationMessage[]): Content[] {
-  return history.filter((msg) =>
-    msg.parts.every(
+  return history.filter((message) =>
+    message.parts.every(
       (part) => !('functionCall' in part) && !('functionResponse' in part)
     )
   ) as Content[]

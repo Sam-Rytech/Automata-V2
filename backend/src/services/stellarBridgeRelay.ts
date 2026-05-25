@@ -37,6 +37,11 @@ const MAX_POLL_ATTEMPTS = 60 // give up after 5 minutes
 // Poll Circle for attestation
 // ---------------------------------------------------------------------------
 
+/**
+ * pollAttestation
+ * @param {*} messageHash: string
+ * @returns {*}
+ */
 async function pollAttestation(messageHash: string): Promise<string | null> {
   for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
     try {

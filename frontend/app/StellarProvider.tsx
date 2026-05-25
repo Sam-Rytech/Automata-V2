@@ -23,10 +23,6 @@ const StellarContext = createContext<StellarContextType>({
   signStellarTransaction: async () => '',
 });
 
-/**
- * useStellar
- * @returns {*}
- */
 export function useStellar() {
   return useContext(StellarContext);
 }

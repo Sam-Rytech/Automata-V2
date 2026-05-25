@@ -163,8 +163,8 @@ async function testYieldService() {
 
       // Rates should be sorted descending
       if (Array.isArray(result.rates) && result.rates.length > 1) {
-        const sorted = result.rates.every((r: any, i: number, arr: any[]) =>
-          i === 0 || arr[i - 1].apy >= r.apy
+        const sorted = result.rates.every((r: any, i: number, items: any[]) =>
+          i === 0 || items[i - 1].apy >= r.apy
         );
         sorted
           ? pass('rates sorted by APY descending')

@@ -60,14 +60,14 @@ export function useBalances(evmAddress?: string | null, stellarAddress?: string 
               address: BASE_USDC_ADDRESS,
               abi: ERC20_ABI,
               functionName: 'balanceOf',
-              params: [evmAddress as `0x${string}`],
+              args: [evmAddress as `0x${string}`],
             }),
             celoClient.getBalance({ address: evmAddress as `0x${string}` }),
             celoClient.readContract({
               address: CELO_USDC_ADDRESS,
               abi: ERC20_ABI,
               functionName: 'balanceOf',
-              params: [evmAddress as `0x${string}`],
+              args: [evmAddress as `0x${string}`],
             }),
           ]);
 

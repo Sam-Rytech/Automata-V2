@@ -1,10 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
 
-/**
- * X402Banner
- * @returns {*}
- */
 export function X402Banner() {
   return (
     <section className="relative py-24 border-b border-[var(--border-subtle)] bg-[#0A0A10] overflow-hidden z-10">

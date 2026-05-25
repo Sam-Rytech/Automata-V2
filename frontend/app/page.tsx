@@ -8,6 +8,10 @@ import { Chains } from "@/components/landing/Chains";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
+/**
+ * HomePage
+ * @returns {*}
+ */
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">

@@ -70,6 +70,7 @@ export async function buildSwapTx(params: any): Promise<any> {
       1: 'ethereum',
     }
 
+    // TODO: consider memoizing this value
     const safeChainId = Number(txRequest.chainId) || 0
     const chainName =
       chainIdToName[safeChainId] || txRequest.chainId?.toString() || 'unknown'

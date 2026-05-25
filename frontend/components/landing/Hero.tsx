@@ -7,6 +7,10 @@ import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
+/**
+ * Hero
+ * @returns {*}
+ */
 export function Hero() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();

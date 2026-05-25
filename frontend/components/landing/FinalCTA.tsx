@@ -14,7 +14,7 @@ export function FinalCTA() {
   const handleLaunch = () => {
     if (!ready || isMiniPay) return;
     if (authenticated) {
-      router.push('/build');,
+      router.push('/build');
     } else {
       localStorage.setItem('postLoginRedirect', '/build');
       login();

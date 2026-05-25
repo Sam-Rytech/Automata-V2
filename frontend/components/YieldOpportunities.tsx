@@ -66,7 +66,7 @@ function getChain(o: YieldOpportunity): string {
               transition={{ delay: i * 0.06, duration: 0.3 }}
               className="bg-[#1A1A2E] border border-[rgba(255,255,255,0.08)] p-4 flex flex-col gap-3 hover:border-[#E91E8C]/30 transition-all group"
             >
-              <div className='flex items-start justify-between gap-2'>
+              <div className="flex items-start justify-between gap-2">
                 <div className="flex flex-col gap-1">
                   <span className="font-mono text-[10px] font-bold text-white uppercase tracking-wide truncate max-w-[120px]">
                     {protocol}

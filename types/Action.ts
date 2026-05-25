@@ -43,7 +43,7 @@ export type ExecuteResponse = {
 export type UnsignedTx = {
   chainId: ChainId;
   to: string;
-  payload: string;
+  data: string;
   value: string;
   description: string;
 };

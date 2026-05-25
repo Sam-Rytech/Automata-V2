@@ -20,6 +20,7 @@ describe("automata-sbtc-vault", () => {
       [Cl.principal(mockTokenPrincipal)],
       deployer,
     );
+    // mint mock-sbtc to the user so they can deposit
     simnet.callPublicFn(
       MOCK_TOKEN, "mint",
       [Cl.uint(1_000_000), Cl.principal(user)],

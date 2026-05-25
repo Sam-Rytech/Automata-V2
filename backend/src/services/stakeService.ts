@@ -104,7 +104,7 @@ function buildAaveSupply(params: {
 
   const approveTx = {
     to:          USDC_ADDRESS[chain],
-    payload:        approveData,
+    data:        approveData,
     value:       '0',
     chainId:     chain,
     description: `Authorise Aave to use your USDC on ${chain}`,
@@ -125,7 +125,7 @@ function buildAaveSupply(params: {
 
   const supplyTx = {
     to:          AAVE_POOL[chain],
-    payload:        supplyData,
+    data:        supplyData,
     value:       '0',
     chainId:     chain,
     description: `Deposit ${amount} USDC into Aave V3 on ${chain}`,
@@ -174,7 +174,7 @@ function buildMentoSwap(params: {
 
   const approveTx = {
     to:          USDC_ADDRESS['celo'],
-    payload:        approveData,
+    data:        approveData,
     value:       '0',
     chainId:     'celo',
     description: 'Authorise Mento to use your USDC on Celo',
@@ -188,7 +188,7 @@ function buildMentoSwap(params: {
   // Phase 5 testnet integration work.
   const swapTx = {
     to:              MENTO_BROKER,
-    payload:            '0x',
+    data:            '0x',
     value:           '0',
     chainId:         'celo',
     description:     `Swap ${amount} USDC to cUSD via Mento`,

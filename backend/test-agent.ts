@@ -1,5 +1,5 @@
-import { X402PaymentHandler } from './src/services/X402PaymentHandler'; // adjust path if needed
 import dotenv from 'dotenv';
+import { X402PaymentHandler } from './src/services/X402PaymentHandler'; // adjust path if needed
 dotenv.config();
 
 async function runTest() {

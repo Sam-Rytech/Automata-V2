@@ -40,7 +40,6 @@ export function X402Banner() {
                   alt="Automata"
                   className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
                 />
-              // TODO: optimize for large datasets
               </div>
 
               <div className="text-white/30 font-mono text-3xl sm:text-4xl font-light">✕</div>

@@ -110,7 +110,7 @@ export function ChatMockup() {
                       {msg.text}
                     </div>
                     <div className="bg-[#0F0F1A] border-l-2 border-[var(--accent-pink)] p-4 mb-4">
-                      <div className='font-mono text-xs text-white/50 mb-3 tracking-widest'>TRANSACTION PLAN</div>
+                      <div className="font-mono text-xs text-white/50 mb-3 tracking-widest">TRANSACTION PLAN</div>
                       <ul className="font-mono text-sm text-white/70 space-y-2">
                         {msg.plan.map((step: string, i: number) => (
                           <motion.li key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.2 }}>

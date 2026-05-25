@@ -1,4 +1,4 @@
-const GEMINI_KEY: string = 'automata_gemini_key';
+const GEMINI_KEY = 'automata_gemini_key';
 const AGENT_MODE = 'automata_agent_mode';
 
 export function saveGeminiKey(key: string): void {

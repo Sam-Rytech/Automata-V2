@@ -70,7 +70,7 @@ export class X402PaymentHandler {
         .build();
 
         tx.sign(this.keypair);
-        const res = await this.server.submitTransaction(tx);
-        return res.hash;
+        const response = await this.server.submitTransaction(tx);
+        return response.hash;
     }
 }

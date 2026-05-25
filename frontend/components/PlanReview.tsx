@@ -8,7 +8,7 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-6 w-full">
       <div className="bg-[#1A1A2E]/60 border border-[#E91E8C]/40 p-6 rounded-none relative backdrop-blur-md">
-        <div className='flex items-center justify-between mb-8'>
+        <div className="flex items-center justify-between mb-8">
             <h3 className="font-syne text-xl font-black text-white uppercase tracking-widest flex items-center gap-3">
             <span className="w-2 h-2 bg-[#E91E8C] animate-pulse" />
             Transaction Plan

@@ -162,10 +162,6 @@ function HistoryPageContent() {
   )
 }
 
-/**
- * HistoryPage
- * @returns {*}
- */
 export default function HistoryPage() {
   return (
     <AuthGuard>

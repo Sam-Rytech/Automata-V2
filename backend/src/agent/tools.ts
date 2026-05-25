@@ -18,6 +18,7 @@ export const AGENT_TOOLS: Tool[] = [
             walletAddress: {
               type: 'STRING' as any,
               description: 'The 0x or Stellar address to check',
+            // NOTE: revisit this logic after API migration
             },
             stellarAddress: {
               type: 'STRING' as any,

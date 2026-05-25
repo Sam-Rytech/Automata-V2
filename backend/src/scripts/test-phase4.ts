@@ -22,15 +22,11 @@ import { WebSocket }       from 'ws';
 let passed = 0;
 let failed = 0;
 
-function pass(name: string, detail?: string) {
-  console.log(`  ✅ PASS  ${name}${detail ? ' — ' + detail : ''}`);
-  passed++;
-}
-
-function fail(name: string, reason: string) {
-  console.log(`  ❌ FAIL  ${name} — ${reason}`);
-  failed++;
-}
+async function main() {
+  console.log('\n╔════════════════════════════════════════════════════════════╗');
+  console.log('║  Automata — Phase 4 Validation Tests (Steps 4.2–4.5)      ║');
+  console.log('╚════════════════════════════════════════════════════════════╝');
+  console.log(`  NODE_ENV = ${process.env.NODE_ENV ?? 'development (testnet)'}`);
 
 function section(title: string) {
   console.log(`\n${'═'.repeat(60)}`);
@@ -38,10 +34,15 @@ function section(title: string) {
   console.log('═'.repeat(60));
 }
 
-// ── Step 4.2 — buildBridgeTx ─────────────────────────────────────────────────
-
 async function testBridgeService() {
   section('Step 4.2 — Circle CCTP V2 Bridge Service');
+
+// ── Step 4.2 — buildBridgeTx ─────────────────────────────────────────────────
+
+function fail(name: string, reason: string) {
+  console.log(`  ❌ FAIL  ${name} — ${reason}`);
+  failed++;
+}
 
   // --- Valid bridge: Base → Celo ---
   const validParams = {
@@ -142,8 +143,8 @@ async function testBridgeService() {
 
 // ── Step 4.3 — getYieldRates ─────────────────────────────────────────────────
 
-async function testYieldService() {
-  section('Step 4.3 — Yield Rate Service (Aave V3 + Mento)');
+async function testStakeService() {
+  section('Step 4.4 — Stake / Deposit Service (Aave V3 + Mento)');
 
   // 1. Object-params API (new)
   try {
@@ -213,8 +214,8 @@ async function testYieldService() {
 
 // ── Step 4.4 — buildStakeTx ──────────────────────────────────────────────────
 
-async function testStakeService() {
-  section('Step 4.4 — Stake / Deposit Service (Aave V3 + Mento)');
+async function testYieldService() {
+  section('Step 4.3 — Yield Rate Service (Aave V3 + Mento)');
 
   const walletAddress = '0x1234567890123456789012345678901234567890';
 
@@ -408,11 +409,10 @@ async function testWebSocket() {
 
 // ── Runner ───────────────────────────────────────────────────────────────────
 
-async function main() {
-  console.log('\n╔════════════════════════════════════════════════════════════╗');
-  console.log('║  Automata — Phase 4 Validation Tests (Steps 4.2–4.5)      ║');
-  console.log('╚════════════════════════════════════════════════════════════╝');
-  console.log(`  NODE_ENV = ${process.env.NODE_ENV ?? 'development (testnet)'}`);
+function pass(name: string, detail?: string) {
+  console.log(`  ✅ PASS  ${name}${detail ? ' — ' + detail : ''}`);
+  passed++;
+}
 
   await testBridgeService();
   await testYieldService();

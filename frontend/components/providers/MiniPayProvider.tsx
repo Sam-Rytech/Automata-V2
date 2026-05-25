@@ -12,14 +12,14 @@ interface MiniPayContextType {
 
 const MiniPayContext = createContext<MiniPayContextType>({ isMiniPay: false })
 
-export const useMiniPay = () => useContext(MiniPayContext)
-
 export function MiniPayProvider({ children }: { children: React.ReactNode }) {
   const [isMiniPay, setIsMiniPay] = useState(false)
   const { ready, authenticated, login } = usePrivy()
   const { chainId } = useAccount()
   const { switchChain } = useSwitchChain()
   const triggered = useRef(false)
+
+export const useMiniPay = () => useContext(MiniPayContext)
 
   // Detect on mount — always false on server, real value on client
   useEffect(() => {

@@ -46,7 +46,7 @@ export function getEvmClient(chain: string) {
  * @param chain         - 'base' | 'celo' | 'ethereum'
  * @param tokenAddress  - The ERC-20 contract address (0x...)
  * @param walletAddress - The wallet to query (0x...)
- * @returns             - Balance as a human-readable decimal string (e.g. "42.50")
+ * @returns             - Balance as a human-readable decimal string (e.g. '42.50')
  *
  * Uses a raw `balanceOf` call — no subgraph, no API, direct on-chain read.
  * The result is formatted with 6 decimals because USDC (our primary token)

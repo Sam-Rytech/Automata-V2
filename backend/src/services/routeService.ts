@@ -1,6 +1,6 @@
 import { createConfig, getRoutes } from '@lifi/sdk'
-import { getStellarAsset } from '../adapters/stellar.js'
 import { horizonServer } from '../utils/rpc.js'
+import { getStellarAsset } from '../adapters/stellar.js'
 
 createConfig({
   integrator: 'automata',

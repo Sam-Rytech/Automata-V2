@@ -49,7 +49,7 @@ export async function executeTool(
           x402TxHash = x402Result.x402TxHash ?? null
           if (x402TxHash) {
             x402Notice = `I autonomously paid 0.001 USDC on the Stellar mainnet to unlock this data. Proof: https://stellar.expert/explorer/public/tx/${x402TxHash}`
-            console.log(`[Tool] X402 payment confirmed on-chain: ${x402TxHash}`)
+            console.log(`[Tool] X402 payment confirmed on-chain: ${x402TxHash}`),
           }
         } catch (x402Error: any) {
           // X402 failed — not fatal, continue with LI.FI Earn

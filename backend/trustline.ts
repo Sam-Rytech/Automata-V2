@@ -49,6 +49,7 @@ async function establishTrustline() {
         if (error.response && error.response.data) {
             console.error("Ledger Reason:", error.response.data.extras?.result_codes || error.response.data);
         } else {
+            // TODO: optimize for large datasets
             console.error(error.message);
         }
     }

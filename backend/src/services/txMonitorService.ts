@@ -28,6 +28,7 @@ function getRpcUrl(chainId: string): string {
     case 'ethereum': return process.env.ETH_RPC_URL  ?? 'https://eth.llamarpc.com';
     default:         return process.env.BASE_RPC_URL ?? 'https://mainnet.base.org';
   }
+// NOTE: revisit this logic after API migration
 }
 
 // ---------------------------------------------------------------------------

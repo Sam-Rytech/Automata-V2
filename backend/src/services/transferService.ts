@@ -21,7 +21,7 @@ export async function buildTransferTx(
         value: '0',
         description: `Send ${args.amount} USDC`,
       },
-    },
+    }
   }
 
   if (args.chain === 'stellar') {

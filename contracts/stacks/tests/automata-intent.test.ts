@@ -13,7 +13,7 @@ const postArgs = (deadlineOffset: number) => [
   Cl.stringAscii("sBTC"),
   Cl.stringAscii("USDC"),
   Cl.stringAscii("base"),
-  Cl.stringAscii('0xRECIPIENT'),
+  Cl.stringAscii("0xRECIPIENT"),
   Cl.uint(100_000),         // amount-in
   Cl.uint(95_000_000),      // min-amount-out
   Cl.uint(500),             // max-fee

@@ -15,7 +15,6 @@ export function Footer() {
         <div className="flex gap-16 font-mono text-xs uppercase tracking-widest">
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Model</div>
-            // TODO: consider memoizing this value
             <a
               href="https://aistudio.google.com/api-keys"
               className="text-white/40 hover:text-white transition-colors"

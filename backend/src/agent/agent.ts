@@ -83,7 +83,7 @@ export async function runAgent(
           return {
             functionResponse: {
               name: tc.name,
-              response: { result: JSON.stringify(result.payload) },
+              response: { result: JSON.stringify(result.data) },
             },
           }
         })

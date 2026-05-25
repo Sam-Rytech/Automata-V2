@@ -30,9 +30,9 @@ async function check(label: string, fn: () => Promise<string>): Promise<boolean>
     const detail = await fn();
     console.log(`  ${PASS} ${label}  ${DIM}${detail}${RST}`);
     return true;
-  } catch (error: any) {
+  } catch (err: any) {
     console.log(`  ${FAIL} ${label}`);
-    console.log(`     ${DIM}${error?.message ?? error}${RST}`);
+    console.log(`     ${DIM}${err?.message ?? err}${RST}`);
     return false;
   }
 }

@@ -167,7 +167,7 @@ export function buildReceiveMessageTx(params: {
 }): any {
   const { destinationChain, message, attestation, amount } = params
 
-  const payload = encodeFunctionData({
+  const data = encodeFunctionData({
     abi: RECEIVE_MESSAGE_ABI,
     functionName: 'receiveMessage',
     args: [message as `0x${string}`, attestation as `0x${string}`],
@@ -175,7 +175,7 @@ export function buildReceiveMessageTx(params: {
 
   return {
     to: MESSAGE_TRANSMITTER_V2[destinationChain],
-    payload,
+    data,
     value: '0',
     chainId: destinationChain,
     description: `Claim ${amount} USDC on ${destinationChain}`,
@@ -204,7 +204,7 @@ export async function handleBurnConfirmed(params: {
       try {
         const decoded = decodeEventLog({
           abi: MESSAGE_SENT_ABI,
-          payload: log.payload,
+          data: log.data,
           topics: log.topics,
         })
         message = (decoded.args as any).message as string
@@ -297,7 +297,7 @@ export async function buildBridgeTx(params: {
 
   const approveTx = {
     to: USDC_ADDRESS[fromChain],
-    payload: approveData,
+    data: approveData,
     value: '0',
     chainId: fromChain,
     description: `Authorise ${amount} USDC to move from ${fromChain}`,
@@ -322,7 +322,7 @@ export async function buildBridgeTx(params: {
 
   const burnTx = {
     to: TOKEN_MESSENGER_V2[fromChain],
-    payload: burnData,
+    data: burnData,
     value: '0',
     chainId: fromChain,
     description: `Send ${amount} USDC from ${fromChain} to ${toChain}`,

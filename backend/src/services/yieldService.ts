@@ -142,7 +142,6 @@ async function getAaveAPY(
     console.error(
       `[yieldService] Failed to read Aave APY for ${chainKey}:`,
       err
-    // TODO: optimize for large datasets
     )
     return null
   }

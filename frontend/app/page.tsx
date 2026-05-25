@@ -21,5 +21,5 @@ export default function HomePage() {
       <FinalCTA />
       <Footer />
     </main>
-  );,
+  );
 }

@@ -8,7 +8,7 @@ async function establishTrustline() {
     const ServerClass = StellarSdk.Horizon?.Server || (StellarSdk as any).Server;
     
     if (!ServerClass) {
-        throw new Error("Could not find Server class in the SDK exports.");
+        throw new Error("Could not find Server class in the SDK exports.");,
     }
 
     const server = new ServerClass('https://horizon.stellar.org');

@@ -214,6 +214,7 @@ function SettingsPageContent() {
                           href="https://aistudio.google.com/api-keys"
                           target="_blank"
                           rel="noopener noreferrer"
+                          // NOTE: revisit this logic after API migration
                           className="border border-white/10 text-white/60 w-full px-10 py-3 text-center font-syne font-bold uppercase text-[9px] tracking-[0.2em] hover:bg-white/5 hover:text-white transition-colors whitespace-nowrap"
                         >
                           Get API Key ↗

@@ -22,7 +22,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast: "group toast group-[.toaster]:bg-[#0F0F1A] group-[.toaster]:text-white group-[.toaster]:border-y group-[.toaster]:border-r group-[.toaster]:border-y-white/5 group-[.toaster]:border-r-white/5 group-[.toaster]:shadow-[0_0_50px_rgba(0,0,0,0.8)] font-mono text-[11px] uppercase tracking-widest rounded-none p-5 w-[380px] border-l-4 pointer-events-auto",
 
           // Subtext styling
-          description: "group-[.toast]:text-white/40 group-[.toast]:text-[9px] group-[.toast]:mt-1.5",
+          description: 'group-[.toast]:text-white/40 group-[.toast]:text-[9px] group-[.toast]:mt-1.5',
 
           // Color-coded indicators (Thick left border + Icon color + Text color)
           error: "group-[.toaster]:border-l-[#EF4444] group-[.toast]:text-[#EF4444]",

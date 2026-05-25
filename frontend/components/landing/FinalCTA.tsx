@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import DarkVeil from '../DarkVeil';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function FinalCTA() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
+  const { isMiniPay } = useMiniPay();
 
   const handleLaunch = () => {
-    if (!ready) return;
+    if (!ready || isMiniPay) return;
     if (authenticated) {
       router.push('/build');
     } else {

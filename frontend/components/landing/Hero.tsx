@@ -1,18 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DarkVeil from '../DarkVeil';
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function Hero() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
+  const { isMiniPay } = useMiniPay();
+
+  // MiniPay: auto-redirect once Privy auth resolves — MiniPayProvider already triggered login()
+  useEffect(() => {
+    if (isMiniPay && ready && authenticated) router.push('/chat');
+  }, [isMiniPay, ready, authenticated, router]);
 
   const handleAction = (destination: string) => {
     if (!ready) return;
     if (authenticated) {
       router.push(destination);
+    } else if (isMiniPay) {
+      // MiniPayProvider already triggered login() — don't double-call
+      return;
     } else {
       localStorage.setItem('postLoginRedirect', destination);
       login();
@@ -118,18 +129,29 @@ export function Hero() {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4"
         >
-          <div className="w-full sm:w-auto block">
-            <button onClick={() => handleAction('/chat')} className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center">
-              <span className="tech-corners-extra" />
-              Start Chatting
-            </button>
-          </div>
-          <div className="w-full sm:w-auto block">
-            <button onClick={() => handleAction('/build')} className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button flex items-center justify-center">
-              <span className="tech-corners-extra" />
-              Build a Flow
-            </button>
-          </div>
+          {isMiniPay ? (
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 border-2 border-[var(--accent-pink)] border-t-transparent rounded-full animate-spin" />
+              <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white/40">
+                Connecting MiniPay...
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="w-full sm:w-auto block">
+                <button onClick={() => handleAction('/chat')} className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center">
+                  <span className="tech-corners-extra" />
+                  Start Chatting
+                </button>
+              </div>
+              <div className="w-full sm:w-auto block">
+                <button onClick={() => handleAction('/build')} className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button flex items-center justify-center">
+                  <span className="tech-corners-extra" />
+                  Build a Flow
+                </button>
+              </div>
+            </>
+          )}
         </motion.div>
 
       </div>

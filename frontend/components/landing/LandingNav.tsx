@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
+  const { isMiniPay } = useMiniPay();
 
   const handleLaunch = () => {
-    if (!ready) return; // SDK not ready yet — ignore the click
-
+    if (!ready || isMiniPay) return;
     if (authenticated) {
       router.push('/build');
     } else {
@@ -20,6 +21,10 @@ export function LandingNav() {
   };
 
   useEffect(() => {
+    if (isMiniPay && ready && authenticated) {
+      router.push('/chat');
+      return;
+    }
     if (ready && authenticated) {
       const redirect = localStorage.getItem('postLoginRedirect');
       if (redirect) {
@@ -27,7 +32,7 @@ export function LandingNav() {
         router.push(redirect);
       }
     }
-  }, [ready, authenticated, router]);
+  }, [isMiniPay, ready, authenticated, router]);
 
   return (
     <div className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">

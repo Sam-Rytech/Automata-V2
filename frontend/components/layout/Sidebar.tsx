@@ -12,6 +12,7 @@ import {
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useStellar } from '../../app/StellarProvider'
 import { useBalances } from '../../hooks/useBalances'
+import { useMiniPay } from '../providers/MiniPayProvider'
 
 interface SidebarProps {
   activeMode: 'chat' | 'build' | 'history' | 'settings'
@@ -27,6 +28,7 @@ export function Sidebar({
   const { authenticated } = usePrivy()
   const { wallets } = useWallets()
   const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
+  const { isMiniPay } = useMiniPay()
 
   // useWallets() returns all wallets Privy has provisioned for the user
   const walletAddress = wallets[0]?.address ?? null
@@ -72,7 +74,7 @@ export function Sidebar({
           <div className="min-w-0">
             <div className="font-mono text-[9px] text-[#22C55E] tracking-[0.2em] uppercase mb-0.5 flex items-center gap-1">
               <span className={`w-1.5 h-1.5 rounded-full ${authenticated ? 'bg-[#22C55E] animate-pulse' : 'bg-white/30'}`} />
-              {authenticated ? 'EVM Ready' : 'EVM Offline'}
+              {isMiniPay ? 'MiniPay' : authenticated ? 'EVM Ready' : 'EVM Offline'}
             </div>
             <div className="font-mono text-[11px] text-white font-bold uppercase truncate">
               {truncatedPrivy}

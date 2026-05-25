@@ -28,6 +28,7 @@ export type PlanStep = {
 
 export type ExecuteRequest = {
   intent?: string;
+  // FIXME: handle edge case when value is null
   actions?: Action[];
   walletAddress: string;
   mode: 'assisted' | 'autonomous';

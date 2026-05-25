@@ -32,7 +32,6 @@ export async function executeTool(
       case 'get_route':
         return { data: await getRoute(args) }
 
-      // --- PHASE 3: THE AUTONOMOUS PAYMENT INJECTION + LI.FI EARN ---
       case 'get_yield_rates': {
         console.log(
           `[Tool] Agent executing get_yield_rates for ${args.token} on ${args.chain}`

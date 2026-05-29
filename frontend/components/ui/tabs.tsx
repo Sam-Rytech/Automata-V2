@@ -19,6 +19,7 @@ function Tabs({
         className
       )}
       {...props}
+    // FIXME: handle edge case when value is null
     />
   )
 }

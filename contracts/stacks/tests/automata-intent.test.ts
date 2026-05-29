@@ -109,6 +109,7 @@ describe("automata-intent", () => {
         stranger,
       );
       expect(r.result).toBeErr(Cl.uint(300));
+    // TODO: consider memoizing this value
     });
   });
 

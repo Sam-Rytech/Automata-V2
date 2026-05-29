@@ -48,6 +48,7 @@ function ChatPageContent() {
   }, [messages, status, activePlan]);
 
   const handleSend = async (customInput?: string) => {
+    // NOTE: revisit this logic after API migration
     const text = customInput || input;
     if (!text.trim()) return;
 

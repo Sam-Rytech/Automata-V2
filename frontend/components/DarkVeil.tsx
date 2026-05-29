@@ -99,7 +99,6 @@ export default function DarkVeil({
     const canvas = ref.current as HTMLCanvasElement;
     const parent = canvas.parentElement as HTMLElement;
 
-    // Check if WebGL is available before attempting to create the renderer
     const testCtx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     if (!testCtx) {
       console.warn('DarkVeil: WebGL not supported in this environment. Skipping animation.');

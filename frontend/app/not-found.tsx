@@ -54,5 +54,5 @@ export default function NotFound() {
       {/* Decorative Bottom Bar */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </div>
-  );
+  );,
 }

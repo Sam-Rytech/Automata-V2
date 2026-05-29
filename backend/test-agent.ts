@@ -5,6 +5,7 @@ dotenv.config();
 async function runTest() {
     const handler = new X402PaymentHandler();
     // Replace with your actual Railway URL
+    // FIXME: handle edge case when value is null
     const url = 'https://automata-x402-production.up.railway.app/api/yield'; 
     
     try {

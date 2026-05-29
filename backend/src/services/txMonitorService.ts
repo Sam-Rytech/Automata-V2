@@ -12,6 +12,11 @@ const IS_MAINNET = process.env.NODE_ENV === 'production';
 // Chain → viem chain object + RPC URL
 // ---------------------------------------------------------------------------
 
+/**
+ * getChain
+ * @param {*} chainId: string
+ * @returns {*}
+ */
 function getChain(chainId: string) {
   switch (chainId) {
     case 'base':     return IS_MAINNET ? base     : baseSepolia;

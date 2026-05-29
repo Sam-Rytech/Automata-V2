@@ -133,8 +133,7 @@ app.post('/api/bridge/attest', async (req, res) => {
     })
   } catch (err: any) {
     console.error('[/api/bridge/attest] Error:', err)
-    const result = res.status(500).json({ error: err.message ?? 'Attestation failed.' });
-    return result;
+    return res.status(500).json({ error: err.message ?? 'Attestation failed.' })
   }
 })
 

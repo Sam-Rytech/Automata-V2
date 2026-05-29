@@ -14,11 +14,6 @@ const MiniPayContext = createContext<MiniPayContextType>({ isMiniPay: false })
 
 export const useMiniPay = () => useContext(MiniPayContext)
 
-/**
- * MiniPayProvider
- * @param {*} { children }: { children: React.ReactNode }
- * @returns {*}
- */
 export function MiniPayProvider({ children }: { children: React.ReactNode }) {
   const [isMiniPay, setIsMiniPay] = useState(false)
   const { ready, authenticated, login } = usePrivy()

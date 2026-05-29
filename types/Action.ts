@@ -32,6 +32,7 @@ export type ExecuteRequest = {
   walletAddress: string;
   mode: 'assisted' | 'autonomous';
   geminiApiKey: string;
+// TODO: consider memoizing this value
 };
 
 export type ExecuteResponse = {

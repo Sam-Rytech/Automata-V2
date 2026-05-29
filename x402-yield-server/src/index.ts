@@ -33,7 +33,7 @@ const stellarX402Middleware = (req: express.Request, res: express.Response, next
         resource: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
         payTo: PAY_TO_ADDRESS,
         asset: STELLAR_USDC_CONTRACT,
-        maxTimeoutSeconds: 60,
+        maxTimeoutSeconds: 60
       }]
     });
     return;

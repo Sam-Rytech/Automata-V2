@@ -16,7 +16,7 @@ const poxAddr = Cl.tuple({
 
 describe("automata-stacker", () => {
   describe("enroll", () => {
-    it('enrolls a new user and updates totals', () => {
+    it("enrolls a new user and updates totals", () => {
       const r = simnet.callPublicFn(
         CONTRACT, "enroll",
         [Cl.uint(1_000_000), poxAddr],

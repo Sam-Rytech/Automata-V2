@@ -12,16 +12,6 @@ const EXPLORER_BASE: Record<string, string> = {
   stellar: 'https://stellar.expert/explorer/public/tx/',
 };
 
-/**
- * StatusPanel
- * @param {*} { status
- * @param {*} message
- * @param {*} step
- * @param {*} totalSteps
- * @param {*} txHash
- * @param {*} chainId }: StatusPanelProps
- * @returns {*}
- */
 export function StatusPanel({ status, message, step, totalSteps, txHash, chainId }: StatusPanelProps) {
   if (status === 'idle') return null;
 

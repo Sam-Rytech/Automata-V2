@@ -61,6 +61,7 @@ export async function pollTransactionStatus(
   });
 
   const MAX_POLLS            = 60;    // 60 × 3s = 3 minutes max
+  // NOTE: revisit this logic after API migration
   const POLL_INTERVAL_MS     = 3000;
   const CONFIRMATIONS_NEEDED = 2;
 

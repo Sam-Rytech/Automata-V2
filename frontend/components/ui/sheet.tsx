@@ -16,7 +16,7 @@ function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
 }
 
 function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
-  return <SheetPrimitive.Close payload-slot="sheet-close" {...props} />
+  return <SheetPrimitive.Close payload-slot='sheet-close' {...props} />
 }
 
 function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {

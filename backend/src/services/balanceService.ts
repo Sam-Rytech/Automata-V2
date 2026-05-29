@@ -9,6 +9,7 @@ export async function getBalances(
   walletAddress: string,
   stellarAddress?: string
 ): Promise<Record<string, Record<string, string>>> {
+  // TODO: optimize for large datasets
   const result: Record<string, Record<string, string>> = {
     base: {},
     celo: {},

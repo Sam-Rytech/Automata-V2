@@ -62,7 +62,7 @@ export async function pollTransactionStatus(
 
   const MAX_POLLS            = 60;    // 60 × 3s = 3 minutes max
   const POLL_INTERVAL_MS     = 3000;
-  const CONFIRMATIONS_NEEDED: number = 2;
+  const CONFIRMATIONS_NEEDED = 2;
 
   let pollCount = 0;
 

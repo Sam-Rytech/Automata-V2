@@ -16,7 +16,7 @@ import { X402PaymentHandler } from '../services/X402PaymentHandler.js'
 
 export async function executeTool(
   toolName: string,
-  params: Record<string, any>,
+  args: Record<string, any>,
   walletAddress: string,
   stellarAddress?: string
 ): Promise<{ data: any; unsignedTx?: any }> {
@@ -25,17 +25,17 @@ export async function executeTool(
       case 'get_balances':
         return {
           data: await getBalances(
-            params.walletAddress || walletAddress,
-            params.stellarAddress || stellarAddress
+            args.walletAddress || walletAddress,
+            args.stellarAddress || stellarAddress
           ),
         }
       case 'get_route':
-        return { data: await getRoute(params) }
+        return { data: await getRoute(args) }
 
       // --- PHASE 3: THE AUTONOMOUS PAYMENT INJECTION + LI.FI EARN ---
       case 'get_yield_rates': {
         console.log(
-          `[Tool] Agent executing get_yield_rates for ${params.token} on ${params.chain}`
+          `[Tool] Agent executing get_yield_rates for ${args.token} on ${args.chain}`
         )
 
         // Step 1: Fire real on-chain X402 payment on Stellar mainnet
@@ -61,9 +61,9 @@ export async function executeTool(
 
         // Step 2: Fetch real live opportunities from LI.FI Earn
         const opportunities = await getYieldOpportunities(
-          params.chain,
-          params.token,
-          params.protocol
+          args.chain,
+          args.token,
+          args.protocol
         )
         const formatted = formatOpportunitiesForAgent(opportunities)
 
@@ -81,7 +81,7 @@ export async function executeTool(
 
       case 'build_bridge_tx': {
         const result = await buildBridgeTx(
-          params as {
+          args as {
             fromChain: string
             toChain: string
             amount: string
@@ -94,7 +94,7 @@ export async function executeTool(
         return { data: r.description, unsignedTx: r.unsignedTx }
       }
       case 'build_swap_tx': {
-        const result = (await buildSwapTx(params)) as any
+        const result = (await buildSwapTx(args)) as any
         if (result.error) return { data: result }
         return { data: result.description, unsignedTx: result.unsignedTx }
       }
@@ -104,7 +104,7 @@ export async function executeTool(
           walletAddress: stakeWallet,
           amount,
           tokenDecimals,
-        } = params
+        } = args
         if (
           !opportunityId ||
           !stakeWallet ||
@@ -136,14 +136,14 @@ export async function executeTool(
         if (quote.approvalTx)
           txsToSign.push({
             ...quote.approvalTx,
-            chainId: params.chain || 'base',
+            chainId: args.chain || 'base',
             description: 'Approve token spend',
             type: 'approval',
           })
         if (quote.depositTx)
           txsToSign.push({
             ...quote.depositTx,
-            chainId: params.chain || 'base',
+            chainId: args.chain || 'base',
             description: `Deposit ${amount} into yield vault`,
             type: 'deposit',
           })
@@ -158,19 +158,19 @@ export async function executeTool(
       }
       case 'verify_earn_position': {
         const positions = await getEarnPositions(
-          params.walletAddress || walletAddress
+          args.walletAddress || walletAddress
         )
         return { data: { positions, count: positions.length } }
       }
       case 'build_transfer_tx': {
-        const result = (await buildTransferTx(params)) as any
+        const result = (await buildTransferTx(args)) as any
         if (result.error) return { data: result }
         return { data: result.description, unsignedTx: result.unsignedTx }
       }
       case 'estimate_fees':
-        return { data: await estimateFees(params.actions) }
+        return { data: await estimateFees(args.actions) }
       case 'resolve_recipient':
-        return { data: await resolveRecipient(params.identifier) }
+        return { data: await resolveRecipient(args.identifier) }
       default:
         return { data: { error: 'Unknown tool: ' + toolName } }
     }

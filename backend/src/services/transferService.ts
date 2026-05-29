@@ -7,7 +7,7 @@ export async function buildTransferTx(
 ): Promise<{ description: string; unsignedTx: any }> {
   if (args.token === 'USDC' && args.chain !== 'stellar') {
     const usdcAddress = USDC_ADDRESSES[args.chain]
-    const data = encodeFunctionData({
+    const payload = encodeFunctionData({
       abi: erc20Abi,
       functionName: 'transfer',
       args: [args.toAddress as `0x${string}`, parseUnits(args.amount, 6)],
@@ -17,7 +17,7 @@ export async function buildTransferTx(
       unsignedTx: {
         chainId: args.chain,
         to: usdcAddress,
-        data,
+        payload,
         value: '0',
         description: `Send ${args.amount} USDC`,
       },
@@ -41,7 +41,7 @@ export async function buildTransferTx(
       unsignedTx: {
         chainId: 'stellar',
         to: args.toAddress,
-        data: '0x',
+        payload: '0x',
         value: '0',
         xdr,
         description: `Send ${args.amount} ${args.token} on Stellar`,
@@ -54,7 +54,7 @@ export async function buildTransferTx(
     unsignedTx: {
       chainId: args.chain,
       to: args.toAddress,
-      data: '0x',
+      payload: '0x',
       value: '0',
       description: 'Transfer',
     },

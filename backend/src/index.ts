@@ -23,16 +23,16 @@ app.use(express.json({ limit: '10mb' }))
 
 const sessions = new Map<string, ConversationMessage[]>()
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+app.get('/health', (_req, response) => {
+  response.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', async (req, response) => {
   const { message, sessionId, geminiApiKey, walletAddress, stellarAddress } =
     req.body
 
   if (!message || !sessionId || !geminiApiKey) {
-    return res.status(400).json({
+    return response.status(400).json({
       error: 'message, sessionId, and geminiApiKey are required.',
     })
   }
@@ -58,10 +58,10 @@ app.post('/api/chat', async (req, res) => {
       sessions.set(sessionId, updatedHistory)
     }
 
-    return res.json({ reply, sessionId, unsignedTxs })
+    return response.json({ reply, sessionId, unsignedTxs })
   } catch (err: any) {
     console.error('[/api/chat] Error:', err)
-    return res
+    return response
       .status(500)
       .json({ error: err.message ?? 'Agent execution failed.' })
   }
@@ -74,7 +74,7 @@ app.post('/api/chat', async (req, res) => {
 // This is what makes the bridge feel like one user action — they sign burn,
 // wait ~90 seconds, then sign mint. No manual steps in between.
 
-app.post('/api/bridge/attest', async (req, res) => {
+app.post('/api/bridge/attest', async (req, response) => {
   const {
     burnTxHash,
     sourceChain,
@@ -90,7 +90,7 @@ app.post('/api/bridge/attest', async (req, res) => {
     !recipientAddress ||
     !amount
   ) {
-    return res.status(400).json({
+    return response.status(400).json({
       error:
         'burnTxHash, sourceChain, destinationChain, recipientAddress, and amount are required.',
     })
@@ -105,7 +105,7 @@ app.post('/api/bridge/attest', async (req, res) => {
 
   const sourceDomain = CCTP_DOMAIN[sourceChain]
   if (sourceDomain === undefined) {
-    return res
+    return response
       .status(400)
       .json({ error: `Unsupported source chain: ${sourceChain}` })
   }
@@ -127,13 +127,13 @@ app.post('/api/bridge/attest', async (req, res) => {
       amount,
     })
 
-    return res.json({
+    return response.json({
       status: 'attested',
       unsignedTx: mintTx,
     })
   } catch (err: any) {
     console.error('[/api/bridge/attest] Error:', err)
-    return res.status(500).json({ error: err.message ?? 'Attestation failed.' })
+    return response.status(500).json({ error: err.message ?? 'Attestation failed.' })
   }
 })
 
@@ -142,16 +142,16 @@ app.post('/api/bridge/attest', async (req, res) => {
 // Starts the background relay that polls Circle and mints USDC on Stellar.
 // Deferred until Circle publishes verified Stellar mainnet contract addresses.
 
-app.post('/api/bridge/relay', async (req, res) => {
+app.post('/api/bridge/relay', async (req, response) => {
   const { burnTxHash, recipientAddress, amount } = req.body
 
   if (!burnTxHash || !recipientAddress || !amount) {
-    return res
+    return response
       .status(400)
       .json({ error: 'burnTxHash, recipientAddress, and amount are required.' })
   }
 
-  res.json({ status: 'relay_started', burnTxHash })
+  response.json({ status: 'relay_started', burnTxHash })
 
   handleBurnConfirmed({
     burnTxHash,
@@ -166,10 +166,10 @@ app.post('/api/bridge/relay', async (req, res) => {
   })
 })
 
-app.post('/api/flows', async (req, res) => {
+app.post('/api/flows', async (req, response) => {
   const { walletAddress, name, description, actions } = req.body
   if (!walletAddress || !name || !actions)
-    return res.status(400).json({ error: 'Missing required fields' })
+    return response.status(400).json({ error: 'Missing required fields' })
 
   try {
     const user = await prisma.user.upsert({
@@ -186,58 +186,58 @@ app.post('/api/flows', async (req, res) => {
         actions,
       },
     })
-    return res.json(flow)
+    return response.json(flow)
   } catch (err: any) {
     console.error('[/api/flows] Save Error:', err)
-    return res.status(500).json({ error: 'Failed to save flow to database.' })
+    return response.status(500).json({ error: 'Failed to save flow to database.' })
   }
 })
 
-app.get('/api/flows/:walletAddress', async (req, res) => {
+app.get('/api/flows/:walletAddress', async (req, response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { walletAddress: req.params.walletAddress },
     })
-    if (!user) return res.json([])
+    if (!user) return response.json([])
 
     const flows = await prisma.flow.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: 'desc' },
     })
-    return res.json(flows)
+    return response.json(flows)
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch flows.' })
+    return response.status(500).json({ error: 'Failed to fetch flows.' })
   }
 })
 
-app.post('/api/history', async (req, res) => {
+app.post('/api/history', async (req, response) => {
   const { walletAddress, txHash, chainId, actionType, status, details } =
     req.body
   if (!walletAddress || !actionType || !status)
-    return res.status(400).json({ error: 'Missing required fields' })
+    return response.status(400).json({ error: 'Missing required fields' })
 
   try {
     const tx = await prisma.transaction.create({
       data: { walletAddress, txHash, chainId, actionType, status, details },
     })
-    return res.json(tx)
+    return response.json(tx)
   } catch (err: any) {
     console.error('[/api/history] Save Error:', err)
-    return res
+    return response
       .status(500)
       .json({ error: 'Failed to save transaction history.' })
   }
 })
 
-app.get('/api/history/:walletAddress', async (req, res) => {
+app.get('/api/history/:walletAddress', async (req, response) => {
   try {
     const history = await prisma.transaction.findMany({
       where: { walletAddress: req.params.walletAddress },
       orderBy: { createdAt: 'desc' },
     })
-    return res.json(history)
+    return response.json(history)
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch history.' })
+    return response.status(500).json({ error: 'Failed to fetch history.' })
   }
 })
 

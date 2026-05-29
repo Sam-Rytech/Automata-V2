@@ -8,7 +8,7 @@ export type Action = {
   fromToken: string;
   toToken: string;
   amount: string;
-  protocol?: string;
+  protocol?: string;,
 };
 
 export type AgentPlan = {

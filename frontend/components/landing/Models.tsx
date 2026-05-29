@@ -69,7 +69,7 @@ export function Models() {
             <img
               src="/gemini-icon-logo.svg"
               alt="Gemini"
-              className="w-7 h-7 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
+              className='w-7 h-7 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none'
             />
             <span className="hidden sm:block font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#5684D1] group-hover:drop-shadow-[0_0_15px_rgba(86,132,209,0.4)]">
               GEMINI

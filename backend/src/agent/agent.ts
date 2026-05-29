@@ -7,7 +7,7 @@ export type MessageRole = 'user' | 'model'
 
 export interface ConversationMessage {
   role: MessageRole
-  parts: Part[]
+  parts: Part[],
 }
 
 function sanitizeHistory(history: ConversationMessage[]): Content[] {

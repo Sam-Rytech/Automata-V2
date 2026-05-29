@@ -91,12 +91,6 @@ function addressToBytes32(address: string): `0x${string}` {
   return `0x${clean.padStart(64, '0')}`
 }
 
-function stellarAddressToBytes32(stellarAddress: string): `0x${string}` {
-  const { StrKey } = require('@stellar/stellar-sdk')
-  const rawBytes = StrKey.decodeEd25519PublicKey(stellarAddress) as Buffer
-  return `0x${rawBytes.toString('hex').padStart(64, '0')}`
-}
-
 function getEvmClientForChain(chain: string) {
   switch (chain) {
     case 'base':
@@ -110,6 +104,12 @@ function getEvmClientForChain(chain: string) {
   }
 }
 
+function stellarAddressToBytes32(stellarAddress: string): `0x${string}` {
+  const { StrKey } = require('@stellar/stellar-sdk')
+  const rawBytes = StrKey.decodeEd25519PublicKey(stellarAddress) as Buffer
+  return `0x${rawBytes.toString('hex').padStart(64, '0')}`
+}
+
 // ---------------------------------------------------------------------------
 // Circle Iris V2 attestation polling
 // GET https://iris-api.circle.com/v2/messages/{sourceDomain}?transactionHash={burnTxHash}
@@ -119,15 +119,14 @@ const IRIS_API = 'https://iris-api.circle.com/v2/messages'
 const POLL_INTERVAL_MS = 5_000
 const MAX_POLL_ATTEMPTS = 60 // 5 minutes max
 
-export async function pollAttestation(
-  sourceDomain: number,
-  burnTxHash: string
-): Promise<{ message: string; attestation: string }> {
-  for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
-    try {
-      const url = `${IRIS_API}/${sourceDomain}?transactionHash=${burnTxHash}`
-      const res = await fetch(url)
-      const json = (await res.json()) as any
+export async function buildBridgeTx(params: {
+  fromChain: string
+  toChain: string
+  amount: string
+  walletAddress: string
+  recipientAddress: string
+}): Promise<any> {
+  const { fromChain, toChain, amount, walletAddress, recipientAddress } = params
 
       if (
         json?.messages?.[0]?.status === 'complete' &&
@@ -187,17 +186,15 @@ export function buildReceiveMessageTx(params: {
 // Called by the frontend after burn tx confirms — for Stellar relay only
 // ---------------------------------------------------------------------------
 
-export async function handleBurnConfirmed(params: {
+export async function pollAttestation(
+  sourceDomain: number,
   burnTxHash: string
-  recipientAddress: string
-  amount: string
-  onSuccess?: (txHash: string) => void
-  onError?: (err: Error) => void
-}): Promise<void> {
-  try {
-    const receipt = await baseClient.getTransactionReceipt({
-      hash: params.burnTxHash as `0x${string}`,
-    })
+): Promise<{ message: string; attestation: string }> {
+  for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
+    try {
+      const url = `${IRIS_API}/${sourceDomain}?transactionHash=${burnTxHash}`
+      const res = await fetch(url)
+      const json = (await res.json()) as any
 
     let message: string | null = null
     for (const log of receipt.logs) {
@@ -239,14 +236,17 @@ export async function handleBurnConfirmed(params: {
 // Main exported function — builds approve + burn txs
 // ---------------------------------------------------------------------------
 
-export async function buildBridgeTx(params: {
-  fromChain: string
-  toChain: string
-  amount: string
-  walletAddress: string
+export async function handleBurnConfirmed(params: {
+  burnTxHash: string
   recipientAddress: string
-}): Promise<any> {
-  const { fromChain, toChain, amount, walletAddress, recipientAddress } = params
+  amount: string
+  onSuccess?: (txHash: string) => void
+  onError?: (err: Error) => void
+}): Promise<void> {
+  try {
+    const receipt = await baseClient.getTransactionReceipt({
+      hash: params.burnTxHash as `0x${string}`,
+    })
 
   if (!TOKEN_MESSENGER_V2[fromChain]) {
     return {

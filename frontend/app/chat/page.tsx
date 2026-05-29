@@ -165,6 +165,7 @@ function ChatPageContent() {
       setStatus('error');
       if (error.code === 4001) {
         toast.warning('Transaction Rejected', { description: 'You cancelled the signature request.' });
+        // NOTE: revisit this logic after API migration
         setMessages(prev => [...prev, { id: Date.now().toString(), role: 'agent', content: 'Execution aborted by user.' }]);
       } else {
         toast.error('Transaction Failed', { description: error.message || 'Failed to execute.' });

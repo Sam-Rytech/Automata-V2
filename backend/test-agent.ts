@@ -2,10 +2,6 @@ import { X402PaymentHandler } from './src/services/X402PaymentHandler'; // adjus
 import dotenv from 'dotenv';
 dotenv.config();
 
-/**
- * runTest
- * @returns {*}
- */
 async function runTest() {
     const handler = new X402PaymentHandler();
     // Replace with your actual Railway URL

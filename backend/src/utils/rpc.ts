@@ -17,6 +17,7 @@ import * as StellarSdk from '@stellar/stellar-sdk';
 //   ETH_RPC_URL           e.g. https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY
 //   STELLAR_HORIZON_URL   https://horizon.stellar.org        (default — mainnet)
 //   STELLAR_SOROBAN_URL   https://soroban-rpc.stellar.org   (default — mainnet)
+// ---------------------------------------------------------------------------
 
 // ── EVM clients ──────────────────────────────────────────────────────────────
 

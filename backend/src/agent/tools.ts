@@ -133,7 +133,7 @@ export const AGENT_TOOLS: Tool[] = [
       {
         name: 'build_swap_tx',
         description:
-          'Build an unsigned swap transaction. For Stellar swaps (e.g. XLM to USDC on Stellar DEX), set fromChain to "stellar" and omit routeId. For EVM swaps, provide routeId from get_route.',
+          'Build an unsigned swap transaction. For Stellar swaps (e.g. XLM to USDC on Stellar DEX), set fromChain to 'stellar' and omit routeId. For EVM swaps, provide routeId from get_route.',
         parameters: {
           type: 'OBJECT' as any,
           properties: {

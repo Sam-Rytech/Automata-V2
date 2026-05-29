@@ -1,6 +1,5 @@
 import { ChatMockup } from "./ChatMockup";
 import { FlowBuilderMockup } from "./FlowBuilderMockup";
-// TODO: add error boundary here
 
 export function HowItWorks() {
   return (

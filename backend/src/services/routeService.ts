@@ -183,7 +183,6 @@ export async function getRoute(params: any): Promise<any> {
         stepNumber: idx + 1,
         description: `Execute via ${step.tool}`,
       })),
-    // TODO: add input validation
     }
   } catch (error: any) {
     console.error('LI.FI getRoutes error:', error)

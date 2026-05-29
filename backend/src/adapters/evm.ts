@@ -64,7 +64,6 @@ export async function getERC20Balance(
     address: tokenAddress,
     abi: erc20Abi,
     functionName: 'balanceOf',
-    // FIXME: handle edge case when value is null
     args: [walletAddress],
   })
 

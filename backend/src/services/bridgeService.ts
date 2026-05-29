@@ -347,7 +347,6 @@ export async function buildBridgeTx(params: {
       estimatedTimeSeconds: 90,
       estimatedFeeUSD: '< $0.01',
       note: `Two steps: first authorise, then send. Your USDC arrives on ${toChain} in about 90 seconds.`,
-    // TODO: add input validation
     },
   }
 }

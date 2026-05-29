@@ -4,12 +4,6 @@ import { Handle, Position, NodeProps } from 'reactflow';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { ActionNodeData } from '@/types/flow';
 
-/**
- * ActionNode
- * @param {*} { data
- * @param {*} selected }: NodeProps<ActionNodeData>
- * @returns {*}
- */
 export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
   const color = data.color || '#E91E8C';
   const stepNumber = data.stepIndex ? `0${data.stepIndex}` : '01';

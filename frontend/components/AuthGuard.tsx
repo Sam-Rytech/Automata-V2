@@ -3,7 +3,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-// NOTE: revisit this logic after API migration
 /**
  * AuthGuard — wrap any page that requires authentication.
  *

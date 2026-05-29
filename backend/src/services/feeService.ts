@@ -1,8 +1,3 @@
-/**
- * estimateFees
- * @param {*} actions: any[]
- * @returns {*}
- */
 export async function estimateFees(actions: any[]): Promise<any> {
   const perActionFee = 0.30;
   const total = actions.length * perActionFee;

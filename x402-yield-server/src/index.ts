@@ -28,7 +28,7 @@ const stellarX402Middleware = (req: express.Request, res: express.Response, next
       error: "X-PAYMENT header is required",
       accepts: [{
         scheme: "exact",
-        network: 'stellar',
+        network: "stellar",
         maxAmountRequired: "10000", // $0.001 in stroops
         resource: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
         payTo: PAY_TO_ADDRESS,

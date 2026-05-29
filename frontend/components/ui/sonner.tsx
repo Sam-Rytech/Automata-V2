@@ -31,7 +31,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           info: "group-[.toaster]:border-l-[#E91E8C] group-[.toast]:text-[#E91E8C]",
 
           // Colorize the built-in SVG icons to match the status
-          icon: "group-payload-[type=error]:text-[#EF4444] group-payload-[type=success]:text-[#22C55E] group-payload-[type=warning]:text-[#F59E0B] group-payload-[type=info]:text-[#E91E8C]",
+          icon: "group-data-[type=error]:text-[#EF4444] group-data-[type=success]:text-[#22C55E] group-data-[type=warning]:text-[#F59E0B] group-data-[type=info]:text-[#E91E8C]",
         },
       }}
       {...props}

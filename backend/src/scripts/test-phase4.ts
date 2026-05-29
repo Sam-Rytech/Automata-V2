@@ -77,18 +77,18 @@ async function testBridgeService() {
           ? pass('approve.to is 0x address')
           : fail('approve.to', `Got: ${approveTx.to}`);
 
-        typeof approveTx.payload === 'string' && approveTx.payload.startsWith('0x') && approveTx.payload.length > 10
-          ? pass('approve.payload is non-empty hex calldata')
-          : fail('approve.payload calldata', `Got: ${approveTx.payload}`);
+        typeof approveTx.data === 'string' && approveTx.data.startsWith('0x') && approveTx.data.length > 10
+          ? pass('approve.data is non-empty hex calldata')
+          : fail('approve.data calldata', `Got: ${approveTx.data}`);
 
         // Burn tx checks
         burnTx.txType === 'burn'
           ? pass('second tx is burn (depositForBurn)')
           : fail('second tx type', `Expected "burn", got "${burnTx.txType}"`);
 
-        typeof burnTx.payload === 'string' && burnTx.payload.startsWith('0x') && burnTx.payload.length > 10
-          ? pass('burn.payload is non-empty hex calldata')
-          : fail('burn.payload calldata', `Got: ${burnTx.payload}`);
+        typeof burnTx.data === 'string' && burnTx.data.startsWith('0x') && burnTx.data.length > 10
+          ? pass('burn.data is non-empty hex calldata')
+          : fail('burn.data calldata', `Got: ${burnTx.data}`);
       }
 
       // summary checks
@@ -241,17 +241,17 @@ async function testStakeService() {
         ? pass('first tx is ERC-20 approve')
         : fail('first tx type', `Got "${approveTx?.txType}"`);
 
-      typeof approveTx?.payload === 'string' && approveTx.payload.startsWith('0x') && approveTx.payload.length > 10
+      typeof approveTx?.data === 'string' && approveTx.data.startsWith('0x') && approveTx.data.length > 10
         ? pass('approve calldata is non-empty hex')
-        : fail('approve calldata', `Got: ${approveTx?.payload}`);
+        : fail('approve calldata', `Got: ${approveTx?.data}`);
 
       supplyTx?.txType === 'supply'
         ? pass('second tx is supply (Aave V3 supply())')
         : fail('second tx type', `Got "${supplyTx?.txType}"`);
 
-      typeof supplyTx?.payload === 'string' && supplyTx.payload.startsWith('0x') && supplyTx.payload.length > 10
+      typeof supplyTx?.data === 'string' && supplyTx.data.startsWith('0x') && supplyTx.data.length > 10
         ? pass('supply calldata is non-empty hex')
-        : fail('supply calldata', `Got: ${supplyTx?.payload}`);
+        : fail('supply calldata', `Got: ${supplyTx?.data}`);
 
       result.summary?.protocol === 'Aave V3'
         ? pass('summary.protocol = Aave V3')
@@ -288,9 +288,9 @@ async function testStakeService() {
 
       const [approveTx, swapTx] = result.unsignedTxs ?? [];
 
-      approveTx?.txType === 'approve' && typeof approveTx.payload === 'string' && approveTx.payload.startsWith('0x') && approveTx.payload.length > 10
+      approveTx?.txType === 'approve' && typeof approveTx.data === 'string' && approveTx.data.startsWith('0x') && approveTx.data.length > 10
         ? pass('Mento approve calldata present')
-        : fail('Mento approve', `txType=${approveTx?.txType} payload=${approveTx?.payload}`);
+        : fail('Mento approve', `txType=${approveTx?.txType} data=${approveTx?.data}`);
 
       swapTx?.txType === 'mento_swap'
         ? pass('second tx is mento_swap placeholder')
@@ -356,9 +356,9 @@ async function testWebSocket() {
       pass('WebSocket connection opened');
     });
 
-    ws.on('message', (payload: any) => {
+    ws.on('message', (data: any) => {
       try {
-        const msg = JSON.parse(payload.toString());
+        const msg = JSON.parse(data.toString());
 
         if (msg.type === 'connected') {
           pass(`Server sent connected handshake: "${msg.message}"`);
@@ -387,7 +387,7 @@ async function testWebSocket() {
           resolve();
         }
       } catch {
-        fail('ws message parse', payload.toString());
+        fail('ws message parse', data.toString());
         clearTimeout(timeout);
         ws.close();
         resolve();

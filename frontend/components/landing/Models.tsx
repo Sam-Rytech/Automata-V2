@@ -52,7 +52,7 @@ export function Models() {
             className="flex items-center gap-2 group cursor-pointer"
           >
             <img
-              src="/claude-logo.svg"
+              src='/claude-logo.svg'
               alt="Claude"
               className="w-8 h-8 shrink-0 transition-all duration-500 filter grayscale brightness-75 contrast-125 group-hover:filter-none"
             />

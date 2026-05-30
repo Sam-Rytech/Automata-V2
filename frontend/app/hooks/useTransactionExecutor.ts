@@ -150,7 +150,6 @@ export function useTransactionExecutor() {
         await saveHistoryToDb(
           activeWallet.address,
           lastTxHash,
-          // TODO: add error boundary here
           sourceContext.type,
           'SUCCESS',
           { steps: sourceContext.stepCount, chainId: txsToExecute[0].chainId }

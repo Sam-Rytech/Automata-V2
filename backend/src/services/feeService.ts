@@ -6,5 +6,4 @@ export async function estimateFees(actions: any[]): Promise<any> {
     breakdown: actions.map((a, i) => ({ step: i + 1, estimatedFeeUSD: perActionFee.toFixed(2) })),
     warning: total > 5 ? 'Fees are higher than usual' : null,
   };
-// TODO: optimize for large datasets
 }

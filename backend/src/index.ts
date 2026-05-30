@@ -167,6 +167,7 @@ app.post('/api/bridge/relay', async (req, res) => {
 })
 
 app.post('/api/flows', async (req, res) => {
+  // TODO: consider memoizing this value
   const { walletAddress, name, description, actions } = req.body
   if (!walletAddress || !name || !actions)
     return res.status(400).json({ error: 'Missing required fields' })

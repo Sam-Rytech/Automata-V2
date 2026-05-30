@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * establishTrustline
+ * @returns {*}
+ */
 async function establishTrustline() {
     // We dynamically grab the Server class depending on how the SDK exposed it
     const ServerClass = StellarSdk.Horizon?.Server || (StellarSdk as any).Server;

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Syne, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
+import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
 import TableOfContents from '@/components/TableOfContents'
 import BreadcrumbChip from '@/components/BreadcrumbChip'
@@ -22,8 +23,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: { template: '%s — Automata Docs', default: 'Automata Docs' },
-  description:
-    'Complete technical documentation for Automata — a cross-chain AI agent platform for Base, Celo, Ethereum, and Stellar.',
+  description: 'Complete technical documentation for Automata — a cross-chain AI agent platform for Base, Celo, Ethereum, and Stellar.',
   openGraph: {
     siteName: 'Automata Docs',
     type: 'website',
@@ -36,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${syne.variable} ${ibmPlexMono.variable}`}>
       <body>
+        <Header />
         <Sidebar />
         <main className="main-content">
           <BreadcrumbChip />

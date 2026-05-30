@@ -19,7 +19,7 @@ export default function NotFound() {
         className="flex flex-col items-center text-center max-w-2xl z-10 relative"
       >
         <div className="mb-8 flex justify-center">
-          <div className="p-5 border border-white/10 rounded-2xl bg-[#1A1A2E]/50 backdrop-blur-md shadow-[0_0_30px_rgba(233,30,140,0.15)] relative">
+          <div className='p-5 border border-white/10 rounded-2xl bg-[#1A1A2E]/50 backdrop-blur-md shadow-[0_0_30px_rgba(233,30,140,0.15)] relative'>
             <ExclamationTriangleIcon className="w-16 h-16 text-[#E91E8C]" />
           </div>
         </div>

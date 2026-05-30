@@ -2,129 +2,128 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
-const NAV = [
-  { label: 'Introduction', href: '/' },
-  { label: 'Getting Started', href: '/getting-started' },
-  { label: 'Architecture', href: '/architecture' },
-  { label: 'Core Concepts', href: '/concepts' },
-  { label: 'API Reference', href: '/api-reference' },
-  { label: 'AI Agent', href: '/agent' },
-  { label: 'Supported Chains', href: '/chains' },
-  { label: 'Bridging (CCTP V2)', href: '/bridging' },
-  { label: 'Swaps & Routing', href: '/swaps' },
-  { label: 'Earn & Yield', href: '/yield' },
-  { label: 'Smart Contracts', href: '/contracts' },
-  { label: 'Frontend', href: '/frontend' },
-  { label: 'Database', href: '/database' },
-  { label: 'x402 Protocol', href: '/x402' },
-  { label: 'Project Status', href: '/status' },
+const GROUPS = [
+  {
+    label: 'OVERVIEW',
+    items: [
+      { label: 'Introduction', href: '/' },
+      { label: 'Getting Started', href: '/getting-started' },
+      { label: 'Architecture', href: '/architecture' },
+      { label: 'Core Concepts', href: '/concepts' },
+    ],
+  },
+  {
+    label: 'REFERENCE',
+    items: [
+      { label: 'API Reference', href: '/api-reference' },
+      { label: 'AI Agent', href: '/agent' },
+    ],
+  },
+  {
+    label: 'PROTOCOL',
+    items: [
+      { label: 'Supported Chains', href: '/chains' },
+      { label: 'Bridging (CCTP V2)', href: '/bridging' },
+      { label: 'Swaps & Routing', href: '/swaps' },
+      { label: 'Earn & Yield', href: '/yield' },
+    ],
+  },
+  {
+    label: 'IMPLEMENTATION',
+    items: [
+      { label: 'Smart Contracts', href: '/contracts' },
+      { label: 'Frontend', href: '/frontend' },
+      { label: 'Database', href: '/database' },
+      { label: 'x402 Protocol', href: '/x402' },
+    ],
+  },
+  {
+    label: 'META',
+    items: [{ label: 'Project Status', href: '/status' }],
+  },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => { setMobileOpen(false) }, [pathname])
 
   return (
-    <aside
-      className="sidebar-desktop fixed top-0 left-0 h-screen w-64 flex flex-col"
-      style={{
-        background: '#1A1A2E',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
-        zIndex: 50,
-        overflowY: 'auto',
-      }}
-    >
-      {/* Logo */}
-      <div
-        className="flex items-center gap-2 px-6 py-5"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+    <>
+      {/* Mobile hamburger */}
+      <button
+        className="mobile-hamburger"
+        onClick={() => setMobileOpen(true)}
+        aria-label="Open navigation"
       >
-        <span
-          style={{
-            fontFamily: 'Syne, sans-serif',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            color: '#fff',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          AUTOMATA
-        </span>
-        <span
-          style={{
-            fontFamily: 'IBM Plex Mono, monospace',
-            fontSize: '0.65rem',
-            color: '#E91E8C',
-            background: 'rgba(233,30,140,0.1)',
-            border: '1px solid rgba(233,30,140,0.2)',
-            padding: '1px 6px',
-            borderRadius: '3px',
-          }}
-        >
-          DOCS
-        </span>
-      </div>
+        <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>☰</span>
+      </button>
 
-      {/* Version badge */}
-      <div className="px-6 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <span style={{ fontFamily: 'IBM Plex Mono', fontSize: '0.7rem', color: '#555' }}>
-          v2.0.0 · Phase 1
-        </span>
-      </div>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="mobile-backdrop"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-4">
-        {NAV.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              style={{
-                display: 'block',
-                padding: '0.45rem 0.75rem',
-                marginBottom: '0.1rem',
-                borderRadius: '5px',
-                fontFamily: 'IBM Plex Mono, monospace',
-                fontSize: '0.8rem',
-                color: isActive ? '#E91E8C' : '#888',
-                background: isActive ? 'rgba(233,30,140,0.08)' : 'transparent',
-                borderLeft: isActive ? '2px solid #E91E8C' : '2px solid transparent',
-                textDecoration: 'none',
-                transition: 'all 0.15s',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.color = '#ccc'
-                  ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.03)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.color = '#888'
-                  ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                }
-              }}
-            >
-              {item.label}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div
-        className="px-6 py-4"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+      <aside
+        className={`sidebar${mobileOpen ? ' sidebar-open' : ''}`}
+        aria-label="Documentation navigation"
       >
-        <div style={{ fontFamily: 'IBM Plex Mono', fontSize: '0.7rem', color: '#444' }}>
-          Built by{' '}
-          <span style={{ color: '#E91E8C' }}>JADONAMITΞ</span>
+        {/* Logo */}
+        <div className="sidebar-logo">
+          <span className="sidebar-logo-name">AUTOMATA</span>
+          <span className="sidebar-logo-badge">DOCS</span>
+          {/* Mobile close */}
+          <button
+            className="sidebar-close"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close navigation"
+          >
+            ✕
+          </button>
         </div>
-        <div style={{ fontFamily: 'IBM Plex Mono', fontSize: '0.65rem', color: '#333', marginTop: '0.25rem' }}>
-          Stacks · Celo · Base · Stellar
+
+        {/* Version */}
+        <div className="sidebar-version">v2.0.0 · Phase 1</div>
+
+        {/* Nav */}
+        <nav className="sidebar-nav" aria-label="Main navigation">
+          {GROUPS.map((group) => (
+            <div key={group.label} className="sidebar-group">
+              <p className="sidebar-group-label">{group.label}</p>
+              {group.items.map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`sidebar-link${isActive ? ' sidebar-link-active' : ''}`}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div className="sidebar-footer">
+          <div className="sidebar-footer-credit">
+            Built by <span style={{ color: '#E91E8C' }}>JADONAMITΞ</span>
+          </div>
+          <div className="sidebar-footer-chains">
+            Stacks · Celo · Base · Stellar
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }

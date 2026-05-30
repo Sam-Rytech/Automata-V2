@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import { useState } from 'react'
 
 interface CodeBlockProps {
   language?: string
@@ -7,69 +9,32 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ language = 'text', children, filename }: CodeBlockProps) {
-  return (
-    <div
-      style={{
-        marginBottom: '1.5rem',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        border: '1px solid rgba(255,255,255,0.08)',
-      }}
-    >
-      {/* Header bar */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0.5rem 1rem',
-          background: 'rgba(255,255,255,0.03)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-        }}
-      >
-        {filename ? (
-          <span
-            style={{
-              fontFamily: 'IBM Plex Mono, monospace',
-              fontSize: '0.75rem',
-              color: '#888',
-            }}
-          >
-            {filename}
-          </span>
-        ) : (
-          <span />
-        )}
-        <span
-          style={{
-            fontFamily: 'IBM Plex Mono, monospace',
-            fontSize: '0.7rem',
-            color: '#E91E8C',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-          }}
-        >
-          {language}
-        </span>
-      </div>
+  const [copied, setCopied] = useState(false)
 
-      {/* Code */}
-      <pre
-        style={{
-          background: '#0a0a14',
-          padding: '1.25rem 1.5rem',
-          overflowX: 'auto',
-          margin: 0,
-          fontSize: '0.8rem',
-          lineHeight: '1.65',
-        }}
-      >
-        <code
-          style={{
-            fontFamily: 'IBM Plex Mono, monospace',
-            color: '#c0d0e0',
-          }}
-        >
+  const copy = () => {
+    navigator.clipboard.writeText(children.trim()).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
+
+  return (
+    <div className="code-block">
+      <div className="code-block-header">
+        <span className="code-block-filename">{filename || ''}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span className="code-block-lang">{language}</span>
+          <button
+            onClick={copy}
+            className={`code-copy-btn${copied ? ' code-copy-btn-done' : ''}`}
+            aria-label="Copy code"
+          >
+            {copied ? '✓ copied' : 'copy'}
+          </button>
+        </div>
+      </div>
+      <pre className="code-block-pre">
+        <code style={{ fontFamily: 'var(--font-mono, "IBM Plex Mono"), monospace', color: '#c0d0e0' }}>
           {children.trim()}
         </code>
       </pre>
@@ -85,7 +50,7 @@ export function Inline({ children }: InlineProps) {
   return (
     <code
       style={{
-        fontFamily: 'IBM Plex Mono, monospace',
+        fontFamily: 'var(--font-mono, "IBM Plex Mono"), monospace',
         background: 'rgba(255,255,255,0.06)',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '3px',

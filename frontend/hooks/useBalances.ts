@@ -3,6 +3,7 @@ import { createPublicClient, http, formatUnits, parseAbi } from 'viem';
 import { base, celo } from 'viem/chains';
 import { Horizon } from '@stellar/stellar-sdk';
 
+// USDC Contract Addresses
 const BASE_USDC_ADDRESS: string = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const CELO_USDC_ADDRESS = '0xcebA9300f2b948710d2653dD7B07f33A8B32118C';
 

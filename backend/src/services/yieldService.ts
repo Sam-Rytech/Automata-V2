@@ -1,8 +1,8 @@
 // backend/src/services/yieldService.ts
 // Phase 2 — LI.FI Earn API integration + existing Aave V3 APY reads
 
-import { base, baseSepolia, mainnet, sepolia } from 'viem/chains'
 import { createPublicClient, http, parseAbi } from 'viem'
+import { base, baseSepolia, mainnet, sepolia } from 'viem/chains'
 
 const IS_MAINNET = process.env.NODE_ENV === 'production'
 const LIFI_INTEGRATOR_ID = process.env.LIFI_INTEGRATOR_ID ?? ''

@@ -51,15 +51,15 @@ export function FlowBuilderMockup() {
                 {/* Nodes Container */}
                 <div className="flex items-center gap-4 sm:gap-8 w-full max-w-lg relative z-10 justify-center">
                     <AnimatePresence mode="popLayout">
-                        {currentNodes.map((node, index) => (
+                        {currentNodes.map((node, idx) => (
                             <motion.div
                                 key={node.id}
                                 layout
                                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                                 animate={{
-                                    opacity: activeNodeIdx >= index ? 1 : 0.5,
-                                    scale: activeNodeIdx === index ? 1.05 : 1,
-                                    y: activeNodeIdx === index ? -10 : 0,
+                                    opacity: activeNodeIdx >= idx ? 1 : 0.5,
+                                    scale: activeNodeIdx === idx ? 1.05 : 1,
+                                    y: activeNodeIdx === idx ? -10 : 0,
                                 }}
                                 exit={{ opacity: 0, scale: 0.8, y: -20 }}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
@@ -67,7 +67,7 @@ export function FlowBuilderMockup() {
                                 style={{ borderTop: `2px solid ${node.color}` }}
                             >
                                 {/* Active glow */}
-                                {activeNodeIdx === index && (
+                                {activeNodeIdx === idx && (
                                     <motion.div
                                         layoutId="activeGlow"
                                         className="absolute inset-0 blur-xl opacity-20 -z-10"

@@ -4,9 +4,9 @@ import { Handle, Position, NodeProps } from 'reactflow';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { ActionNodeData } from '@/types/flow';
 
-export function ActionNode({ payload, selected }: NodeProps<ActionNodeData>) {
-  const color = payload.color || '#E91E8C';
-  const stepNumber = payload.stepIndex ? `0${payload.stepIndex}` : '01';
+export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
+  const color = data.color || '#E91E8C';
+  const stepNumber = data.stepIndex ? `0${data.stepIndex}` : '01';
 
   return (
     <div className="relative">
@@ -43,11 +43,11 @@ export function ActionNode({ payload, selected }: NodeProps<ActionNodeData>) {
         <div className="flex justify-between items-start mb-4">
           <div>
             <span className="text-[8px] text-white/40 tracking-[0.2em] uppercase block mb-1">{stepNumber}_TRIGGER</span>
-            <span className="text-[13px] font-black uppercase tracking-widest block text-white">{payload.type}_ASSET</span>
-            <span className="text-[8px] text-white/40 tracking-[0.1em] uppercase block mt-1">Source: {payload.fromChain || 'Ethereum'}</span>
+            <span className="text-[13px] font-black uppercase tracking-widest block text-white">{data.type}_ASSET</span>
+            <span className="text-[8px] text-white/40 tracking-[0.1em] uppercase block mt-1">Source: {data.fromChain || 'Ethereum'}</span>
           </div>
-          {payload.onDelete && (
-            <button onClick={(e) => { e.stopPropagation(); payload.onDelete!(); }} className="text-white/20 hover:text-[#EF4444] transition-colors mt-0.5 z-50">
+          {data.onDelete && (
+            <button onClick={(e) => { e.stopPropagation(); data.onDelete!(); }} className="text-white/20 hover:text-[#EF4444] transition-colors mt-0.5 z-50">
               <TrashIcon className="w-3 h-3" />
             </button>
           )}
@@ -55,7 +55,7 @@ export function ActionNode({ payload, selected }: NodeProps<ActionNodeData>) {
 
         <div className="flex items-center gap-2 border-t border-white/5 pt-3 mt-1">
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
-          <span className="text-[9px] text-white/60 tracking-widest uppercase">{payload.fromToken || 'ETH'} ⟶ {payload.toToken || payload.asset || 'USDC'}</span>
+          <span className="text-[9px] text-white/60 tracking-widest uppercase">{data.fromToken || 'ETH'} ⟶ {data.toToken || data.asset || 'USDC'}</span>
         </div>
       </div>
     </div>

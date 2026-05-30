@@ -55,7 +55,7 @@ async function testBridgeService() {
   try {
     const result = await buildBridgeTx(validParams);
 
-    if ('error' in result && result.error) {
+    if ('error' in result?.error) {
       fail('valid bridge (base→celo)', `Got error: ${result.message}`);
     } else {
       // Must have unsignedTxs array with 2 items
@@ -184,7 +184,7 @@ async function testYieldService() {
     const result = await getYieldRates({ chain: 'celo' });
     if (!result.error) {
       const mentoRate = result.rates?.find((r: any) => r.protocol === 'Mento');
-      mentoRate && mentoRate.apy > 0
+      mentoRate?.apy > 0
         ? pass(`Mento/Celo fallback rate = ${mentoRate.apy}%`)
         : fail('Mento rate present', 'Not found in rates');
     }

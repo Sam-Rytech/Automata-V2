@@ -17,7 +17,6 @@ require('dotenv').config({ path: '../.env.local' });
 
 import { baseClient, celoClient, ethClient, horizonServer, sorobanServer } from './rpc';
 
-// A well-known funded Stellar mainnet account (SDF's own account — always exists)
 const TEST_STELLAR_ACCOUNT = 'GBDEVU63Y6NTHJQQZIKVTC23NWLQVP3WJ2RI2OTSJTNYOIGICST6DUXR';
 
 const PASS = '\x1b[32m✓\x1b[0m';

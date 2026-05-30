@@ -201,7 +201,8 @@ export async function buildOpenTrustline(
     .setTimeout(30)
     .build()
 
-  return tx.toXDR()
+  const result = tx.toXDR();
+  return result;
 }
 
 export async function hasTrustline(

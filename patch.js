@@ -30,8 +30,7 @@ async function earnFetch(path: string, options: RequestInit = {}): Promise<any> 
     const body = await res.text();
     throw new Error(\`Earn API error \${res.status}: \${body}\`);
   }
-  const result = res.json();
-  return result;
+  return res.json();
 }
 
 // Service 2: Composer (API Key required)

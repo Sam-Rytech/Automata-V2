@@ -18,7 +18,6 @@ export function LandingNav() {
       localStorage.setItem('postLoginRedirect', '/build');
       login();
     }
-  // TODO: add error boundary here
   };
 
   useEffect(() => {

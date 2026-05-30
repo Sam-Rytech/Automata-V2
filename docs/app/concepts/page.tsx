@@ -115,6 +115,86 @@ export default function ConceptsPage() {
         <li>Is stored in-memory (not persisted to DB in v2.0.0)</li>
       </ul>
 
+      <h2>Flow Builder Execution Model</h2>
+      <p>
+        The Flow Builder compiles a visual node graph into an intent string, which the Gemini agent
+        interprets to produce unsigned transactions. The pipeline has four stages:
+      </p>
+      <ol>
+        <li><strong>Node graph → intent string.</strong> Each connected node is serialised into a natural-language sentence by <code>buildIntent()</code> in <code>useAutomataEngine.ts</code>. Example output: <em>&quot;Step 1: Swap 100 USDC to ETH on Base. Step 2: Bridge 0.04 ETH from Base to Celo.&quot;</em></li>
+        <li><strong>Intent → agent plan.</strong> The intent string is posted to <code>POST /api/agent/message</code> (same endpoint as Chat). The Gemini agent calls its tools and returns an <code>AgentPlan</code> + <code>UnsignedTx[]</code>.</li>
+        <li><strong>Plan review (assisted mode).</strong> <code>useAutomataEngine</code> enters <code>awaiting_approval</code> state — the <code>ExecutionOverlay</code> renders the plan card. Nothing executes until the user confirms.</li>
+        <li><strong>Signing.</strong> On confirm, <code>useTransactionExecutor</code> iterates the <code>UnsignedTx[]</code> array and prompts Privy / Stellar Wallets Kit for each signature.</li>
+      </ol>
+
+      <h3>StatusState lifecycle</h3>
+      <table>
+        <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>idle</code></td><td>Canvas ready, no active operation</td></tr>
+          <tr><td><code>thinking</code></td><td>Intent string sent, waiting for agent response</td></tr>
+          <tr><td><code>executing</code></td><td>Signing and submitting transactions</td></tr>
+          <tr><td><code>awaiting_approval</code></td><td>Plan card shown — user has not yet confirmed</td></tr>
+          <tr><td><code>success</code></td><td>All transactions submitted</td></tr>
+          <tr><td><code>error</code></td><td>Any step failed — error shown in TerminalView</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The <code>actions[]</code> JSON shape</h3>
+      <p>
+        Every node on the canvas maps to one <code>Action</code> object (from <code>types/Action.ts</code>).
+        This is the schema the agent uses when the Flow Builder sends pre-structured actions directly
+        via the <code>ExecuteRequest.actions[]</code> field, bypassing natural-language parsing:
+      </p>
+      <CodeBlock language="typescript">
+{`// types/Action.ts
+type ActionType = 'SWAP' | 'BRIDGE' | 'STAKE' | 'TRANSFER';
+type ChainId    = 'base' | 'celo' | 'ethereum' | 'stellar';
+
+type Action = {
+  type:             ActionType;
+  sourceChain:      ChainId;
+  destinationChain?: ChainId;   // required for BRIDGE
+  fromToken:        string;     // e.g. "USDC", "ETH", "XLM"
+  toToken:          string;
+  amount:           string;     // always a decimal string, never a number
+  protocol?:        string;     // e.g. "aave", "lifi", "mento"
+};`}
+      </CodeBlock>
+
+      <h3>Full <code>ExecuteRequest</code> payload</h3>
+      <CodeBlock language="json">
+{`{
+  "intent":        "Swap 100 USDC to ETH on Base then bridge to Celo",
+  "actions": [
+    {
+      "type": "SWAP",
+      "sourceChain": "base",
+      "fromToken": "USDC",
+      "toToken": "ETH",
+      "amount": "100",
+      "protocol": "lifi"
+    },
+    {
+      "type": "BRIDGE",
+      "sourceChain": "base",
+      "destinationChain": "celo",
+      "fromToken": "ETH",
+      "toToken": "ETH",
+      "amount": "0.04"
+    }
+  ],
+  "walletAddress":  "0xabc...",
+  "mode":           "assisted",
+  "geminiApiKey":   "AIza..."
+}`}
+      </CodeBlock>
+      <p>
+        Either <code>intent</code> or <code>actions[]</code> must be present. When both are present,
+        the agent uses <code>intent</code> for contextual reasoning and <code>actions[]</code> as
+        structured hints for tool selection.
+      </p>
+
       <h2>Wallet Address Routing</h2>
       <p>
         Because Stellar and EVM wallets have fundamentally different address formats, Automata

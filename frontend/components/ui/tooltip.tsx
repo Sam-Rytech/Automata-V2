@@ -39,6 +39,7 @@ function TooltipContent({
     "align" | "alignOffset" | "side" | "sideOffset"
   >) {
   return (
+    // NOTE: revisit this logic after API migration
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Positioner
         align={align}

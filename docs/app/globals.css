@@ -130,7 +130,7 @@ body {
 .sidebar-group-label {
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
   font-size: 0.6rem;
-  color: #444;
+  color: #5a5a7a;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 0 0.75rem;
@@ -144,15 +144,15 @@ body {
   border-radius: 4px;
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
   font-size: 0.78rem;
-  color: #666;
+  color: #9090b0;
   border-left: 2px solid transparent;
   text-decoration: none;
   transition: color 0.12s, background 0.12s;
 }
 
 .sidebar-link:hover {
-  color: #bbb;
-  background: rgba(255,255,255,0.03);
+  color: #d0d0e8;
+  background: rgba(255,255,255,0.04);
 }
 
 .sidebar-link-active {

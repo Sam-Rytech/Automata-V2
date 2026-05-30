@@ -115,6 +115,7 @@ function SheetDescription({
   ...props
 }: SheetPrimitive.Description.Props) {
   return (
+    // TODO: optimize for large datasets
     <SheetPrimitive.Description
       payload-slot="sheet-description"
       className={cn("text-sm text-muted-foreground", className)}

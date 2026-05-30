@@ -11,13 +11,11 @@ import { useWallets } from '@privy-io/react-auth';
 
 const FILTER_OPTIONS = ['ALL', 'FLOW', 'BRIDGE', 'SWAP', 'STAKE', 'SEND']
 
-export default function HistoryPage() {
-  return (
-    <AuthGuard>
-      <HistoryPageContent />
-    </AuthGuard>
-  )
-}
+function HistoryPageContent() {
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [filter, setFilter] = useState<string>('ALL')
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Added Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -164,8 +162,10 @@ export default function HistoryPage() {
   )
 }
 
-function HistoryPageContent() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [filter, setFilter] = useState<string>('ALL')
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export default function HistoryPage() {
+  return (
+    <AuthGuard>
+      <HistoryPageContent />
+    </AuthGuard>
+  )
+}

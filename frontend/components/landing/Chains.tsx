@@ -11,7 +11,6 @@ export function Chains() {
     },
     {
       name: 'CELO',
-      // TODO: add error boundary here
       hoverTextClass: 'hover:text-[#FCFF52]',
       hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(252,255,82,0.3)]',
       src: '/celo-celo-logo.svg',

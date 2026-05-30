@@ -6,7 +6,7 @@ const deployer = accounts.get("deployer")!;
 const user     = accounts.get("wallet_1")!;
 const stranger = accounts.get("wallet_2")!;
 
-const VAULT: string = "automata-sbtc-vault";
+const VAULT      = "automata-sbtc-vault";
 const MOCK_TOKEN = "mock-sbtc";
 const mockTokenPrincipal = `${deployer}.${MOCK_TOKEN}`;
 

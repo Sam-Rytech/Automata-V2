@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Getting Started' }
+export const metadata: Metadata = {
+  title: 'Getting Started',
+  description: 'Install Automata, configure both .env files, and run your first curl test in under ten minutes.',
+  openGraph: {
+    title: 'Getting Started — Automata Docs',
+    description: 'Install Automata, configure both .env files, and run your first curl test in under ten minutes.',
+  },
+}
 
 export default function GettingStartedPage() {
   return (

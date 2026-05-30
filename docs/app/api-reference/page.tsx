@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'API Reference' }
+export const metadata: Metadata = {
+  title: 'API Reference',
+  description: 'All 8 REST endpoints and WebSocket protocol — full request/response schemas for the Automata backend.',
+  openGraph: {
+    title: 'API Reference — Automata Docs',
+    description: 'All 8 REST endpoints and WebSocket protocol — full request/response schemas for the Automata backend.',
+  },
+}
 
 function Endpoint({
   method,

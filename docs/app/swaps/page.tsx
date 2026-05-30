@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Swaps & Routing' }
+export const metadata: Metadata = {
+  title: 'Swaps & Routing',
+  description: 'LI.FI route cache, buildSwapTx, Stellar path payment, and slippage rules for cross-chain swaps.',
+  openGraph: {
+    title: 'Swaps & Routing — Automata Docs',
+    description: 'LI.FI route cache, buildSwapTx, Stellar path payment, and slippage rules for cross-chain swaps.',
+  },
+}
 
 export default function SwapsPage() {
   return (

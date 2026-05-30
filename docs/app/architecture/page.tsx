@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Architecture' }
+export const metadata: Metadata = {
+  title: 'Architecture',
+  description: 'System diagram, unsigned-tx security model, full tech stack, and end-to-end bridge data flow.',
+  openGraph: {
+    title: 'Architecture — Automata Docs',
+    description: 'System diagram, unsigned-tx security model, full tech stack, and end-to-end bridge data flow.',
+  },
+}
 
 export default function ArchitecturePage() {
   return (

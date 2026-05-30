@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Bridging (CCTP V2)' }
+export const metadata: Metadata = {
+  title: 'Bridging (CCTP V2)',
+  description: 'CCTP V2 four-step bridge flow, approve/burn calldata, Iris polling, and the frontend executor implementation.',
+  openGraph: {
+    title: 'Bridging — Automata Docs',
+    description: 'CCTP V2 four-step bridge flow, approve/burn calldata, Iris polling, and the frontend executor implementation.',
+  },
+}
 
 export default function BridgingPage() {
   return (

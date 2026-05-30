@@ -1,6 +1,13 @@
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Project Status' }
+export const metadata: Metadata = {
+  title: 'Project Status',
+  description: 'Current build status — what works, what is partial, and the priority action list for the next sprint.',
+  openGraph: {
+    title: 'Project Status — Automata Docs',
+    description: 'Current build status — what works, what is partial, and the priority action list for the next sprint.',
+  },
+}
 
 function Badge({ color, label }: { color: string; label: string }) {
   const colors: Record<string, { bg: string; border: string; text: string }> = {

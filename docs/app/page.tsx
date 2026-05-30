@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import NavCards from '@/components/NavCards'
 
-export const metadata: Metadata = { title: 'Introduction' }
+export const metadata: Metadata = {
+  title: 'Introduction',
+  description: 'Overview of Automata — chain support, key integrations, and what the platform lets you do.',
+  openGraph: {
+    title: 'Automata — Introduction',
+    description: 'Overview of Automata — chain support, key integrations, and what the platform lets you do.',
+  },
+}
 
 export default function IntroPage() {
   return (

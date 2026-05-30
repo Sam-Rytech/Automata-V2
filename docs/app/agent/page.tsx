@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'AI Agent' }
+export const metadata: Metadata = {
+  title: 'AI Agent',
+  description: 'Gemini 2.5 Flash tool-use loop, sanitizeHistory, system prompt breakdown, and all 10 tools with parameters.',
+  openGraph: {
+    title: 'AI Agent — Automata Docs',
+    description: 'Gemini 2.5 Flash tool-use loop, sanitizeHistory, system prompt breakdown, and all 10 tools with parameters.',
+  },
+}
 
 export default function AgentPage() {
   return (

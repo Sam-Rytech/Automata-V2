@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Database' }
+export const metadata: Metadata = {
+  title: 'Database',
+  description: 'Full Prisma schema, model-by-model documentation, and the session persistence limitation in v2.0.0.',
+  openGraph: {
+    title: 'Database — Automata Docs',
+    description: 'Full Prisma schema, model-by-model documentation, and the session persistence limitation in v2.0.0.',
+  },
+}
 
 export default function DatabasePage() {
   return (

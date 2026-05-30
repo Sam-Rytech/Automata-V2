@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Earn & Yield' }
+export const metadata: Metadata = {
+  title: 'Earn & Yield',
+  description: 'Aave V3 ray-to-APY math, LI.FI Earn dual API, buildEarnDepositTx implementation, and 55-second quote TTL.',
+  openGraph: {
+    title: 'Earn & Yield — Automata Docs',
+    description: 'Aave V3 ray-to-APY math, LI.FI Earn dual API, buildEarnDepositTx implementation, and 55-second quote TTL.',
+  },
+}
 
 export default function YieldPage() {
   return (

@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Core Concepts' }
+export const metadata: Metadata = {
+  title: 'Core Concepts',
+  description: 'Key design principles: invisible blockchain, Chat vs Flow Builder, assisted vs autonomous execution, and the unsigned-tx model.',
+  openGraph: {
+    title: 'Core Concepts — Automata Docs',
+    description: 'Key design principles: invisible blockchain, Chat vs Flow Builder, assisted vs autonomous execution, and the unsigned-tx model.',
+  },
+}
 
 export default function ConceptsPage() {
   return (

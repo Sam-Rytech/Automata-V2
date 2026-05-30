@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Smart Contracts' }
+export const metadata: Metadata = {
+  title: 'Smart Contracts',
+  description: 'AutomataRouter executeBatch and fee sweep, AutomataYieldVault ERC-4626 math, and reentrancy guard design.',
+  openGraph: {
+    title: 'Smart Contracts — Automata Docs',
+    description: 'AutomataRouter executeBatch and fee sweep, AutomataYieldVault ERC-4626 math, and reentrancy guard design.',
+  },
+}
 
 export default function ContractsPage() {
   return (

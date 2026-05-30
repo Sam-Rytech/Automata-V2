@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'x402 Protocol' }
+export const metadata: Metadata = {
+  title: 'x402 Protocol',
+  description: 'The HTTP 402 payment protocol — payload structure and autonomous agent payment flow.',
+  openGraph: {
+    title: 'x402 Protocol — Automata Docs',
+    description: 'The HTTP 402 payment protocol — payload structure and autonomous agent payment flow.',
+  },
+}
 
 export default function X402Page() {
   return (

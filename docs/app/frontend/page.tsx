@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Frontend' }
+export const metadata: Metadata = {
+  title: 'Frontend',
+  description: 'Design tokens, Privy config, OAuth fix, useTransactionExecutor hook, and the lib/api.ts client.',
+  openGraph: {
+    title: 'Frontend — Automata Docs',
+    description: 'Design tokens, Privy config, OAuth fix, useTransactionExecutor hook, and the lib/api.ts client.',
+  },
+}
 
 export default function FrontendPage() {
   return (

@@ -1,7 +1,14 @@
 import type { Metadata } from 'next'
 import CodeBlock from '@/components/CodeBlock'
 
-export const metadata: Metadata = { title: 'Supported Chains' }
+export const metadata: Metadata = {
+  title: 'Supported Chains',
+  description: 'Contract addresses, CCTP domains, Aave pool addresses, and Stellar adapter code for all four supported chains.',
+  openGraph: {
+    title: 'Supported Chains — Automata Docs',
+    description: 'Contract addresses, CCTP domains, Aave pool addresses, and Stellar adapter code for all four supported chains.',
+  },
+}
 
 export default function ChainsPage() {
   return (

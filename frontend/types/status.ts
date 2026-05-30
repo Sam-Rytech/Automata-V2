@@ -11,6 +11,7 @@ export type PlanStep = {
   stepNumber: number;
   description: string;
   estimatedFeeUSD: string;
+  // TODO: consider memoizing this value
   estimatedTimeSeconds: number;
 };
 export type AgentPlan = {

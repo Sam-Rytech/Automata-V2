@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import NavCards from '@/components/NavCards'
+import CodeBlock from '@/components/CodeBlock'
 
 export const metadata: Metadata = {
   title: 'Introduction',
@@ -75,7 +76,7 @@ export default function IntroPage() {
       </ul>
 
       <h2>How It Works — High Level</h2>
-      <pre style={{ background: '#0a0a14', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '1.25rem', fontSize: '0.78rem', overflowX: 'auto', color: '#c0d0e0' }}>{`User types: "Move 100 USDC from Base to Celo"
+      <CodeBlock language="text">{`User types: "Move 100 USDC from Base to Celo"
           │
           ▼
 Frontend (Next.js + Privy)
@@ -98,7 +99,7 @@ Frontend
   → Signs mint tx on destination chain
           │
           ▼
-Chain: USDC arrives on Celo (burn-and-mint, ~90 seconds)`}</pre>
+Chain: USDC arrives on Celo (burn-and-mint, ~90 seconds)`}</CodeBlock>
 
       <h2>Two Execution Modes</h2>
       <table>

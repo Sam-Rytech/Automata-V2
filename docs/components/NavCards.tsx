@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 
 const cards = [
   { href: '/getting-started', label: 'Getting Started', desc: 'Prerequisites, local setup, environment variables, and first test curl.' },
@@ -11,44 +12,56 @@ const cards = [
   { href: '/contracts', label: 'Smart Contracts', desc: 'AutomataRouter and AutomataYieldVault — full function-level documentation.' },
 ]
 
-export default function NavCards() {
+function NavCard({ href, label, desc }: { href: string; label: string; desc: string }) {
+  const [hovered, setHovered] = useState(false)
   return (
-    <div
+    <Link
+      href={href}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-        gap: '1rem',
-        marginTop: '1rem',
+        display: 'block',
+        background: hovered ? '#1e1e38' : '#16162c',
+        border: `1px solid ${hovered ? 'rgba(233,30,140,0.35)' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: '7px',
+        padding: '1rem 1.1rem',
+        textDecoration: 'none',
+        transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+        boxShadow: hovered ? '0 8px 24px rgba(0,0,0,0.3)' : 'none',
+        transition: 'border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s',
       }}
     >
-      {cards.map((c) => (
-        <Link
-          key={c.href}
-          href={c.href}
-          style={{
-            display: 'block',
-            background: '#1A1A2E',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '8px',
-            padding: '1.1rem 1.25rem',
-            textDecoration: 'none',
-            transition: 'border-color 0.15s',
-          }}
-          onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(233,30,140,0.4)'
-          }}
-          onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'
-          }}
-        >
-          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '0.95rem', color: '#fff', marginBottom: '0.4rem' }}>
-            {c.label}
-          </div>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.75rem', color: '#666', lineHeight: '1.5' }}>
-            {c.desc}
-          </div>
-        </Link>
-      ))}
+      <div style={{
+        fontFamily: 'var(--font-syne, Syne), sans-serif',
+        fontWeight: 700,
+        fontSize: '0.9rem',
+        color: hovered ? '#fff' : '#ddd',
+        marginBottom: '0.35rem',
+        transition: 'color 0.15s',
+      }}>
+        {label}
+      </div>
+      <div style={{
+        fontFamily: 'var(--font-mono, "IBM Plex Mono"), monospace',
+        fontSize: '0.72rem',
+        color: '#555',
+        lineHeight: '1.5',
+      }}>
+        {desc}
+      </div>
+    </Link>
+  )
+}
+
+export default function NavCards() {
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+      gap: '0.85rem',
+      marginTop: '1rem',
+    }}>
+      {cards.map((c) => <NavCard key={c.href} {...c} />)}
     </div>
   )
 }

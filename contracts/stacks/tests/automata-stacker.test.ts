@@ -33,7 +33,7 @@ describe("automata-stacker", () => {
 
     it("rejects zero amount", () => {
       const r = simnet.callPublicFn(
-        CONTRACT, "enroll",
+        CONTRACT, 'enroll',
         [Cl.uint(0), poxAddr],
         wallet1,
       );

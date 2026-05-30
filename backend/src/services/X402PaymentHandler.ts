@@ -1,5 +1,5 @@
-import * as StellarSdk from '@stellar/stellar-sdk';
 import axios from 'axios';
+import * as StellarSdk from '@stellar/stellar-sdk';
 
 export class X402PaymentHandler {
     private server: any;

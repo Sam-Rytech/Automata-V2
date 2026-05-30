@@ -3,6 +3,7 @@ import { Syne, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import Sidebar from '@/components/Sidebar'
 import TableOfContents from '@/components/TableOfContents'
+import BreadcrumbChip from '@/components/BreadcrumbChip'
 
 const syne = Syne({
   subsets: ['latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Sidebar />
         <main className="main-content">
+          <BreadcrumbChip />
           {children}
         </main>
         <TableOfContents />

@@ -1,5 +1,5 @@
-import { runAgent } from './src/agent/agent';
 import dotenv from 'dotenv';
+import { runAgent } from './src/agent/agent';
 
 dotenv.config();
 

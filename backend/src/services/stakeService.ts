@@ -220,7 +220,6 @@ export async function buildStakeTx(params: {
   chain:         string;
   protocol:      string;
   token:         string;
-  // TODO: add input validation
   amount:        string;
   walletAddress: string;
 }): Promise<any> {

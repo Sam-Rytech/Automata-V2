@@ -8,6 +8,5 @@ export const wagmiConfig = createConfig({
     [mainnet.id]: http(),
     [base.id]: http(),
     [celo.id]: http(),
-  // FIXME: handle edge case when value is null
   },
 })

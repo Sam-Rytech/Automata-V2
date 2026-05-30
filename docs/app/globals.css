@@ -39,7 +39,7 @@ body {
 .main-content {
   margin-left: var(--sidebar-w);
   min-height: 100vh;
-  padding: 3rem 3.5rem;
+  padding: 2rem 2.5rem 3rem;
   max-width: 780px;
 }
 
@@ -119,40 +119,88 @@ body {
 
 .sidebar-nav {
   flex: 1;
-  padding: 1rem 0.75rem;
+  padding: 0.75rem 0.75rem;
   overflow-y: auto;
 }
 
 .sidebar-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.75rem 0.75rem 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 5px;
+  padding: 0.35rem 0.6rem;
+}
+
+.sidebar-search-icon {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sidebar-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
+  font-size: 0.75rem;
+  color: #c8c8e0;
+  min-width: 0;
+}
+
+.sidebar-search-input::placeholder { color: #555; }
+
+.sidebar-search-clear {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.sidebar-no-results {
+  font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
+  font-size: 0.72rem;
+  color: #555;
+  padding: 0.5rem 0.75rem;
 }
 
 .sidebar-group-label {
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
-  font-size: 0.6rem;
-  color: #5a5a7a;
+  font-size: 0.58rem;
+  color: #606080;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 0 0.75rem;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.2rem;
 }
 
 .sidebar-link {
   display: block;
-  padding: 0.4rem 0.75rem;
-  margin-bottom: 0.05rem;
+  padding: 0.38rem 0.75rem;
+  margin-bottom: 0.02rem;
   border-radius: 4px;
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
-  font-size: 0.78rem;
-  color: #9090b0;
+  font-size: 0.8rem;
+  color: #b0b0cc;
   border-left: 2px solid transparent;
   text-decoration: none;
   transition: color 0.12s, background 0.12s;
 }
 
 .sidebar-link:hover {
-  color: #d0d0e8;
-  background: rgba(255,255,255,0.04);
+  color: #e0e0f0;
+  background: rgba(255,255,255,0.05);
 }
 
 .sidebar-link-active {
@@ -340,11 +388,11 @@ body {
 .doc-content h2 {
   font-family: var(--font-syne, 'Syne'), sans-serif;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   color: #fff;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
   border-bottom: 1px solid rgba(255,255,255,0.07);
   scroll-margin-top: 1.5rem;
 }

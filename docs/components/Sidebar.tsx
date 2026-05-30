@@ -48,56 +48,59 @@ const GROUPS = [
 export default function Sidebar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [search, setSearch] = useState('')
 
-  useEffect(() => { setMobileOpen(false) }, [pathname])
+  useEffect(() => { setMobileOpen(false); setSearch('') }, [pathname])
+
+  const filtered = search.trim()
+    ? GROUPS.map(g => ({
+        ...g,
+        items: g.items.filter(i => i.label.toLowerCase().includes(search.toLowerCase())),
+      })).filter(g => g.items.length > 0)
+    : GROUPS
 
   return (
     <>
       {/* Mobile hamburger */}
-      <button
-        className="mobile-hamburger"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open navigation"
-      >
+      <button className="mobile-hamburger" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
         <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>☰</span>
       </button>
 
-      {/* Mobile backdrop */}
       {mobileOpen && (
-        <div
-          className="mobile-backdrop"
-          onClick={() => setMobileOpen(false)}
-          aria-hidden="true"
-        />
+        <div className="mobile-backdrop" onClick={() => setMobileOpen(false)} aria-hidden="true" />
       )}
 
-      <aside
-        className={`sidebar${mobileOpen ? ' sidebar-open' : ''}`}
-        aria-label="Documentation navigation"
-      >
+      <aside className={`sidebar${mobileOpen ? ' sidebar-open' : ''}`} aria-label="Documentation navigation">
+
         {/* Logo */}
         <div className="sidebar-logo">
           <span className="sidebar-logo-name">AUTOMATA</span>
           <span className="sidebar-logo-badge">DOCS</span>
-          {/* Mobile close */}
-          <button
-            className="sidebar-close"
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close navigation"
-          >
-            ✕
-          </button>
+          <button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Close navigation">✕</button>
         </div>
 
-        {/* Version */}
-        <div className="sidebar-version">v2.0.0 · Phase 1</div>
+        {/* Search */}
+        <div className="sidebar-search-wrap">
+          <div className="sidebar-search-icon">⌕</div>
+          <input
+            type="text"
+            placeholder="Search docs..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="sidebar-search-input"
+            aria-label="Search documentation"
+          />
+          {search && (
+            <button className="sidebar-search-clear" onClick={() => setSearch('')} aria-label="Clear search">✕</button>
+          )}
+        </div>
 
         {/* Nav */}
         <nav className="sidebar-nav" aria-label="Main navigation">
-          {GROUPS.map((group) => (
+          {filtered.map(group => (
             <div key={group.label} className="sidebar-group">
               <p className="sidebar-group-label">{group.label}</p>
-              {group.items.map((item) => {
+              {group.items.map(item => {
                 const isActive = pathname === item.href
                 return (
                   <Link
@@ -112,6 +115,9 @@ export default function Sidebar() {
               })}
             </div>
           ))}
+          {filtered.length === 0 && (
+            <p className="sidebar-no-results">No results for &quot;{search}&quot;</p>
+          )}
         </nav>
 
         {/* Footer */}
@@ -119,9 +125,7 @@ export default function Sidebar() {
           <div className="sidebar-footer-credit">
             Built by <span style={{ color: '#E91E8C' }}>JADONAMITΞ</span>
           </div>
-          <div className="sidebar-footer-chains">
-            Stacks · Celo · Base · Stellar
-          </div>
+          <div className="sidebar-footer-chains">Stacks · Celo · Base · Stellar</div>
         </div>
       </aside>
     </>

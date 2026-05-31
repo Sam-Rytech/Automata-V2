@@ -209,7 +209,7 @@ body {
 .sidebar-group-label {
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
   font-size: 0.58rem;
-  color: #44445a;
+  color: #6060a0;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 0 0.6rem;
@@ -218,20 +218,20 @@ body {
 
 .sidebar-link {
   display: block;
-  padding: 0.35rem 0.6rem;
+  padding: 0.38rem 0.6rem;
   margin-bottom: 0.02rem;
   border-radius: 4px;
   font-family: var(--font-mono, 'IBM Plex Mono'), monospace;
   font-size: 0.8rem;
-  color: #9898c0;
+  color: #c4c4dc;
   border-left: 2px solid transparent;
   text-decoration: none;
   transition: color 0.12s, background 0.12s;
 }
 
 .sidebar-link:hover {
-  color: #d8d8f0;
-  background: rgba(255,255,255,0.04);
+  color: #ffffff;
+  background: rgba(255,255,255,0.05);
 }
 
 .sidebar-link-active {
@@ -353,8 +353,7 @@ body {
   margin-left: var(--sidebar-w);
   margin-top: var(--header-h);
   min-height: calc(100vh - var(--header-h));
-  padding: 1.75rem 2.5rem 3rem;
-  max-width: 760px;
+  padding: 1.75rem 3rem 3rem;
 }
 
 @media (min-width: 1300px) {

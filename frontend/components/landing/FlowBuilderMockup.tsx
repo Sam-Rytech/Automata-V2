@@ -16,10 +16,6 @@ const FLOWS = [
     [ALL_NODES.transfer, ALL_NODES.swap, ALL_NODES.bridge],  // New transfer node rotates in
 ];
 
-/**
- * FlowBuilderMockup
- * @returns {*}
- */
 export function FlowBuilderMockup() {
     const [flowIdx, setFlowIdx] = useState(0);
     const [activeNodeIdx, setActiveNodeIdx] = useState(0);

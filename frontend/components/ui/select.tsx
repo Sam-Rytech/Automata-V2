@@ -94,7 +94,6 @@ function SelectContent({
     </SelectPrimitive.Portal>
   )
 }
-// TODO: add input validation
 
 function SelectLabel({
   className,

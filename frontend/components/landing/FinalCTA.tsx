@@ -31,7 +31,7 @@ export function FinalCTA() {
       {/* 2. DarkVeil Aurora */}
       <div className="absolute bottom-0 left-0 w-full h-[50vh] pointer-events-none z-0">
         <div
-          className='absolute inset-0'
+          className="absolute inset-0"
           style={{
             maskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)',
             WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 50%, black 100%)'

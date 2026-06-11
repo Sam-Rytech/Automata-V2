@@ -1,11 +1,11 @@
 'use client';
 
-import DarkVeil from '../DarkVeil';
-import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { useMiniPay } from '@/components/providers/MiniPayProvider';
-import { usePrivy } from '@privy-io/react-auth';
+import { motion } from 'framer-motion';
+import DarkVeil from '../DarkVeil';
 import { useRouter } from 'next/navigation';
+import { usePrivy } from '@privy-io/react-auth';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function Hero() {
   const router = useRouter();

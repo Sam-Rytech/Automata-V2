@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/Automata.png', type: 'image/png' },
-      { url: '/Automata.ico', type: 'image/x-icon' }
+      { url: '/Automata.ico', type: 'image/x-icon' },
     ],
     shortcut: '/Automata.ico',
     apple: '/Automata.png',

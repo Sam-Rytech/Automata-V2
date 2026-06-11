@@ -149,6 +149,7 @@ export default function DarkVeil({
     resize();
 
     const start = performance.now();
+// TODO: consider memoizing this value
 
     const loop = () => {
       program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;

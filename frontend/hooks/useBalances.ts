@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { createPublicClient, http, formatUnits, parseAbi } from 'viem';
-import { base, celo } from 'viem/chains';
 import { Horizon } from '@stellar/stellar-sdk';
+import { base, celo } from 'viem/chains';
+import { createPublicClient, http, formatUnits, parseAbi } from 'viem';
+import { useQuery } from '@tanstack/react-query';
 
 // USDC Contract Addresses
 const BASE_USDC_ADDRESS: string = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';

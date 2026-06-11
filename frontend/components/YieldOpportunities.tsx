@@ -51,7 +51,6 @@ function getChain(o: YieldOpportunity): string {
     >
       <div className="font-mono text-[9px] text-white/30 font-bold uppercase tracking-[0.2em] mb-3">
         Live Yield Opportunities —— {opportunities.length} Found
-      // TODO: optimize for large datasets
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {opportunities.slice(0, 5).map((opp, i) => {

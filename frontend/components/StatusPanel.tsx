@@ -59,5 +59,5 @@ export function StatusPanel({ status, message, step, totalSteps, txHash, chainId
         )}
       </motion.div>
     </AnimatePresence>
-  );,
+  );
 }

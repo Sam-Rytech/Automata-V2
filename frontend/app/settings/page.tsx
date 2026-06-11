@@ -109,7 +109,7 @@ function SettingsPageContent() {
             <h2 className="font-syne text-[3rem] sm:text-[5rem] lg:text-[6rem] font-black uppercase leading-none tracking-tighter mb-6 text-white scale-y-110 origin-left">
               Settings
             </h2>
-            <div className='font-mono text-[10px] text-[#22C55E] tracking-[0.2em] uppercase flex items-center gap-4'>
+            <div className="font-mono text-[10px] text-[#22C55E] tracking-[0.2em] uppercase flex items-center gap-4">
               <span>// NODE: SEARCHING...</span>
               <span className="hidden sm:inline">■</span>
               <span className="hidden sm:inline">

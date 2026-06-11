@@ -17,5 +17,4 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-// TODO: add input validation
 export { Input }

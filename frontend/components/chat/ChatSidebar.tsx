@@ -7,12 +7,6 @@ interface SidebarProps {
   setExecutionMode: (mode: 'assisted' | 'autonomous') => void;
 }
 
-/**
- * ChatSidebar
- * @param {*} { executionMode
- * @param {*} setExecutionMode }: SidebarProps
- * @returns {*}
- */
 export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
   const navItems = [
     { name: 'Chat', icon: ChatBubbleLeftRightIcon, active: true },

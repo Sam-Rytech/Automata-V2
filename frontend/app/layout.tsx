@@ -1,9 +1,9 @@
-import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Providers } from './providers';
 import { Syne, IBM_Plex_Mono } from 'next/font/google';
-import { Toaster } from "@/components/ui/sonner";
+import './globals.css';
+import { Providers } from './providers';
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const syne = Syne({
   subsets: ['latin'],

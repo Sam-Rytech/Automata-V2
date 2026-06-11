@@ -17,6 +17,7 @@ function HistoryPageContent() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Added Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const { wallets } = useWallets();

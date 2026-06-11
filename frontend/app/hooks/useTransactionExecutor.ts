@@ -72,6 +72,7 @@ export function useTransactionExecutor() {
           // ── EVM-to-EVM bridge attest flow ───────────────────────────────
           // After the burn tx confirms, poll Circle Iris for attestation,
           // then present the mint tx to the user to sign on the destination chain.
+          // This is what completes the bridge — without this the USDC is burned
           // but never minted on the other side.
           if (
             meta?.destinationChain &&

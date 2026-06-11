@@ -20,7 +20,7 @@ function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
 }
 
 function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
-  return <SheetPrimitive.Portal payload-slot='sheet-portal' {...props} />
+  return <SheetPrimitive.Portal payload-slot="sheet-portal" {...props} />
 }
 
 function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {

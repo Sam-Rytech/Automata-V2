@@ -32,7 +32,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [ready, authenticated, router]);
 
-  // Privy not ready yet — show nothing to avoid flash of protected content
   if (!ready) {
     return (
       <div className="min-h-screen bg-[#0F0F1A] flex items-center justify-center">

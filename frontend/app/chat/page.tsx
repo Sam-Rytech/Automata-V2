@@ -284,6 +284,10 @@ function ChatPageContent() {
   );
 }
 
+/**
+ * ChatPage
+ * @returns {*}
+ */
 export default function ChatPage() {
   return (
     <AuthGuard>

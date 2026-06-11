@@ -5,7 +5,7 @@ export type StatusPanelProps = {
   step?: number;
   totalSteps?: number;
   txHash?: string;
-  chainId?: string;,
+  chainId?: string;
 };
 export type PlanStep = {
   stepNumber: number;

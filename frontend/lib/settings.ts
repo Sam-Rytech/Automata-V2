@@ -3,7 +3,7 @@ const AGENT_MODE = 'automata_agent_mode';
 
 export function saveGeminiKey(key: string): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(GEMINI_KEY, key);,
+  localStorage.setItem(GEMINI_KEY, key);
 }
 
 export function getGeminiKey(): string {

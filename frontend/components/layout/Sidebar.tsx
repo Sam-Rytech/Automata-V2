@@ -30,7 +30,6 @@ export function Sidebar({
   const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
   const { isMiniPay } = useMiniPay()
 
-  // TODO: consider memoizing this value
   // useWallets() returns all wallets Privy has provisioned for the user
   const walletAddress = wallets[0]?.address ?? null
   const { data: balances, isLoading: isBalancesLoading } = useBalances(walletAddress, stellarAddress)

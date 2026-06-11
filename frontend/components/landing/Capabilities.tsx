@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { PaperAirplaneIcon, ArrowsRightLeftIcon, GlobeAltIcon, ChartBarIcon } from "@heroicons/react/24/solid";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 export function Capabilities() {
   // SWAP Card Live Ticker State

@@ -29,7 +29,7 @@ export function Models() {
           >
             {/* Using mask-image because the SVG is black; this allows us to "tint" it any color */}
             <div
-              className="w-7 h-7 shrink-0 transition-all duration-500 bg-white/30 group-hover:bg-[#10A37F] filter brightness-75 contrast-125 group-hover:filter-none"
+              className='w-7 h-7 shrink-0 transition-all duration-500 bg-white/30 group-hover:bg-[#10A37F] filter brightness-75 contrast-125 group-hover:filter-none'
               style={{
                 maskImage: 'url("/openai-2.svg")',
                 WebkitMaskImage: 'url("/openai-2.svg")',

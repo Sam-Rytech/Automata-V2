@@ -1,19 +1,19 @@
 'use client';
 
 import { AuthGuard } from '@/components/AuthGuard';
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
+import { PlanReview } from '@/components/PlanReview';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { StatusPanel } from '@/components/StatusPanel';
-import { PlanReview } from '@/components/PlanReview';
 import { StatusState, AgentPlan } from '@/types/status';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
-import { useWallets } from '@privy-io/react-auth';
-import { toast } from 'sonner';
+import { YieldOpportunities, YieldOpportunity } from '@/components/YieldOpportunities';
+import { motion, AnimatePresence } from 'framer-motion';
 import { sendAgentMessage, UnsignedTx } from '@/lib/api';
+import { toast } from 'sonner';
+import { useState, useRef, useEffect } from 'react';
 import { useStellar } from '@/app/StellarProvider';
 import { useTransactionExecutor } from '@/app/hooks/useTransactionExecutor';
-import { YieldOpportunities, YieldOpportunity } from '@/components/YieldOpportunities';
+import { useWallets } from '@privy-io/react-auth';
 
 type Message = { id: string; role: 'user' | 'agent'; content: string; opportunities?: YieldOpportunity[] };
 

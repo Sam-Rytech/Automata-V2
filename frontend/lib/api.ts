@@ -8,7 +8,7 @@ export type Message = {
 
 // The shape of an unsigned transaction returned by the agent
 export type UnsignedTx = {
-  chainId: string;      // "base", "celo", "ethereum", or "stellar"
+  chainId: string;      // 'base', 'celo', 'ethereum', or 'stellar'
   to: string;           // contract or recipient address
   data: string;         // hex-encoded calldata
   value: string;        // native token amount in wei (usually "0" for ERC-20)

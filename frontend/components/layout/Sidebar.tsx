@@ -216,7 +216,7 @@ export function Sidebar({
       {/* Bottom Actions */}
       <div className="space-y-6">
         {activeMode === 'build' && (
-          <button className='w-full bg-[#E91E8C] text-white py-4 font-syne font-bold uppercase text-[11px] tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors'>
+          <button className="w-full bg-[#E91E8C] text-white py-4 font-syne font-bold uppercase text-[11px] tracking-[0.2em] hover:bg-[#E91E8C]/80 transition-colors">
             Launch Agent
           </button>
         )}

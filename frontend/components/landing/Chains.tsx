@@ -78,7 +78,7 @@ export function Chains() {
               {chain.textSvg ? (
                 chain.textSvg
               ) : (
-                <span className='font-syne font-bold uppercase text-sm lg:text-xl tracking-widest whitespace-nowrap'>
+                <span className="font-syne font-bold uppercase text-sm lg:text-xl tracking-widest whitespace-nowrap">
                   {chain.name}
                 </span>
               )}

@@ -3,7 +3,6 @@ export type ChainId = 'base' | 'celo' | 'ethereum' | 'stellar';
 
 export type ActionNodeData = {
   type: ActionType;
-  // TODO: optimize for large datasets
   stepIndex?: number;
   fromChain?: string;
   toChain?: string;

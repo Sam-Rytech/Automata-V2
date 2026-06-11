@@ -56,7 +56,7 @@ export function X402Banner() {
                     maskSize: 'contain',
                     WebkitMaskSize: 'contain',
                     maskPosition: 'center',
-                    WebkitMaskPosition: 'center',
+                    WebkitMaskPosition: 'center'
                   }}
                 />
               </div>

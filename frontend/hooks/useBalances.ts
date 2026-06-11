@@ -29,7 +29,7 @@ function formatBalance(value: string | number, maxDecimals: number = 2) {
   return num.toLocaleString('en-US', {
     minimumFractionDigits: maxDecimals,
     maximumFractionDigits: maxDecimals,
-  });,
+  });
 }
 
 export type Balances = {

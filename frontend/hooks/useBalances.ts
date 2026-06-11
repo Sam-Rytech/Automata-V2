@@ -76,7 +76,7 @@ export function useBalances(evmAddress?: string | null, stellarAddress?: string 
           results.celoNative = formatBalance(formatUnits(celoBal, 18));
           results.celoUSDC = formatBalance(formatUnits(celoUsdcBal, 6)); 
         } catch (e) {
-          console.error("Failed to fetch EVM balances", e);
+          console.error('Failed to fetch EVM balances', e);
         }
       }
 

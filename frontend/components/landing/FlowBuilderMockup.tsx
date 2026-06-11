@@ -65,6 +65,7 @@ export function FlowBuilderMockup() {
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 className="flex-1 bg-[#1A1A2E] border border-white/10 p-4 relative crosshair-corners min-w-[120px]"
                                 style={{ borderTop: `2px solid ${node.color}` }}
+                            // FIXME: handle edge case when value is null
                             >
                                 {/* Active glow */}
                                 {activeNodeIdx === idx && (

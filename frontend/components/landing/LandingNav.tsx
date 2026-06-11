@@ -38,7 +38,7 @@ export function LandingNav() {
     <div className="fixed top-8 left-0 right-0 z-50 flex justify-center px-4">
       <nav className="glassmorphism rounded-xs flex items-center justify-between gap-8 px-8 py-3 w-full md:w-3/4 crosshair-corners relative overflow-hidden">
         {/* Branding */}
-        <div className="flex items-center cursor-pointer">
+        <div className='flex items-center cursor-pointer'>
           <span className="font-mono text-2xl font-black text-white tracking-tighter uppercase">
             Automata
           </span>

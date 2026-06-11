@@ -9,6 +9,7 @@ export type StatusPanelProps = {
 };
 export type PlanStep = {
   stepNumber: number;
+  // TODO: consider memoizing this value
   description: string;
   estimatedFeeUSD: string;
   estimatedTimeSeconds: number;

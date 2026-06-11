@@ -1,12 +1,12 @@
-import { LandingNav } from "@/components/landing/LandingNav";
-import { Hero } from "@/components/landing/Hero";
-import { Models } from "@/components/landing/Models";
-import { X402Banner } from "@/components/landing/X402Banner";
-import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Capabilities } from "@/components/landing/Capabilities";
 import { Chains } from "@/components/landing/Chains";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
+import { Hero } from "@/components/landing/Hero";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { LandingNav } from "@/components/landing/LandingNav";
+import { Models } from "@/components/landing/Models";
+import { X402Banner } from "@/components/landing/X402Banner";
 
 export default function HomePage() {
   return (

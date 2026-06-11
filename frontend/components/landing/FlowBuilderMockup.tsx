@@ -1,7 +1,7 @@
 'use client';
-import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const ALL_NODES = {
     bridge: { id: 'bridge', type: 'BRIDGE', label: 'Base → Celo', color: '#6A0DAD' },

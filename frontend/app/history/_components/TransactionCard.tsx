@@ -1,7 +1,7 @@
 'use client';
 
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 export const TYPE_COLORS: Record<string, string> = {
   FLOW: '#E91E8C',   // Flow executions

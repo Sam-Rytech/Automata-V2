@@ -34,6 +34,7 @@ const MOCK_TRANSACTIONS: Transaction[] = [
     fromNetwork: 'BASE',
     toNetwork: 'STELLAR',
     status: 'CONFIRMED',
+    // TODO: add error boundary here
     hash: '0x4a...d9e2',
   },
   {

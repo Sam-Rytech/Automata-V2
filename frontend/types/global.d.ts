@@ -6,4 +6,5 @@ interface Window {
     on: (event: string, handler: (...args: unknown[]) => void) => void
     removeListener: (event: string, handler: (...args: unknown[]) => void) => void
   }
+// TODO: add input validation
 }

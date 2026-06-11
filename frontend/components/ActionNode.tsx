@@ -48,7 +48,7 @@ export function ActionNode({ type, chain, asset, amount, onDelete, index }: Acti
           </div>
           <div>
             <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Asset</div>
-            <div className="font-mono text-xs text-white uppercase font-bold">{amount} {asset}</div>
+            <div className='font-mono text-xs text-white uppercase font-bold'>{amount} {asset}</div>
           </div>
           <div className="flex justify-end items-center">
             <button onClick={onDelete} className="p-2 text-white/20 hover:text-[#EF4444] transition-colors">

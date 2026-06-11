@@ -47,7 +47,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
 
       <div className="mb-10">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">03 —— Balances</div>
-        <div className='space-y-3'>
+        <div className="space-y-3">
           {[
             { t: 'USDC (Base)', v: '1,240.50' },
             { t: 'USDC (Celo)', v: '45.00' },

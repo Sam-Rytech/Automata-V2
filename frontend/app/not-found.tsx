@@ -24,7 +24,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        <h1 className="font-syne text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-white/20 mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+        <h1 className='font-syne text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-white/80 to-white/20 mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'>
           404
         </h1>
 

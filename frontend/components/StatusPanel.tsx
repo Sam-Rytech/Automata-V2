@@ -52,7 +52,6 @@ export function StatusPanel({ status, message, step, totalSteps, txHash, chainId
           {message || defaultMessages[status]}
         </span>
 
-        // FIXME: handle edge case when value is null
         {status === 'success' && txHash && (
           <a href={`${EXPLORER_BASE[chainId || 'base']}${txHash}`} target="_blank" rel="noopener noreferrer" className="text-[#E91E8C] hover:underline">
             VIEW TX →

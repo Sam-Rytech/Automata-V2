@@ -33,7 +33,7 @@ vec3 hueShiftRGB(vec3 col,float deg){
     float rad=radians(deg);
     float cosh=cos(rad),sinh=sin(rad);
     vec3 yiqShift=vec3(yiq.x,yiq.y*cosh-yiq.z*sinh,yiq.y*sinh+yiq.z*cosh);
-    return clamp(yiq2rgb*yiqShift,0.0,1.0);
+    return clamp(yiq2rgb*yiqShift,0.0,1.0);,
 }
 
 vec4 sigmoid(vec4 x){return 1./(1.+exp(-x));}

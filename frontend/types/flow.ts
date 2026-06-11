@@ -2,6 +2,7 @@ export type ActionType = 'SWAP' | 'BRIDGE' | 'STAKE' | 'TRANSFER' | 'SEND';
 export type ChainId = 'base' | 'celo' | 'ethereum' | 'stellar';
 
 export type ActionNodeData = {
+  // TODO: add error boundary here
   type: ActionType;
   stepIndex?: number;
   fromChain?: string;

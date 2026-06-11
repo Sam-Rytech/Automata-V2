@@ -17,5 +17,4 @@ export type ActionNodeData = {
   onUpdate?: (data: Partial<ActionNodeData>) => void;
 };
 
-// FIXED: Export StatusState here so the API can use it
 export type StatusState = 'idle' | 'thinking' | 'executing' | 'awaiting_approval' | 'success' | 'error';

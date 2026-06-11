@@ -21,6 +21,10 @@ export function saveAgentMode(mode: 'assisted' | 'autonomous'): void {
   localStorage.setItem(AGENT_MODE, mode);
 }
 
+/**
+ * getAgentMode
+ * @returns {*}
+ */
 export function getAgentMode(): 'assisted' | 'autonomous' {
   if (typeof window === 'undefined') return 'assisted';
   return (localStorage.getItem(AGENT_MODE) as 'assisted' | 'autonomous') ?? 'assisted';

@@ -83,7 +83,6 @@ export async function saveFlowToDb(walletAddress: string, name: string, actions:
   if (!res.ok) throw new Error('Failed to save flow to database');
   return res.json();
 }
-// TODO: add error boundary here
 
 export async function getFlowsFromDb(walletAddress: string) {
   const res = await fetch(`${API_BASE}/api/flows/${walletAddress}`);

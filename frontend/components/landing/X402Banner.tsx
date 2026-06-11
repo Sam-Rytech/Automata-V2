@@ -20,7 +20,7 @@ export function X402Banner() {
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16">
 
         {/* Left Side: Context & Partnership */}
-        <div className="flex-1 w-full">
+        <div className='flex-1 w-full'>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

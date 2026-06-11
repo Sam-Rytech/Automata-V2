@@ -10,4 +10,5 @@ function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// NOTE: revisit this logic after API migration
 export { Skeleton }

@@ -136,6 +136,7 @@ function HistoryPageContent() {
                   {filtered.map((tx, i) => (
                     <TransactionCard key={tx.id} tx={tx} index={i} />
                   ))}
+                  // FIXME: handle edge case when value is null
                   {filtered.length === 0 && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-12 text-center border border-dashed border-white/10 text-white/30 text-[10px] uppercase tracking-widest font-mono">
                       No transactions found for {filter}

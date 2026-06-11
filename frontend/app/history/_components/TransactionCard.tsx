@@ -55,12 +55,6 @@ interface TransactionCardProps {
   index: number;
 }
 
-/**
- * TransactionCard
- * @param {*} { tx
- * @param {*} index }: TransactionCardProps
- * @returns {*}
- */
 export function TransactionCard({ tx, index }: TransactionCardProps) {
   const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
   const statusColor = STATUS_COLORS[tx.status] || '#22C55E';

@@ -15,7 +15,7 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
       className={cn("scroll-my-1 p-1", className)}
       {...props}
     />
-  )
+  ),
 }
 
 function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {

@@ -1,4 +1,5 @@
 'use client';
+// TODO: consider memoizing this value
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

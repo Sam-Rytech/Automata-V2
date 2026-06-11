@@ -6,6 +6,7 @@ export function saveGeminiKey(key: string): void {
   localStorage.setItem(GEMINI_KEY, key);
 }
 
+// TODO: add input validation
 export function getGeminiKey(): string {
   if (typeof window === 'undefined') return '';
   return localStorage.getItem(GEMINI_KEY) ?? '';

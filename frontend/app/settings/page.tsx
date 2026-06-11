@@ -16,12 +16,10 @@ const SECTIONS = [
   { id: 'appearance', num: '04', title: 'Appearance' },
 ]
 
-  const handleHudToggle = () => {
-    const newState = !hudEnabled;
-    setHudEnabled(newState);
-    localStorage.setItem('automata_hud_enabled', String(newState));
-    toast.info('Appearance Updated', { description: `Interface HUD is now ${newState ? 'ON' : 'OFF'}.` });
-  };
+function SettingsPageContent() {
+  const { logout } = usePrivy()
+  const { wallets } = useWallets()
+  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
 
   const walletAddress = wallets[0]?.address ?? null
   const displayAddress = walletAddress ?? 'No wallet connected'
@@ -45,14 +43,6 @@ const SECTIONS = [
     if (savedHud !== null) setHudEnabled(savedHud === 'true');
   }, []);
 
-export default function SettingsPage() {
-  return (
-    <AuthGuard>
-      <SettingsPageContent />
-    </AuthGuard>
-  )
-}
-
   const saveApiKey = () => {
     if (!apiKey.trim()) {
       toast.error('Configuration Error', { description: 'API key cannot be empty.' });
@@ -62,16 +52,24 @@ export default function SettingsPage() {
     toast.success('Configuration Saved', { description: 'Gemini API Key has been secured locally.' });
   };
 
-function SettingsPageContent() {
-  const { logout } = usePrivy()
-  const { wallets } = useWallets()
-  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
-
   const handleModeChange = (mode: string) => {
     setExecutionMode(mode);
     localStorage.setItem('automata_execution_mode', mode);
     toast.info('Execution Mode Updated', { description: `Mode set to ${mode.toUpperCase()}.` });
   };
+
+  const handleHudToggle = () => {
+    const newState = !hudEnabled;
+    setHudEnabled(newState);
+    localStorage.setItem('automata_hud_enabled', String(newState));
+    toast.info('Appearance Updated', { description: `Interface HUD is now ${newState ? 'ON' : 'OFF'}.` });
+  };
+
+  const scrollTo = (id: string) => {
+    setActiveSection(id)
+    const element = document.getElementById(id)
+    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div className="flex h-screen bg-[#0A0A12] text-white overflow-hidden font-mono relative">
@@ -390,8 +388,10 @@ function SettingsPageContent() {
   )
 }
 
-  const scrollTo = (id: string) => {
-    setActiveSection(id)
-    const element = document.getElementById(id)
-    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+export default function SettingsPage() {
+  return (
+    <AuthGuard>
+      <SettingsPageContent />
+    </AuthGuard>
+  )
+}

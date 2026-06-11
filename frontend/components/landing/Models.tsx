@@ -38,7 +38,7 @@ export function Models() {
                 maskSize: 'contain',
                 WebkitMaskSize: 'contain',
                 maskPosition: 'center',
-                WebkitMaskPosition: 'center'
+                WebkitMaskPosition: 'center',
               }}
             />
             <span className="hidden sm:block font-syne font-bold text-lg tracking-wider text-white/30 transition-all duration-500 group-hover:text-[#10A37F] group-hover:drop-shadow-[0_0_15px_rgba(16,163,127,0.4)]">

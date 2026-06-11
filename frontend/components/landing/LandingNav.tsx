@@ -6,7 +6,6 @@ import { useRef, useEffect } from 'react';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function LandingNav() {
-  // TODO: consider memoizing this value
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
   const { isMiniPay } = useMiniPay();

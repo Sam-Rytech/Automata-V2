@@ -1,12 +1,12 @@
 'use client'
 
-import { AuthGuard } from '@/components/AuthGuard'
-import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { AuthGuard } from '@/components/AuthGuard'
+import { Bars3Icon } from '@heroicons/react/24/solid'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TransactionCard, Transaction } from './_components/TransactionCard'
-import { Bars3Icon } from '@heroicons/react/24/solid'
 import { getHistoryFromDb } from '@/lib/api';
+import { useState, useEffect } from 'react'
 import { useWallets } from '@privy-io/react-auth';
 
 const FILTER_OPTIONS = ['ALL', 'FLOW', 'BRIDGE', 'SWAP', 'STAKE', 'SEND']

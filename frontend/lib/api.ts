@@ -65,7 +65,6 @@ export async function sendAgentMessage(
       else if (res.status === 401) errorMessage = 'Your AI key is invalid. Update it in Settings.';
       else if (err.error) errorMessage = err.error;
     } catch {
-      // if response body is not JSON, use the generic message
     }
     throw new Error(errorMessage);
   }

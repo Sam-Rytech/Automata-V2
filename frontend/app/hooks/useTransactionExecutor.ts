@@ -28,7 +28,7 @@ export function useTransactionExecutor() {
       throw new Error('Missing wallet or transactions.');
     }
 
-    let lastTxHash = '';
+    let lastTxHash: string = '';
 
     try {
       for (const tx of txsToExecute) {

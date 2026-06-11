@@ -18,5 +18,5 @@ export function HowItWorks() {
         <FlowBuilderMockup />
       </div>
     </section>
-  );,
+  );
 }

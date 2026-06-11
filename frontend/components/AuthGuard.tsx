@@ -1,7 +1,7 @@
 'use client';
+import { useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 /**
  * AuthGuard — wrap any page that requires authentication.

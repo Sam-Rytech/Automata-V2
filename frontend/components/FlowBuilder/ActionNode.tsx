@@ -1,8 +1,8 @@
 'use client';
 
-import { ActionNodeData } from '@/types/flow';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { ActionNodeData } from '@/types/flow';
 
 export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
   const color = data.color || '#E91E8C';

@@ -1,8 +1,8 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { AlertTriangle, Clock, DollarSign, ChevronRight } from 'lucide-react';
 import { PlanReviewProps } from '@/types/status';
-import { motion } from 'framer-motion';
 
 export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: PlanReviewProps) {
   return (

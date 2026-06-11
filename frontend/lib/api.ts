@@ -16,7 +16,6 @@ export type UnsignedTx = {
   xdr?: string;         // Stellar only — unsigned XDR transaction envelope
 };
 
-// TODO: optimize for large datasets
 // The shape of the full response from POST /api/chat
 export type AgentResponse = {
   reply: string;            // the agent's plain-English reply

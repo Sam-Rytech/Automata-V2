@@ -56,7 +56,7 @@ export function FinalCTA() {
           Every chain.
         </h2>
         
-        <Button size='lg' className='w-[280px]' onClick={handleLaunch}>
+        <Button size="lg" className="w-[280px]" onClick={handleLaunch}>
           Launch Automata
         </Button>
       </div>

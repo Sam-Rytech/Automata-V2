@@ -9,10 +9,10 @@ import {
   QuestionMarkCircleIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/solid'
-import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useStellar } from '../../app/StellarProvider'
 import { useBalances } from '../../hooks/useBalances'
 import { useMiniPay } from '../providers/MiniPayProvider'
+import { usePrivy, useWallets } from '@privy-io/react-auth'
+import { useStellar } from '../../app/StellarProvider'
 
 interface SidebarProps {
   activeMode: 'chat' | 'build' | 'history' | 'settings'

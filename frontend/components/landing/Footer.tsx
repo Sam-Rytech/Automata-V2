@@ -49,7 +49,7 @@ export function Footer() {
               Postman / API
             </a>
             <a
-              href="#"
+              href='#'
               className="text-white/40 hover:text-white transition-colors"
             >
               Discord

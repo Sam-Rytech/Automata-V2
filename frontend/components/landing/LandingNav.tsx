@@ -1,9 +1,9 @@
 'use client';
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
-import { useMiniPay } from '@/components/providers/MiniPayProvider';
+import { useRouter } from 'next/navigation';
 
 export function LandingNav() {
   const router = useRouter();

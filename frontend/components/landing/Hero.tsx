@@ -138,7 +138,7 @@ export function Hero() {
             </div>
           ) : (
             <>
-              <div className="w-full sm:w-auto block">
+              <div className='w-full sm:w-auto block'>
                 <button onClick={() => handleAction('/chat')} className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center">
                   <span className="tech-corners-extra" />
                   Start Chatting

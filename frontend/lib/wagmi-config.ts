@@ -1,5 +1,5 @@
-import { base, celo, mainnet } from 'viem/chains'
 import { createConfig } from '@privy-io/wagmi'
+import { base, celo, mainnet } from 'viem/chains'
 import { http } from 'wagmi'
 
 export const wagmiConfig = createConfig({

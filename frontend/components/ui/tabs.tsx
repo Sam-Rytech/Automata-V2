@@ -69,6 +69,12 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   )
 }
 
+/**
+ * TabsContent
+ * @param {*} { className
+ * @param {*} ...props }: TabsPrimitive.Panel.Props
+ * @returns {*}
+ */
 function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel

@@ -123,7 +123,7 @@ export function Sidebar({
               {['BASE', 'CELO', 'ETH', 'XLM'].map((n) => (
                 <div
                   key={n}
-                  className="px-2 py-1 border border-white/10 font-mono text-[9px] text-white/60"
+                  className='px-2 py-1 border border-white/10 font-mono text-[9px] text-white/60'
                 >
                   {n}
                 </div>

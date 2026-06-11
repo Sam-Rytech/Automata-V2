@@ -1,5 +1,5 @@
-import { ChatMockup } from "./ChatMockup";
 import { FlowBuilderMockup } from "./FlowBuilderMockup";
+import { ChatMockup } from "./ChatMockup";
 
 export function HowItWorks() {
   return (

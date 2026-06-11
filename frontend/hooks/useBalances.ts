@@ -40,12 +40,6 @@ export type Balances = {
   stellarXLM: string;
 };
 
-/**
- * useBalances
- * @param {*} evmAddress?: string | null
- * @param {*} stellarAddress?: string | null
- * @returns {*}
- */
 export function useBalances(evmAddress?: string | null, stellarAddress?: string | null) {
   return useQuery({
     queryKey: ['balances', evmAddress, stellarAddress],

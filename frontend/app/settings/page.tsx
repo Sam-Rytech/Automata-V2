@@ -361,7 +361,7 @@ function SettingsPageContent() {
                         </div>
                       </div>
                     </div>
-                    <div className='mt-8 pt-8 border-t border-white/5 flex justify-between items-center'>
+                    <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
                       <div className="text-[9px] text-white/40 tracking-[0.2em] uppercase">
                         Interface HUD
                       </div>

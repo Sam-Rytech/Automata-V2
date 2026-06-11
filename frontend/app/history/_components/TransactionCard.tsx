@@ -59,6 +59,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
   const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
   const statusColor = STATUS_COLORS[tx.status] || '#22C55E';
 
+  // Format hash for display (0x1234...5678)
   const shortHash = tx.hash.length > 10
     ? `${tx.hash.substring(0, 6)}...${tx.hash.substring(tx.hash.length - 4)}`
     : tx.hash;

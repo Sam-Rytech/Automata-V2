@@ -135,7 +135,7 @@ export function useTransactionExecutor() {
                   recipientAddress: recipientAddr,
                   amount:           meta.amount,
                 }),
-              }).catch(error => console.error('[Bridge Relay] Failed to start relay:', error));
+              }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
 
               if (onBridgeRelayStarted) {
                 onBridgeRelayStarted();

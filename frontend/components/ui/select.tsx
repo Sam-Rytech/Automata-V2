@@ -18,6 +18,12 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   )
 }
 
+/**
+ * SelectValue
+ * @param {*} { className
+ * @param {*} ...props }: SelectPrimitive.Value.Props
+ * @returns {*}
+ */
 function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value

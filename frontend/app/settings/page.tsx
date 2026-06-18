@@ -1,12 +1,12 @@
 'use client'
 
 import { AuthGuard } from '@/components/AuthGuard'
-import { LockClosedIcon, Bars3Icon } from '@heroicons/react/24/solid'
+import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { motion, AnimatePresence } from 'framer-motion'
-import { toast } from 'sonner'
+import { LockClosedIcon, Bars3Icon } from '@heroicons/react/24/solid'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useStellar } from '@/app/StellarProvider'
 
 const SECTIONS = [

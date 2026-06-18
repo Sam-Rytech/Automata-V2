@@ -17,7 +17,7 @@ const getFonts = () => {
     weight: ['400', '500', '600', '700'],
   });
   return { syne, plexMono };
-}
+};
 
 const getMetadata = () => ({
   title: 'Automata — Cross-Chain AI Agent',
@@ -40,10 +40,11 @@ const getViewport = () => ({
   themeColor: '#8B5CF6',
 });
 
-export const { syne, plexMono } = getFonts();
-export const metadata: Metadata = getMetadata();
-export const viewport: Viewport = getViewport();
+const { syne, plexMono } = getFonts();
+const metadata = getMetadata();
+const viewport = getViewport();
 
+export { metadata, viewport };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${plexMono.variable} dark`}> 

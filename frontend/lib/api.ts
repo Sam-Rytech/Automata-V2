@@ -90,6 +90,12 @@ export async function getFlowsFromDb(walletAddress: string) {
   return res.json();
 }
 
+export async function getHistoryFromDb(walletAddress: string) {
+  const res = await fetch(`${API_BASE}/api/history/${walletAddress}`);
+  if (!res.ok) throw new Error('Failed to fetch history');
+  return res.json();
+}
+
 export async function saveHistoryToDb(
   walletAddress: string,
   txHash: string | undefined,
@@ -110,11 +116,5 @@ export async function saveHistoryToDb(
     }),
   });
   if (!res.ok) throw new Error('Failed to save transaction history');
-  return res.json();
-}
-
-export async function getHistoryFromDb(walletAddress: string) {
-  const res = await fetch(`${API_BASE}/api/history/${walletAddress}`);
-  if (!res.ok) throw new Error('Failed to fetch history');
   return res.json();
 }

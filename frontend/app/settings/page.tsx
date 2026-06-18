@@ -10,10 +10,10 @@ import { toast } from 'sonner'
 import { useStellar } from '@/app/StellarProvider'
 
 const SECTIONS = [
-  { id: 'ai-model', count: '01', title: 'AI Model' },
-  { id: 'wallet', count: '02', title: 'Wallet' },
-  { id: 'execution', count: '03', title: 'Execution' },
-  { id: 'appearance', count: '04', title: 'Appearance' },
+  { id: 'ai-model', num: '01', title: 'AI Model' },
+  { id: 'wallet', num: '02', title: 'Wallet' },
+  { id: 'execution', num: '03', title: 'Execution' },
+  { id: 'appearance', num: '04', title: 'Appearance' },
 ]
 
 function SettingsPageContent() {
@@ -129,7 +129,7 @@ function SettingsPageContent() {
                       ${activeSection === section.id ? 'bg-[#1A1A2E] border-[#E91E8C] text-white' : 'border-transparent text-white/40 hover:text-white hover:bg-white/5'}`}
                   >
                     <span className="text-[9px] font-bold tracking-widest">
-                      {section.count}
+                      {section.num}
                     </span>
                     <span className="text-[11px] font-black uppercase tracking-widest">
                       {section.title}

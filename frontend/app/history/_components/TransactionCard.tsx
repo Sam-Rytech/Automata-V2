@@ -18,6 +18,26 @@ export const STATUS_COLORS: Record<string, string> = {
   FAILED: '#EF4444',
 };
 
+export function TransactionCard({ tx, index }: TransactionCardProps) {
+  const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
+  const statusColor = STATUS_COLORS[tx.status] || '#22C55E';
+
+export interface Transaction {
+  id: string;
+  type: string;
+  date: string;
+  title: string;
+  fromNetwork: string;
+  toNetwork: string;
+  status: string;
+  hash: string;
+}
+
+interface TransactionCardProps {
+  tx: Transaction;
+  index: number;
+}
+
 export function getExplorerUrl(network: string, hash: string): string {
   const normalizedNetwork = network.toUpperCase();
   switch (normalizedNetwork) {
@@ -38,26 +58,6 @@ export function getExplorerUrl(network: string, hash: string): string {
       return `https://etherscan.io/tx/${hash}`;
   }
 }
-
-export interface Transaction {
-  id: string;
-  type: string;
-  date: string;
-  title: string;
-  fromNetwork: string;
-  toNetwork: string;
-  status: string;
-  hash: string;
-}
-
-interface TransactionCardProps {
-  tx: Transaction;
-  index: number;
-}
-
-export function TransactionCard({ tx, index }: TransactionCardProps) {
-  const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
-  const statusColor = STATUS_COLORS[tx.status] || '#22C55E';
 
   // Format hash for display (0x1234...5678)
   const shortHash = tx.hash.length > 10

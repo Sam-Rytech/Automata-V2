@@ -1,1 +1,7 @@
-import type { NextConfig } from "next"; function getBaseConfig(): NextConfig { return { /* base config options here */ }; } function getCustomConfig(): Partial<NextConfig> { return { /* custom config options here */ }; } const nextConfig: NextConfig = { ...getBaseConfig(), ...getCustomConfig() }; export default nextConfig;
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;

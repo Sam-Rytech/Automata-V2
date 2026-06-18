@@ -1,4 +1,5 @@
 export type ActionType = 'ALL' | 'BRIDGE' | 'SWAP' | 'STAKE' | 'SEND';
+// FIXME: handle edge case when value is null
 export type TxStatus = 'CONFIRMED' | 'PENDING' | 'FAILED';
 
 export interface Transaction {

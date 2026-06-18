@@ -16,10 +16,6 @@ const SECTIONS = [
   { id: 'appearance', num: '04', title: 'Appearance' },
 ]
 
-/**
- * SettingsPageContent
- * @returns {*}
- */
 function SettingsPageContent() {
   const { logout } = usePrivy()
   const { wallets } = useWallets()

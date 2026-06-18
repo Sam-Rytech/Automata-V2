@@ -22,6 +22,7 @@ export function Hero() {
     if (authenticated) {
       router.push(destination);
     } else if (isMiniPay) {
+      // MiniPayProvider already triggered login() — don't double-call
       return;
     } else {
       localStorage.setItem('postLoginRedirect', destination);

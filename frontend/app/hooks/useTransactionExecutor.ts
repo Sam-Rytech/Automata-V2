@@ -61,7 +61,7 @@ export function useTransactionExecutor() {
             method: 'eth_sendTransaction',
             params: [{
               to:    tx.to,
-              payload:  tx.payload,
+              data:  tx.data,
               value: tx.value || '0x0',
               from:  activeWallet.address,
             }]
@@ -114,7 +114,7 @@ export function useTransactionExecutor() {
               method: 'eth_sendTransaction',
               params: [{
                 to:    mintTx.to,
-                payload:  mintTx.payload,
+                data:  mintTx.data,
                 value: mintTx.value || '0x0',
                 from:  activeWallet.address,
               }]

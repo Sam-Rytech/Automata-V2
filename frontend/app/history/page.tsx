@@ -26,7 +26,7 @@ function HistoryPageContent() {
   useEffect(() => {
     if (!walletAddress) {
       setIsLoading(false);
-      return;
+      return;,
     }
 
     setIsLoading(true);

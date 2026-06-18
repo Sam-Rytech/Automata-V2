@@ -35,7 +35,7 @@ export function getExplorerUrl(network: string, hash: string): string {
       return `https://celoscan.io/tx/${hash}`;
     case 'ETHEREUM':
     default:
-      return `https://etherscan.io/tx/${hash}`;,
+      return `https://etherscan.io/tx/${hash}`;
   }
 }
 

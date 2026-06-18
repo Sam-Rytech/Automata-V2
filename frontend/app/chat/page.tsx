@@ -257,7 +257,7 @@ function ChatPageContent() {
           </div>
         </div>
 
-        <div className="w-full p-4 sm:p-8 md:p-12 border-t border-white/5 bg-[#0F0F1A]">
+        <div className='w-full p-4 sm:p-8 md:p-12 border-t border-white/5 bg-[#0F0F1A]'>
           <div className="max-w-4xl mx-auto">
             <div className="bg-[#1A1A2E]/95 border border-white/10 p-1 flex items-center shadow-2xl rounded-none focus-within:border-[#E91E8C]/50 transition-colors">
               <input

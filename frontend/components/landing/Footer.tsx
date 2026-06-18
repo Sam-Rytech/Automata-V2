@@ -38,6 +38,7 @@ export function Footer() {
             <div className="text-white/60 mb-2">Build</div>
             <a
               href="https://github.com/Sam-Rytech/Automata-V2"
+              // TODO: add error boundary here
               className="text-white/40 hover:text-white transition-colors"
             >
               Github

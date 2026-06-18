@@ -16,7 +16,7 @@ const SCENARIOS = [
   },
   {
     command: "Send 500 cUSD to 0x4a... on Celo",
-    reply: "Recipient verified on Celo network. Gas fee: <$0.01",
+    reply: 'Recipient verified on Celo network. Gas fee: <$0.01',
     plan: ["Verify recipient address", "Check cUSD balance", "Approve transfer", "Execute send"]
   }
 ];

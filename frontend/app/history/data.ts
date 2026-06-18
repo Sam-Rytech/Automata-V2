@@ -14,58 +14,33 @@ export interface Transaction {
 
 export const TYPE_COLORS: Record<string, string> = {
   BRIDGE: '#E91E8C',
-  SWAP:   '#8B5CF6',
-  STAKE:  '#22C55E',
-  SEND:   '#F59E0B',
+  SWAP: '#8B5CF6',
+  STAKE: '#22C55E',
+  SEND: '#F59E0B',
 };
 
 export const STATUS_COLORS: Record<TxStatus, string> = {
   CONFIRMED: '#22C55E',
-  PENDING:   '#F59E0B',
-  FAILED:    '#EF4444',
+  PENDING: '#F59E0B',
+  FAILED: '#EF4444',
 };
 
+const generateMockTransaction = (id: string, type: Exclude<ActionType, 'ALL'>, date: string, title: string, fromNetwork: string, toNetwork: string, status: TxStatus, hash: string): Transaction => ({
+  id,
+  type,
+  date,
+  title,
+  fromNetwork,
+  toNetwork,
+  status,
+  hash,
+});
+
 const MOCK_TRANSACTIONS: Transaction[] = [
-  {
-    id: 'tx-1',
-    type: 'BRIDGE',
-    date: 'OCT 24, 2026 • 14:22 UTC',
-    title: '100 USDC • Base → Stellar',
-    fromNetwork: 'BASE',
-    toNetwork: 'STELLAR',
-    status: 'CONFIRMED',
-    hash: '0x4a...d9e2',
-  },
-  {
-    id: 'tx-2',
-    type: 'SWAP',
-    date: 'OCT 23, 2026 • 09:15 UTC',
-    title: '0.5 ETH • WETH → XLM',
-    fromNetwork: 'ETHEREUM',
-    toNetwork: 'ETHEREUM',
-    status: 'PENDING',
-    hash: '0x9b...1f4c',
-  },
-  {
-    id: 'tx-3',
-    type: 'STAKE',
-    date: 'OCT 22, 2026 • 22:45 UTC',
-    title: '5,000 MATIC • Polygon Stake',
-    fromNetwork: 'POLYGON',
-    toNetwork: 'STAKING_POOL',
-    status: 'CONFIRMED',
-    hash: '0x2c...e8a1',
-  },
-  {
-    id: 'tx-4',
-    type: 'SEND',
-    date: 'OCT 20, 2026 • 11:04 UTC',
-    title: '2.0 SOL • Devnet → Mainnet',
-    fromNetwork: 'SOLANA',
-    toNetwork: 'EXTERNAL',
-    status: 'FAILED',
-    hash: '0xf5...c3b9',
-  },
+  generateMockTransaction('tx-1', 'BRIDGE', 'OCT 24, 2026 • 14:22 UTC', '100 USDC • Base → Stellar', 'BASE', 'STELLAR', 'CONFIRMED', '0x4a...d9e2'),
+  generateMockTransaction('tx-2', 'SWAP', 'OCT 23, 2026 • 09:15 UTC', '0.5 ETH • WETH → XLM', 'ETHEREUM', 'ETHEREUM', 'PENDING', '0x9b...1f4c'),
+  generateMockTransaction('tx-3', 'STAKE', 'OCT 22, 2026 • 22:45 UTC', '5,000 MATIC • Polygon Stake', 'POLYGON', 'STAKING_POOL', 'CONFIRMED', '0x2c...e8a1'),
+  generateMockTransaction('tx-4', 'SEND', 'OCT 20, 2026 • 11:04 UTC', '2.0 SOL • Devnet → Mainnet', 'SOLANA', 'EXTERNAL', 'FAILED', '0xf5...c3b9'),
 ];
 
 /** Simulates a real network fetch with a realistic latency. */

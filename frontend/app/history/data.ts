@@ -1,6 +1,5 @@
 export type ActionType = 'ALL' | 'BRIDGE' | 'SWAP' | 'STAKE' | 'SEND';
 export type TxStatus = 'CONFIRMED' | 'PENDING' | 'FAILED';
-
 export interface Transaction {
   id: string;
   type: Exclude<ActionType, 'ALL'>;
@@ -11,20 +10,17 @@ export interface Transaction {
   status: TxStatus;
   hash: string;
 }
-
 export const TYPE_COLORS: Record<string, string> = {
   BRIDGE: '#E91E8C',
-  SWAP:   '#8B5CF6',
-  STAKE:  '#22C55E',
-  SEND:   '#F59E0B',
+  SWAP: '#8B5CF6',
+  STAKE: '#22C55E',
+  SEND: '#F59E0B',
 };
-
 export const STATUS_COLORS: Record<TxStatus, string> = {
   CONFIRMED: '#22C55E',
-  PENDING:   '#F59E0B',
-  FAILED:    '#EF4444',
+  PENDING: '#F59E0B',
+  FAILED: '#EF4444',
 };
-
 const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: 'tx-1',
@@ -68,8 +64,10 @@ const MOCK_TRANSACTIONS: Transaction[] = [
   },
 ];
 
+const simulateLatency = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /** Simulates a real network fetch with a realistic latency. */
 export async function fetchTransactions(): Promise<Transaction[]> {
-  await new Promise((resolve) => setTimeout(resolve, 900));
+  await simulateLatency(900);
   return MOCK_TRANSACTIONS;
 }

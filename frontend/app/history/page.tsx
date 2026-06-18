@@ -1,4 +1,5 @@
 'use client'
+// FIXME: handle edge case when value is null
 
 import { AuthGuard } from '@/components/AuthGuard'
 import { useState, useEffect } from 'react'
@@ -11,10 +12,6 @@ import { useWallets } from '@privy-io/react-auth';
 
 const FILTER_OPTIONS = ['ALL', 'FLOW', 'BRIDGE', 'SWAP', 'STAKE', 'SEND']
 
-/**
- * HistoryPageContent
- * @returns {*}
- */
 function HistoryPageContent() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<string>('ALL')

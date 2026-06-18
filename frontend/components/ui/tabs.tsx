@@ -53,6 +53,12 @@ function TabsList({
   )
 }
 
+/**
+ * TabsTrigger
+ * @param {*} { className
+ * @param {*} ...props }: TabsPrimitive.Tab.Props
+ * @returns {*}
+ */
 function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   return (
     <TabsPrimitive.Tab

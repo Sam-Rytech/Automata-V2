@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     "theme-color": "#8B5CF6",
     "talentapp:project_verification": "6aec37b72b78314f5ed74b035ea884d836edc619dbf4f7e3b5e7f460b5caa7c154704179584de0be8400c0c27e58b6bc64910360c3939e1fa0d4935ab9a76c77"
   }
+// TODO: consider memoizing this value
 };
 
 export const viewport: Viewport = {

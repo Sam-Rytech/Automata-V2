@@ -1,11 +1,11 @@
 'use client';
 
-import { PrivyProvider } from '@privy-io/react-auth';
-import { WagmiProvider } from '@privy-io/wagmi';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { base, celo, mainnet } from 'viem/chains';
-import { StellarProvider } from './StellarProvider';
 import { MiniPayProvider } from '@/components/providers/MiniPayProvider';
+import { PrivyProvider } from '@privy-io/react-auth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StellarProvider } from './StellarProvider';
+import { WagmiProvider } from '@privy-io/wagmi';
+import { base, celo, mainnet } from 'viem/chains';
 import { wagmiConfig } from '@/lib/wagmi-config';
 
 const queryClient = new QueryClient();

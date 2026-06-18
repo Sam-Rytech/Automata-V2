@@ -250,7 +250,7 @@ function ChatPageContent() {
               )}
 
               <div className="max-w-full sm:max-w-[90%]">
-                {status === 'executing' && <StatusPanel status={status} step={1} totalSteps={pendingTxs.length ?? 1} txHash="Pending Signature..." chainId={pendingTxs[0]?.chainId || 'VARIOUS'} />}
+                {status === 'executing' && <StatusPanel status={status} step={1} totalSteps={pendingTxs.length || 1} txHash="Pending Signature..." chainId={pendingTxs[0]?.chainId || 'VARIOUS'} />}
                 {status === 'awaiting_approval' && activePlan && <PlanReview plan={activePlan} onApprove={() => executePlan()} onCancel={handleCancelPlan} />}
               </div>
             </div>

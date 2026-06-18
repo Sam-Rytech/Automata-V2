@@ -1,12 +1,12 @@
 'use client'
 
 import { AuthGuard } from '@/components/AuthGuard'
-import { LockClosedIcon, Bars3Icon } from '@heroicons/react/24/solid'
+import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { motion, AnimatePresence } from 'framer-motion'
-import { toast } from 'sonner'
+import { LockClosedIcon, Bars3Icon } from '@heroicons/react/24/solid'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useStellar } from '@/app/StellarProvider'
 
 const SECTIONS = [
@@ -16,6 +16,10 @@ const SECTIONS = [
   { id: 'appearance', num: '04', title: 'Appearance' },
 ]
 
+/**
+ * SettingsPageContent
+ * @returns {*}
+ */
 function SettingsPageContent() {
   const { logout } = usePrivy()
   const { wallets } = useWallets()
@@ -30,6 +34,7 @@ function SettingsPageContent() {
   const [apiKey, setApiKey] = useState('')
   const [hudEnabled, setHudEnabled] = useState(true)
 
+  // Added Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {

@@ -142,7 +142,6 @@ export function Capabilities() {
               Move assets across Base, Celo, Ethereum, Stellar. Powered by automated routing.
             </p>
 
-            // FIXME: handle edge case when value is null
             <div className="bg-[#0F0F1A]/80 p-4 border border-[#F59E0B]/20 flex items-center justify-between backdrop-blur-md rounded-none">
               <div className="bg-[#0F0F1A] border border-white/10 px-4 py-2 font-mono text-xs text-white z-10 rounded-none">BASE</div>
 

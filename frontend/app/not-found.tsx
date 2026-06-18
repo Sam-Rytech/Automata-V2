@@ -1,8 +1,8 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
 
 export default function NotFound() {
   return (

@@ -5,8 +5,8 @@ import {
   StellarWalletsKit,
   KitEventType,
 } from '@creit-tech/stellar-wallets-kit';
-import { Networks } from '@stellar/stellar-sdk';
 import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils';
+import { Networks } from '@stellar/stellar-sdk';
 
 
 interface StellarContextType {

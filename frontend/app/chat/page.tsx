@@ -216,7 +216,7 @@ function ChatPageContent() {
                     { id: '01', title: 'QUERY', desc: 'Check USDC balance across all active chains.' },
                     { id: '02', title: 'BRIDGE', desc: 'Bridge 50 USDC from Base to Celo via Wormhole.' }
                   ].map((s) => (
-                    <button key={s.id} onClick={() => handleSend(s.desc)} className='text-left bg-[#1A1A2E]/40 border border-white/5 p-6 hover:border-[#E91E8C]/40 transition-all group rounded-none'>
+                    <button key={s.id} onClick={() => handleSend(s.desc)} className="text-left bg-[#1A1A2E]/40 border border-white/5 p-6 hover:border-[#E91E8C]/40 transition-all group rounded-none">
                       <div className="font-mono text-[9px] text-[#E91E8C] tracking-[0.3em] mb-3 uppercase font-bold">{s.title} —— {s.id}</div>
                       <p className="font-mono text-xs text-white/60 group-hover:text-white transition-colors">{s.desc}</p>
                     </button>

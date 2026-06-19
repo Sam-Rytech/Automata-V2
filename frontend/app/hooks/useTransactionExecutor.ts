@@ -16,7 +16,7 @@ export function useTransactionExecutor() {
     activeWallet: any,
     stellarContext: {
       address: string | null;
-      signTransaction: (xdr: string) => Promise<string>;
+      signTransaction: (xdr: string) => Promise<string>;,
     },
     sourceContext: {
       type: 'AGENT_EXECUTION' | 'FLOW';

@@ -7,30 +7,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { XIcon } from "lucide-react"
 
-function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
-  return <SheetPrimitive.Portal payload-slot="sheet-portal" {...props} />
-}
-
-function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      payload-slot="sheet-header"
-      className={cn("flex flex-col gap-1.5 p-4", className)}
-      {...props}
-    />
-  )
-}
-
-function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      payload-slot="sheet-footer"
-      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
-      {...props}
-    />
-  )
-}
-
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root payload-slot="sheet" {...props} />
 }
@@ -43,14 +19,18 @@ function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
   return <SheetPrimitive.Close payload-slot="sheet-close" {...props} />
 }
 
-function SheetDescription({
-  className,
-  ...props
-}: SheetPrimitive.Description.Props) {
+function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {
+  return <SheetPrimitive.Portal payload-slot="sheet-portal" {...props} />
+}
+
+function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
   return (
-    <SheetPrimitive.Description
-      payload-slot="sheet-description"
-      className={cn("text-sm text-muted-foreground", className)}
+    <SheetPrimitive.Backdrop
+      payload-slot="sheet-overlay"
+      className={cn(
+        "fixed inset-0 z-50 bg-black/10 transition-opacity duration-150 payload-ending-style:opacity-0 payload-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs",
+        className
+      )}
       {...props}
     />
   )
@@ -100,14 +80,21 @@ function SheetContent({
   )
 }
 
-function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
+function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <SheetPrimitive.Backdrop
-      payload-slot="sheet-overlay"
-      className={cn(
-        "fixed inset-0 z-50 bg-black/10 transition-opacity duration-150 payload-ending-style:opacity-0 payload-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs",
-        className
-      )}
+    <div
+      payload-slot="sheet-header"
+      className={cn("flex flex-col gap-1.5 p-4", className)}
+      {...props}
+    />
+  )
+}
+
+function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      payload-slot="sheet-footer"
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
       {...props}
     />
   )
@@ -118,6 +105,19 @@ function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
     <SheetPrimitive.Title
       payload-slot="sheet-title"
       className={cn("font-heading font-medium text-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function SheetDescription({
+  className,
+  ...props
+}: SheetPrimitive.Description.Props) {
+  return (
+    <SheetPrimitive.Description
+      payload-slot="sheet-description"
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   )

@@ -1,4 +1,5 @@
 'use client'
+
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { celo } from 'viem/chains'

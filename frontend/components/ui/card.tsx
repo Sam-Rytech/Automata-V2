@@ -56,6 +56,12 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardAction
+ * @param {*} { className
+ * @param {*} ...props }: React.ComponentProps<"div">
+ * @returns {*}
+ */
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

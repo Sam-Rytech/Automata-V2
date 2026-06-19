@@ -94,6 +94,7 @@ export function useBalances(evmAddress?: string | null, stellarAddress?: string 
 
       return results;
     },
+    // Only refetch if we have at least one address to query, and refresh every 30 seconds
     enabled: !!evmAddress || !!stellarAddress,
     refetchInterval: 30000, 
   });

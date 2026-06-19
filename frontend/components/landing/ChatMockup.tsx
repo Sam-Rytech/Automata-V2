@@ -28,7 +28,7 @@ export function ChatMockup() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let isCancelled = false;
+    let isCancelled: boolean = false;
     
     const runScenario = async () => {
       const s = SCENARIOS[scenarioIdx];

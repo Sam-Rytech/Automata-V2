@@ -93,7 +93,7 @@ function getChain(o: YieldOpportunity): string {
               </div>
               <button
                 onClick={() => onDeposit(opp)}
-                className="mt-1 w-full bg-transparent border border-[#E91E8C]/40 text-[#E91E8C] font-mono font-bold text-[9px] uppercase tracking-[0.25em] py-2.5 hover:bg-[#E91E8C] hover:text-white transition-all duration-200 group-hover:border-[#E91E8C]"
+                className='mt-1 w-full bg-transparent border border-[#E91E8C]/40 text-[#E91E8C] font-mono font-bold text-[9px] uppercase tracking-[0.25em] py-2.5 hover:bg-[#E91E8C] hover:text-white transition-all duration-200 group-hover:border-[#E91E8C]'
               >
                 Deposit
               </button>

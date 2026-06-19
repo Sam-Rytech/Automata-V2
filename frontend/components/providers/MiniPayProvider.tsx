@@ -1,5 +1,4 @@
 'use client'
-
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { celo } from 'viem/chains'
@@ -43,5 +42,4 @@ export function MiniPayProvider({ children }: { children: React.ReactNode }) {
     <MiniPayContext.Provider value={{ isMiniPay }}>
       {children}
     </MiniPayContext.Provider>
-  )
-}
+  )}

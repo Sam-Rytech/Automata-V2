@@ -11,10 +11,6 @@ import { useWallets } from '@privy-io/react-auth';
 
 const FILTER_OPTIONS = ['ALL', 'FLOW', 'BRIDGE', 'SWAP', 'STAKE', 'SEND']
 
-/**
- * HistoryPageContent
- * @returns {*}
- */
 function HistoryPageContent() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filter, setFilter] = useState<string>('ALL')

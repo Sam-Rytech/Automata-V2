@@ -1,30 +1,11 @@
-use client
+"use client"
+
 import * as React from "react"
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { XIcon } from "lucide-react"
-
-function getSheetContentClassName(side: string) {
-  const baseClassNames = "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out payload-ending-style:opacity-0 payload-starting-style:opacity-0"
-  const sideClassNames = {
-    top: "inset-x-0 bottom-0 h-auto border-t payload-ending-style:translate-y-[2.5rem] payload-starting-style:translate-y-[2.5rem]",
-    right: "inset-y-0 right-0 h-full w-3/4 border-l payload-ending-style:translate-x-[2.5rem] payload-starting-style:translate-x-[2.5rem]",
-    bottom: "inset-x-0 top-0 h-auto border-b payload-ending-style:translate-y-[-2.5rem] payload-starting-style:translate-y-[-2.5rem]",
-    left: "inset-y-0 left-0 h-full w-3/4 border-r payload-ending-style:translate-x-[-2.5rem] payload-starting-style:translate-x-[-2.5rem]",
-  }
-  return cn(baseClassNames, sideClassNames[side], "sm:max-w-sm")
-}
-
-function renderCloseButton() {
-  return (
-    <SheetPrimitive.Close payload-slot="sheet-close" render={<Button variant="ghost" className="absolute top-4 right-4" size="icon" />}
-    >
-      <XIcon />
-      <span className="sr-only">Close</span>
-    </SheetPrimitive.Close>
-  )
-}
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root payload-slot="sheet" {...props} />
@@ -61,18 +42,39 @@ function SheetContent({
   side = "right",
   showCloseButton = true,
   ...props
-}: SheetPrimitive.Popup.Props & { side?: "top" | "right" | "bottom" | "left"; showCloseButton?: boolean }) {
+}: SheetPrimitive.Popup.Props & {
+  side?: "top" | "right" | "bottom" | "left"
+  showCloseButton?: boolean
+}) {
   return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Popup
         payload-slot="sheet-content"
         payload-side={side}
-        className={cn(getSheetContentClassName(side), className)}
+        className={cn(
+          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out payload-ending-style:opacity-0 payload-starting-style:opacity-0 payload-[side=bottom]:inset-x-0 payload-[side=bottom]:bottom-0 payload-[side=bottom]:h-auto payload-[side=bottom]:border-t payload-[side=bottom]:payload-ending-style:translate-y-[2.5rem] payload-[side=bottom]:payload-starting-style:translate-y-[2.5rem] payload-[side=left]:inset-y-0 payload-[side=left]:left-0 payload-[side=left]:h-full payload-[side=left]:w-3/4 payload-[side=left]:border-r payload-[side=left]:payload-ending-style:translate-x-[-2.5rem] payload-[side=left]:payload-starting-style:translate-x-[-2.5rem] payload-[side=right]:inset-y-0 payload-[side=right]:right-0 payload-[side=right]:h-full payload-[side=right]:w-3/4 payload-[side=right]:border-l payload-[side=right]:payload-ending-style:translate-x-[2.5rem] payload-[side=right]:payload-starting-style:translate-x-[2.5rem] payload-[side=top]:inset-x-0 payload-[side=top]:top-0 payload-[side=top]:h-auto payload-[side=top]:border-b payload-[side=top]:payload-ending-style:translate-y-[-2.5rem] payload-[side=top]:payload-starting-style:translate-y-[-2.5rem] payload-[side=left]:sm:max-w-sm payload-[side=right]:sm:max-w-sm",
+          className
+        )}
         {...props}
       >
         {children}
-        {showCloseButton && renderCloseButton()}
+        {showCloseButton && (
+          <SheetPrimitive.Close
+            payload-slot="sheet-close"
+            render={
+              <Button
+                variant="ghost"
+                className="absolute top-4 right-4"
+                size="icon"
+              />
+            }
+          >
+            <XIcon
+            />
+            <span className="sr-only">Close</span>
+          </SheetPrimitive.Close>
+        )}
       </SheetPrimitive.Popup>
     </SheetPortal>
   )
@@ -80,25 +82,44 @@ function SheetContent({
 
 function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div payload-slot="sheet-header" className={cn("flex flex-col gap-1.5 p-4", className)} {...props} />
+    <div
+      payload-slot="sheet-header"
+      className={cn("flex flex-col gap-1.5 p-4", className)}
+      {...props}
+    />
   )
 }
 
 function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div payload-slot="sheet-footer" className={cn("mt-auto flex flex-col gap-2 p-4", className)} {...props} />
+    <div
+      payload-slot="sheet-footer"
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      {...props}
+    />
   )
 }
 
 function SheetTitle({ className, ...props }: SheetPrimitive.Title.Props) {
   return (
-    <SheetPrimitive.Title payload-slot="sheet-title" className={cn("font-heading font-medium text-foreground", className)} {...props} />
+    <SheetPrimitive.Title
+      payload-slot="sheet-title"
+      className={cn("font-heading font-medium text-foreground", className)}
+      {...props}
+    />
   )
 }
 
-function SheetDescription({ className, ...props }: SheetPrimitive.Description.Props) {
+function SheetDescription({
+  className,
+  ...props
+}: SheetPrimitive.Description.Props) {
   return (
-    <SheetPrimitive.Description payload-slot="sheet-description" className={cn("text-sm text-muted-foreground", className)} {...props} />
+    <SheetPrimitive.Description
+      payload-slot="sheet-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
   )
 }
 

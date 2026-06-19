@@ -1,11 +1,22 @@
-'use client';
-
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DarkVeil from '../DarkVeil';
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
+
+const handleLoginRedirect = (router, destination, isMiniPay, login, authenticated, ready) => {
+  if (!ready) return;
+  if (authenticated) {
+    router.push(destination);
+  } else if (isMiniPay) {
+    // MiniPayProvider already triggered login() — don't double-call
+    return;
+  } else {
+    localStorage.setItem('postLoginRedirect', destination);
+    login();
+  }
+};
 
 export function Hero() {
   const router = useRouter();
@@ -18,50 +29,26 @@ export function Hero() {
   }, [isMiniPay, ready, authenticated, router]);
 
   const handleAction = (destination: string) => {
-    if (!ready) return;
-    if (authenticated) {
-      router.push(destination);
-    } else if (isMiniPay) {
-      // MiniPayProvider already triggered login() — don't double-call
-      return;
-    } else {
-      localStorage.setItem('postLoginRedirect', destination);
-      login();
-    }
+    handleLoginRedirect(router, destination, isMiniPay, login, authenticated, ready);
   };
+
   return (
     <section className="relative min-h-[95vh] w-full bg-[var(--bg-primary)] overflow-hidden flex flex-col justify-center">
-
       {/* --- BACKGROUND LAYERS --- */}
-
       {/* 1. Dot Grid */}
       <div className="absolute inset-0 bg-dot-grid opacity-80 pointer-events-none z-0" />
-
       {/* 2. DarkVeil Aurora */}
       <div className="absolute bottom-0 left-0 w-full h-[70vh] pointer-events-none z-0">
         {/* Fixed Mask: Transparent at the very top, fading to solid black (visible) for the rest of the height */}
-        <div
-          className="absolute inset-0"
-          style={{
-            maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 100%)'
-          }}
-        >
-          <DarkVeil
-            hueShift={291}
-            noiseIntensity={0}
-            scanlineIntensity={0.25}
-            speed={0.7}
-            scanlineFrequency={0}
-            warpAmount={0.8}
-          />
+        <div className="absolute inset-0" style={{
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 100%)'
+        }}>
+          <DarkVeil hueShift={291} noiseIntensity={0} scanlineIntensity={0.25} speed={0.7} scanlineFrequency={0} warpAmount={0.8} />
         </div>
       </div>
-
       {/* --- FOREGROUND CONTENT --- */}
-
       <div className="relative z-10 px-6 pt-32 pb-24 text-center max-w-7xl mx-auto w-full flex flex-col items-center">
-
         {/* 2D CSS Glowing Orb (Restored!) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -85,7 +72,6 @@ export function Hero() {
           {/* Outer subtle glow matching Stitch's wide background effect */}
           <div className="absolute inset-0 bg-[var(--accent-glow)] rounded-[100%] blur-[120px] opacity-40 transform scale-150 -z-10" />
         </motion.div>
-
         {/* Minimalist Proprietary Badge Aesthetic */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -101,7 +87,6 @@ export function Hero() {
           <span>·</span>
           <span>Automata Protocol & Cross-Chain Agent Operating System</span>
         </motion.div>
-
         {/* Typography */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -112,7 +97,6 @@ export function Hero() {
           One Message.<br />
           Every Chain.
         </motion.h1>
-
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,7 +105,6 @@ export function Hero() {
         >
           Deploy intent-based agents that bridge, swap, and stake across EVM and non-EVM ecosystems with a single natural language prompt.
         </motion.p>
-
         {/* CTAs with Tech Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -132,20 +115,24 @@ export function Hero() {
           {isMiniPay ? (
             <div className="flex items-center gap-3">
               <div className="w-4 h-4 border-2 border-[var(--accent-pink)] border-t-transparent rounded-full animate-spin" />
-              <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white/40">
-                Connecting MiniPay...
-              </span>
+              <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white/40"> Connecting MiniPay... </span>
             </div>
           ) : (
             <>
               <div className="w-full sm:w-auto block">
-                <button onClick={() => handleAction('/chat')} className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center">
+                <button
+                  onClick={() => handleAction('/chat')}
+                  className="w-full sm:w-auto px-10 py-4 bg-[var(--accent-pink)] text-white rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button border border-transparent flex items-center justify-center"
+                >
                   <span className="tech-corners-extra" />
                   Start Chatting
                 </button>
               </div>
               <div className="w-full sm:w-auto block">
-                <button onClick={() => handleAction('/build')} className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button flex items-center justify-center">
+                <button
+                  onClick={() => handleAction('/build')}
+                  className="w-full sm:w-auto px-10 py-4 bg-[#0F0F1A]/50 backdrop-blur-md border border-[var(--border-subtle)] text-white hover:border-[var(--text-muted)] rounded-none font-bold text-[0.9rem] uppercase tracking-wider transition-transform hover:scale-[1.02] active:scale-[0.98] tech-button flex items-center justify-center"
+                >
                   <span className="tech-corners-extra" />
                   Build a Flow
                 </button>
@@ -153,7 +140,6 @@ export function Hero() {
             </>
           )}
         </motion.div>
-
       </div>
     </section>
   );

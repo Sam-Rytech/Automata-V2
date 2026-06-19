@@ -1,6 +1,6 @@
 'use client';
-import { motion } from 'framer-motion';
 import { WalletIcon, Cog6ToothIcon, ChatBubbleLeftRightIcon, SquaresPlusIcon, ClockIcon } from '@heroicons/react/24/solid';
+import { motion } from 'framer-motion';
 
 interface SidebarProps {
   executionMode: 'assisted' | 'autonomous';

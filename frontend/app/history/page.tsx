@@ -85,7 +85,7 @@ function HistoryPageContent() {
       <main className="flex-1 flex flex-col min-w-0 relative bg-dot-grid">
 
         {/* Mobile Header with Hamburger */}
-        <header className="h-16 border-b border-white/5 flex items-center px-4 sm:px-6 bg-[#0F0F1A] shrink-0 z-20 lg:hidden gap-4">
+        <header className='h-16 border-b border-white/5 flex items-center px-4 sm:px-6 bg-[#0F0F1A] shrink-0 z-20 lg:hidden gap-4'>
           <button className="p-2 -ml-2 text-white/60 hover:text-white" onClick={() => setIsSidebarOpen(true)}>
             <Bars3Icon className="w-5 h-5" />
           </button>

@@ -160,7 +160,7 @@ export function Capabilities() {
         </div>
 
         {/* CARD 4: EARN (Green - #22C55E) */}
-        <div className="p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#22C55E]/40 bg-[#22C55E]/[0.04] hover:bg-[#22C55E]/[0.08] hover:border-[#22C55E]/80 hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+        <div className='p-8 relative overflow-hidden group transition-all duration-500 rounded-none border border-[#22C55E]/40 bg-[#22C55E]/[0.04] hover:bg-[#22C55E]/[0.08] hover:border-[#22C55E]/80 hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]'>
           {/* Filled Heroicon Watermark */}
           <ChartBarIcon
             className="absolute -bottom-8 -right-8 w-64 h-64 text-[#22C55E] opacity-[0.05] transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] pointer-events-none z-0"

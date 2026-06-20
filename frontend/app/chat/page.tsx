@@ -272,7 +272,7 @@ function ChatPageContent() {
               <button
                 onClick={() => handleSend()}
                 disabled={status !== 'idle' || !input.trim()}
-                className='bg-[#E91E8C] text-white px-6 sm:px-10 py-3 sm:py-4 font-syne font-bold uppercase text-[10px] sm:text-xs tracking-[0.3em] hover:bg-[#E91E8C]/80 transition-colors rounded-none disabled:opacity-50'
+                className="bg-[#E91E8C] text-white px-6 sm:px-10 py-3 sm:py-4 font-syne font-bold uppercase text-[10px] sm:text-xs tracking-[0.3em] hover:bg-[#E91E8C]/80 transition-colors rounded-none disabled:opacity-50"
               >
                 Execute
               </button>

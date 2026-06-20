@@ -1,9 +1,7 @@
 export type StatusState = 'idle' | 'thinking' | 'executing' | 'awaiting_approval' | 'success' | 'error';
-export type BaseStatusProps = {
+export type StatusPanelProps = {
   status: StatusState;
   message?: string;
-};
-export type StatusPanelProps = BaseStatusProps & {
   step?: number;
   totalSteps?: number;
   txHash?: string;

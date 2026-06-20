@@ -1,10 +1,9 @@
 'use client';
-
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
 export const TYPE_COLORS: Record<string, string> = {
-  FLOW: '#E91E8C',   // Flow executions
+  FLOW: '#E91E8C', // Flow executions
   SWAP: '#8B5CF6',
   BRIDGE: '#6A0DAD',
   STAKE: '#22C55E',
@@ -18,25 +17,20 @@ export const STATUS_COLORS: Record<string, string> = {
   FAILED: '#EF4444',
 };
 
+const EXPLORER_URLS: Record<string, (hash: string) => string> = {
+  STELLAR: (hash) => `https://stellar.expert/explorer/public/tx/${hash}`,
+  SOLANA: (hash) => `https://explorer.solana.com/tx/${hash}`,
+  BASE: (hash) => `https://basescan.org/tx/${hash}`,
+  POLYGON: (hash) => `https://polygonscan.com/tx/${hash}`,
+  STACKS: (hash) => `https://explorer.hiro.so/txid/${hash}`,
+  CELO: (hash) => `https://celoscan.io/tx/${hash}`,
+  ETHEREUM: (hash) => `https://etherscan.io/tx/${hash}`,
+};
+
 export function getExplorerUrl(network: string, hash: string): string {
   const normalizedNetwork = network.toUpperCase();
-  switch (normalizedNetwork) {
-    case 'STELLAR':
-      return `https://stellar.expert/explorer/public/tx/${hash}`;
-    case 'SOLANA':
-      return `https://explorer.solana.com/tx/${hash}`;
-    case 'BASE':
-      return `https://basescan.org/tx/${hash}`;
-    case 'POLYGON':
-      return `https://polygonscan.com/tx/${hash}`;
-    case 'STACKS':
-      return `https://explorer.hiro.so/txid/${hash}`;
-    case 'CELO':
-      return `https://celoscan.io/tx/${hash}`;
-    case 'ETHEREUM':
-    default:
-      return `https://etherscan.io/tx/${hash}`;
-  }
+  const explorerUrl = EXPLORER_URLS[normalizedNetwork] || EXPLORER_URLS.ETHEREUM;
+  return explorerUrl(hash);
 }
 
 export interface Transaction {
@@ -55,14 +49,23 @@ interface TransactionCardProps {
   index: number;
 }
 
+function getShortHash(hash: string): string {
+  return hash.length > 10 ? `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}` : hash;
+}
+
+function getTypeBadgeStyles(typeColor: string) {
+  return {
+    borderColor: `${typeColor}40`,
+    color: typeColor,
+    backgroundColor: `${typeColor}10`,
+  };
+}
+
 export function TransactionCard({ tx, index }: TransactionCardProps) {
   const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
   const statusColor = STATUS_COLORS[tx.status] || '#22C55E';
-
-  // Format hash for display (0x1234...5678)
-  const shortHash = tx.hash.length > 10
-    ? `${tx.hash.substring(0, 6)}...${tx.hash.substring(tx.hash.length - 4)}`
-    : tx.hash;
+  const shortHash = getShortHash(tx.hash);
+  const typeBadgeStyles = getTypeBadgeStyles(typeColor);
 
   return (
     <motion.div
@@ -77,25 +80,16 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
       {/* Left: type badge, date, title, networks */}
       <div className="flex-1">
         <div className="flex items-center gap-3 mb-3">
-          <span
-            className="text-[9px] px-2 py-0.5 border uppercase tracking-widest font-bold"
-            style={{
-              borderColor: `${typeColor}40`,
-              color: typeColor,
-              backgroundColor: `${typeColor}10`,
-            }}
-          >
+          <span className="text-[9px] px-2 py-0.5 border uppercase tracking-widest font-bold" style={typeBadgeStyles}>
             {tx.type}
           </span>
           <span className="text-[10px] text-white/40 uppercase tracking-widest">
             {tx.date}
           </span>
         </div>
-
         <h3 className="font-syne text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-4">
           {tx.title}
         </h3>
-
         <div className="flex items-center gap-3">
           <div className="border border-white/10 bg-[#0A0A12] px-3 py-1.5 text-[9px] text-white/60 uppercase tracking-widest">
             {tx.fromNetwork}
@@ -106,17 +100,10 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
           </div>
         </div>
       </div>
-
       {/* Right: status, hash link */}
       <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 border-t border-white/5 md:border-t-0 pt-4 md:pt-0">
-        <div
-          className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold"
-          style={{ color: statusColor }}
-        >
-          <span
-            className="w-2 h-2 rounded-none"
-            style={{ backgroundColor: statusColor }}
-          />
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold" style={{ color: statusColor }}>
+          <span className="w-2 h-2 rounded-none" style={{ backgroundColor: statusColor }} />
           {tx.status}
         </div>
         <a
@@ -125,7 +112,8 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
           rel="noreferrer"
           className="flex items-center gap-2 text-[10px] text-white/40 hover:text-white transition-colors tracking-widest"
         >
-          {shortHash} <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+          {shortHash}
+          <ArrowTopRightOnSquareIcon className="w-3 h-3" />
         </a>
       </div>
     </motion.div>

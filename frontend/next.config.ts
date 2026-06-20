@@ -1,1 +1,7 @@
-import type { NextConfig } from "next"; function validateConfig(config: NextConfig): NextConfig { if (!config) { throw new Error("Next.js configuration is not defined"); } return config; } const nextConfig: NextConfig = { /* config options here */ }; export default validateConfig(nextConfig);
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;

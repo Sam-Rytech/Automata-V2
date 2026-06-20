@@ -298,6 +298,7 @@ function SettingsPageContent() {
                 <section id="execution" className="scroll-mt-12">
                   <div className="relative bg-[#12121A]/80 backdrop-blur-md border border-white/5 p-6 sm:p-10 h-full">
                     <div className="absolute -top-[1px] -left-[1px] w-2 h-2 border-t border-l border-white/20" />
+                    // TODO: add error boundary here
                     <div className="absolute -bottom-[1px] -right-[1px] w-2 h-2 border-b border-r border-white/20" />
                     <h3 className="font-syne text-xl font-black uppercase tracking-widest mb-8">
                       Execution Mode

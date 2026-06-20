@@ -32,7 +32,7 @@ export function Sidebar({
 
   // useWallets() returns all wallets Privy has provisioned for the user
   const walletAddress = wallets[0]?.address ?? null
-  const { data: balances, isLoading: isBalancesLoading } = useBalances(walletAddress, stellarAddress)
+  const { payload: balances, isLoading: isBalancesLoading } = useBalances(walletAddress, stellarAddress)
   const truncatedPrivy = walletAddress
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
     : '—'

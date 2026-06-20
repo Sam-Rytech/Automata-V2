@@ -76,7 +76,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
     >
       {/* Left: type badge, date, title, networks */}
       <div className="flex-1">
-        <div className="flex items-center gap-3 mb-3">
+        <div className='flex items-center gap-3 mb-3'>
           <span
             className="text-[9px] px-2 py-0.5 border uppercase tracking-widest font-bold"
             style={{

@@ -37,6 +37,7 @@ export function Capabilities() {
           {/* Filled Heroicon Watermark */}
           <PaperAirplaneIcon
             className="absolute -bottom-8 -right-8 w-64 h-64 text-[#E91E8C] opacity-[0.05] -rotate-12 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-[0.1] group-hover:-rotate-6 pointer-events-none z-0"
+          // TODO: add input validation
           />
 
           <div className="relative z-10">

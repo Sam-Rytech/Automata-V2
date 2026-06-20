@@ -88,7 +88,7 @@ function getChain(o: YieldOpportunity): string {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[8px] text-white/30 uppercase tracking-wider">TVL</span>
+                <span className='font-mono text-[8px] text-white/30 uppercase tracking-wider'>TVL</span>
                 <span className="font-mono text-[10px] text-white/60">{formatTVL(opp.tvlUsd)}</span>
               </div>
               <button

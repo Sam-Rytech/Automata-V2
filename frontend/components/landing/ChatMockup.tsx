@@ -79,7 +79,7 @@ export function ChatMockup() {
   }, [messages]);
 
   return (
-    <div className="glassmorphism rounded-xl relative overflow-hidden flex flex-col h-[600px] border-[var(--accent-pink)]/20 border-t-[var(--accent-pink)]/40">
+    <div className='glassmorphism rounded-xl relative overflow-hidden flex flex-col h-[600px] border-[var(--accent-pink)]/20 border-t-[var(--accent-pink)]/40'>
       <div className="h-12 border-b border-white/10 flex items-center px-4 font-mono text-xs text-white/50 tracking-wider bg-[#0F0F1A]/80 z-10 absolute top-0 w-full">
         AUTOMATA — Chat
       </div>

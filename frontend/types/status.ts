@@ -1,12 +1,11 @@
 export type StatusState = 'idle' | 'thinking' | 'executing' | 'awaiting_approval' | 'success' | 'error';
-export type OptionalStringFields = {
+export type StatusPanelProps = {
+  status: StatusState;
   message?: string;
-  txHash?: string;
-  chainId?: string;
-};
-export type StatusPanelProps = StatusState & OptionalStringFields & {
   step?: number;
   totalSteps?: number;
+  txHash?: string;
+  chainId?: string;
 };
 export type PlanStep = {
   stepNumber: number;

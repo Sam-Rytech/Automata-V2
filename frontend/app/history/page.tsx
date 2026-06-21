@@ -102,6 +102,7 @@ function HistoryPageContent() {
               </div>
               <h2 className="font-syne text-[2rem] sm:text-[3rem] lg:text-[4rem] font-black uppercase leading-none tracking-tighter mb-8 text-white scale-y-110 origin-left">
                 Activity Log
+              // TODO: optimize for large datasets
               </h2>
               <div className="flex flex-wrap gap-2 sm:gap-4">
                 {FILTER_OPTIONS.map((f) => (

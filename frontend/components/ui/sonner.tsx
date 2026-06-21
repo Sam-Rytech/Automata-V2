@@ -15,7 +15,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       position="top-center"
       toastOptions={{
         style: {
-          marginTop: '40vh', // Pushes the toast perfectly into the center-middle
+          marginTop: '40vh', // Pushes the toast perfectly into the center-middle,
         },
         classNames: {
           // Base styling for the modal card

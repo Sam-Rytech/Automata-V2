@@ -187,7 +187,7 @@ function ChatPageContent() {
   return (
     <div className="flex h-screen bg-[#0F0F1A] text-white overflow-hidden relative">
       <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden absolute top-6 left-6 z-50 p-2 bg-[#1A1A2E] border border-white/10">
-        {isSidebarOpen ? <XMarkIcon className='w-6 h-6' /> : <Bars3Icon className='w-6 h-6' />}
+        {isSidebarOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
       </button>
 
       <AnimatePresence>

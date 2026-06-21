@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
@@ -11,8 +11,7 @@ export function LandingNav() {
   const { isMiniPay } = useMiniPay();
 
   const handleLaunch = () => {
-    if (!ready) return;
-    if (isMiniPay) return;
+    if (!ready || isMiniPay) return;
     if (authenticated) {
       router.push('/build');
     } else {
@@ -22,16 +21,16 @@ export function LandingNav() {
   };
 
   useEffect(() => {
-    if (!ready) return;
-    if (!authenticated) return;
-    if (isMiniPay) {
+    if (isMiniPay && ready && authenticated) {
       router.push('/chat');
       return;
     }
-    const redirect = localStorage.getItem('postLoginRedirect');
-    if (redirect) {
-      localStorage.removeItem('postLoginRedirect');
-      router.push(redirect);
+    if (ready && authenticated) {
+      const redirect = localStorage.getItem('postLoginRedirect');
+      if (redirect) {
+        localStorage.removeItem('postLoginRedirect');
+        router.push(redirect);
+      }
     }
   }, [isMiniPay, ready, authenticated, router]);
 
@@ -40,8 +39,11 @@ export function LandingNav() {
       <nav className="glassmorphism rounded-xs flex items-center justify-between gap-8 px-8 py-3 w-full md:w-3/4 crosshair-corners relative overflow-hidden">
         {/* Branding */}
         <div className="flex items-center cursor-pointer">
-          <span className="font-mono text-2xl font-black text-white tracking-tighter uppercase"> Automata </span>
+          <span className="font-mono text-2xl font-black text-white tracking-tighter uppercase">
+            Automata
+          </span>
         </div>
+
         {/* Action */}
         <div className="flex items-center gap-4">
           <Button

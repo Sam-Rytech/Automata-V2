@@ -10,10 +10,6 @@ const CHAIN_IDS: Record<string, number> = {
   ethereum: 1,
 };
 
-/**
- * useTransactionExecutor
- * @returns {*}
- */
 export function useTransactionExecutor() {
   const executeSequence = async (
     txsToExecute: UnsignedTx[],

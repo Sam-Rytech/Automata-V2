@@ -1,32 +1,27 @@
 const GEMINI_KEY = 'automata_gemini_key';
 const AGENT_MODE = 'automata_agent_mode';
 
-const storage = (
-  key: string,
-  value?: string | null
-): string | void => {
-  if (typeof window === 'undefined') return value === undefined ? '' : undefined;
-  if (value === undefined) return localStorage.getItem(key) ?? '';
-  if (value === null) return localStorage.removeItem(key);
-  return localStorage.setItem(key, value);
-};
-
 export function saveGeminiKey(key: string): void {
-  storage(GEMINI_KEY, key);
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(GEMINI_KEY, key);
 }
 
 export function getGeminiKey(): string {
-  return storage(GEMINI_KEY);
+  if (typeof window === 'undefined') return '';
+  return localStorage.getItem(GEMINI_KEY) ?? '';
 }
 
 export function clearGeminiKey(): void {
-  storage(GEMINI_KEY, null);
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(GEMINI_KEY);
 }
 
 export function saveAgentMode(mode: 'assisted' | 'autonomous'): void {
-  storage(AGENT_MODE, mode);
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(AGENT_MODE, mode);
 }
 
 export function getAgentMode(): 'assisted' | 'autonomous' {
-  return (storage(AGENT_MODE) as 'assisted' | 'autonomous') ?? 'assisted';
+  if (typeof window === 'undefined') return 'assisted';
+  return (localStorage.getItem(AGENT_MODE) as 'assisted' | 'autonomous') ?? 'assisted';
 }

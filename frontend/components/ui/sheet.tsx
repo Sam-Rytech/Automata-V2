@@ -1,6 +1,5 @@
 "use client"
 
-// TODO: optimize for large datasets
 import * as React from "react"
 import { Dialog as SheetPrimitive } from "@base-ui/react/dialog"
 

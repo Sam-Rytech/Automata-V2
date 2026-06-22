@@ -1,3 +1,7 @@
+/**
+ * Footer
+ * @returns {*}
+ */
 export function Footer() {
   return (
     <footer className="border-t border-white/5 bg-[#0F0F1A] py-12 px-8">

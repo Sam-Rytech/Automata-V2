@@ -92,27 +92,27 @@ export function ChatMockup() {
         {/* We use a flex container that justifies to the end, pushing old messages up and out of view */}
         <div className="flex flex-col justify-end min-h-full gap-6">
           <AnimatePresence initial={false}>
-            {messages.slice(-6).map((message) => (
+            {messages.slice(-6).map((msg) => (
               <motion.div 
-                key={message.id}
+                key={msg.id}
                 layout
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className={`max-w-[90%] rounded-sm ${message.type === 'user' ? 'self-end bg-[var(--accent-pink)] text-white p-4 shadow-lg' : 'self-start glassmorphism p-4 border border-white/5'}`}
+                className={`max-w-[90%] rounded-sm ${msg.type === 'user' ? 'self-end bg-[var(--accent-pink)] text-white p-4 shadow-lg' : 'self-start glassmorphism p-4 border border-white/5'}`}
               >
-                {message.type === 'user' ? (
-                  <span className="font-mono text-sm leading-relaxed">{message.text}</span>
+                {msg.type === 'user' ? (
+                  <span className="font-mono text-sm leading-relaxed">{msg.text}</span>
                 ) : (
                   <>
                     <div className="font-mono text-sm text-white/80 leading-relaxed mb-4">
-                      {message.text}
+                      {msg.text}
                     </div>
                     <div className="bg-[#0F0F1A] border-l-2 border-[var(--accent-pink)] p-4 mb-4">
                       <div className="font-mono text-xs text-white/50 mb-3 tracking-widest">TRANSACTION PLAN</div>
                       <ul className="font-mono text-sm text-white/70 space-y-2">
-                        {message.plan.map((step: string, i: number) => (
+                        {msg.plan.map((step: string, i: number) => (
                           <motion.li key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.2 }}>
                             Step {i + 1}: {step}
                           </motion.li>
@@ -120,9 +120,9 @@ export function ChatMockup() {
                       </ul>
                     </div>
                     <div className="flex gap-4">
-                      <Button variant="outline" size="sm" className={`text-white border-white/20 tech-button bg-transparent transition-all duration-300 ${message.status === 'confirmed' ? 'bg-[var(--accent-pink)] border-[var(--accent-pink)]' : ''}`}>
+                      <Button variant="outline" size="sm" className={`text-white border-white/20 tech-button bg-transparent transition-all duration-300 ${msg.status === 'confirmed' ? 'bg-[var(--accent-pink)] border-[var(--accent-pink)]' : ''}`}>
                         <span className="tech-corners-extra" />
-                        {message.status === 'confirmed' ? 'Signed' : 'Confirm & Sign'}
+                        {msg.status === 'confirmed' ? 'Signed' : 'Confirm & Sign'}
                       </Button>
                     </div>
                   </>

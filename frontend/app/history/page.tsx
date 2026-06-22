@@ -89,7 +89,7 @@ function HistoryPageContent() {
           <button className="p-2 -ml-2 text-white/60 hover:text-white" onClick={() => setIsSidebarOpen(true)}>
             <Bars3Icon className="w-5 h-5" />
           </button>
-          <div className="text-[10px] text-[#E91E8C] tracking-[0.3em] uppercase font-bold">
+          <div className='text-[10px] text-[#E91E8C] tracking-[0.3em] uppercase font-bold'>
             04 —— History
           </div>
         </header>

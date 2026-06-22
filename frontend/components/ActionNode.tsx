@@ -14,16 +14,6 @@ interface ActionNodeProps {
   index: number;
 }
 
-/**
- * ActionNode
- * @param {*} { type
- * @param {*} chain
- * @param {*} asset
- * @param {*} amount
- * @param {*} onDelete
- * @param {*} index }: ActionNodeProps
- * @returns {*}
- */
 export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
   const icons = {
     swap: ArrowsRightLeftIcon,

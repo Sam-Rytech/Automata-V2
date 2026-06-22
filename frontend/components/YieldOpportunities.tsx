@@ -1,4 +1,5 @@
 'use client';
+
 import { motion } from 'framer-motion';
 
 export interface YieldOpportunity {
@@ -31,26 +32,15 @@ function formatTVL(tvl?: number): string {
 }
 
 function getProtocol(o: YieldOpportunity): string {
-  return o.protocol || o.project || 'Unknown Protocol';n}
-
-function getChain(o: YieldOpportunity): string {
-  return o.chain || 'Unknown Chain';
-}
-
-function extractOpportunityDetails(opp: YieldOpportunity, index: number) {
-  const apy = getAPY(opp);
-  const protocol = getProtocol(opp);
-  const chain = getChain(opp);
-  return {
-    apy,
-    protocol,
-    chain,
-    tvl: formatTVL(opp.tvlUsd),
-  };
+  return o.protocol || o.project || 'Unknown Protocol';
 }
 
 export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunitiesProps) {
   if (!opportunities || opportunities.length === 0) return null;
+
+function getChain(o: YieldOpportunity): string {
+  return o.chain || 'Unknown Chain';
+}
 
   return (
     <motion.div
@@ -64,7 +54,10 @@ export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunit
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {opportunities.slice(0, 5).map((opp, i) => {
-          const { apy, protocol, chain, tvl } = extractOpportunityDetails(opp, i);
+          const apy = getAPY(opp);
+          const protocol = getProtocol(opp);
+          const chain = getChain(opp);
+
           return (
             <motion.div
               key={opp.id || i}
@@ -95,12 +88,8 @@ export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunit
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[8px] text-white/30 uppercase tracking-wider">
-                  TVL
-                </span>
-                <span className="font-mono text-[10px] text-white/60">
-                  {tvl}
-                </span>
+                <span className="font-mono text-[8px] text-white/30 uppercase tracking-wider">TVL</span>
+                <span className="font-mono text-[10px] text-white/60">{formatTVL(opp.tvlUsd)}</span>
               </div>
               <button
                 onClick={() => onDeposit(opp)}

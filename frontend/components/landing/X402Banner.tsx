@@ -6,7 +6,7 @@ export function X402Banner() {
     <section className="relative py-24 border-b border-[var(--border-subtle)] bg-[#0A0A10] overflow-hidden z-10">
 
       {/* Background Glow / Light Contrast */}
-      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(86,132,209,0.15)] blur-[120px] rounded-full pointer-events-none" />
+      <div className='absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[rgba(86,132,209,0.15)] blur-[120px] rounded-full pointer-events-none' />
 
       {/* Dither / Dot Pattern Background */}
       <div

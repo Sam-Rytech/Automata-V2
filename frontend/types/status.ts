@@ -25,3 +25,7 @@ export type PlanReviewProps = {
   onCancel: () => void;
   isExecuting?: boolean;
 };
+export type StatusData = {
+  status: StatusState;
+  message?: string;
+};

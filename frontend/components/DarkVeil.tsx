@@ -29,7 +29,6 @@ mat3 rgb2yiq=mat3(0.299,0.587,0.114,0.596,-0.274,-0.322,0.211,-0.523,0.312);
 mat3 yiq2rgb=mat3(1.0,0.956,0.621,1.0,-0.272,-0.647,1.0,-1.106,1.703);
 
 vec3 hueShiftRGB(vec3 col,float deg){
-    // FIXME: handle edge case when value is null
     vec3 yiq=rgb2yiq*col;
     float rad=radians(deg);
     float cosh=cos(rad),sinh=sin(rad);

@@ -6,10 +6,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
-/**
- * FinalCTA
- * @returns {*}
- */
 export function FinalCTA() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();

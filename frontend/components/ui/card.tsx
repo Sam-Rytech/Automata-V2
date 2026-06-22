@@ -33,6 +33,12 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardTitle
+ * @param {*} { className
+ * @param {*} ...props }: React.ComponentProps<"div">
+ * @returns {*}
+ */
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

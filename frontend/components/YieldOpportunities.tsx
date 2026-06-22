@@ -35,12 +35,6 @@ function getProtocol(o: YieldOpportunity): string {
   return o.protocol || o.project || 'Unknown Protocol';
 }
 
-/**
- * YieldOpportunities
- * @param {*} { opportunities
- * @param {*} onDeposit }: YieldOpportunitiesProps
- * @returns {*}
- */
 export function YieldOpportunities({ opportunities, onDeposit }: YieldOpportunitiesProps) {
   if (!opportunities || opportunities.length === 0) return null;
 

@@ -1,11 +1,1 @@
-import { cn } from '@/lib/utils';
-
-const DEFAULT_CLASSES = 'animate-pulse rounded-md bg-muted';
-
-function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div data-slot='skeleton' className={cn(DEFAULT_CLASSES, className)} {...props} />
-  );
-}
-
-export { Skeleton };
+import { cn } from '@/lib/utils'; function getSkeletonClassName(className: string) { return cn('animate-pulse rounded-md bg-muted', className); } function Skeleton({ className, ...props }: React.ComponentProps<'div'>) { return ( <div data-slot='skeleton' className={getSkeletonClassName(className)} {...props} /> ); } export { Skeleton };

@@ -26,6 +26,7 @@ export function FlowBuilderMockup() {
             setActiveNodeIdx((prev) => (prev >= FLOWS[flowIdx].length ? 0 : prev + 1));
         }, 1200);
 
+        // Physically swap the flow nodes every 5 seconds
         const flowInterval = setInterval(() => {
             setFlowIdx((prev) => (prev + 1) % FLOWS.length);
             setActiveNodeIdx(0); // Reset highlight on flow change

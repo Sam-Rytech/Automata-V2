@@ -1,6 +1,10 @@
 import { ChatMockup } from "./ChatMockup";
 import { FlowBuilderMockup } from "./FlowBuilderMockup";
 
+/**
+ * HowItWorks
+ * @returns {*}
+ */
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="min-h-screen py-32 px-4 max-w-7xl mx-auto flex flex-col justify-center">

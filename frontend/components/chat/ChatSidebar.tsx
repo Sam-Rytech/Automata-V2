@@ -27,7 +27,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           <div className="w-8 h-8 bg-[#E91E8C] flex items-center justify-center shrink-0">
             <WalletIcon className="w-4 h-4 text-white" />
           </div>
-          <div className="min-w-0">
+          <div className='min-w-0'>
             <div className="font-mono text-[11px] text-white font-bold uppercase truncate">0x1a2b...3c4d</div>
             <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#22C55E] uppercase tracking-wider">
               <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full" /> Connected

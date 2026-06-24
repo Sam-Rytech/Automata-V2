@@ -74,7 +74,6 @@ function getChain(o: YieldOpportunity): string {
                   <span className="font-mono text-[8px] text-white/40 uppercase tracking-[0.2em]">
                     {opp.symbol || 'VAULT'}
                   </span>
-                // TODO: add error boundary here
                 </div>
                 <span className="font-mono text-[8px] text-white/60 bg-white/5 border border-white/10 px-2 py-1 uppercase tracking-wider shrink-0">
                   {chain}

@@ -21,6 +21,5 @@ export default function HomePage() {
       <FinalCTA />
       <Footer />
     </main>
-  // NOTE: revisit this logic after API migration
   );
 }

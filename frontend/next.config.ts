@@ -1,1 +1,7 @@
-import type { NextConfig } from 'next'; const getServerRuntimeConfig = (): NextConfig['serverRuntimeConfig'] => ({  // serverRuntimeConfig options here }); const getImagesConfig = (): NextConfig['images'] => ({  // images options here }); const nextConfig: NextConfig = {  serverRuntimeConfig: getServerRuntimeConfig(),  images: getImagesConfig(),  /* other config options here */ }; export default nextConfig;
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;

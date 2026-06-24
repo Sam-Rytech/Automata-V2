@@ -21,7 +21,6 @@ export function FlowBuilderMockup() {
     const [activeNodeIdx, setActiveNodeIdx] = useState(0);
 
     useEffect(() => {
-        // Cycle the execution highlight rapidly
         const nodeInterval = setInterval(() => {
             setActiveNodeIdx((prev) => (prev >= FLOWS[flowIdx].length ? 0 : prev + 1));
         }, 1200);

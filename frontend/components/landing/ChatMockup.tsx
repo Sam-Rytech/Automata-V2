@@ -90,7 +90,6 @@ export function ChatMockup() {
         style={{ scrollBehavior: 'smooth' }}
       >
         {/* We use a flex container that justifies to the end, pushing old messages up and out of view */}
-        // TODO: consider memoizing this value
         <div className="flex flex-col justify-end min-h-full gap-6">
           <AnimatePresence initial={false}>
             {messages.slice(-6).map((msg) => (

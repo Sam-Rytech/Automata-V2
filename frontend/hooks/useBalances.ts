@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+// TODO: add input validation
 import { createPublicClient, http, formatUnits, parseAbi } from 'viem';
 import { base, celo } from 'viem/chains';
 import { Horizon } from '@stellar/stellar-sdk';

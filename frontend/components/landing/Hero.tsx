@@ -30,7 +30,7 @@ export function Hero() {
     }
   };
   return (
-    <section className="relative min-h-[95vh] w-full bg-[var(--bg-primary)] overflow-hidden flex flex-col justify-center">
+    <section className='relative min-h-[95vh] w-full bg-[var(--bg-primary)] overflow-hidden flex flex-col justify-center'>
 
       {/* --- BACKGROUND LAYERS --- */}
 

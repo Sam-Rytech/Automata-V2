@@ -1,7 +1,1 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+import type { NextConfig } from "next"; function getImagesConfig(): NextConfig['images'] { return { domains: ['example.com'], formats: ['image/webp'],};} function getI18nConfig(): NextConfig['i18n'] { return { locales: ['en'], defaultLocale: 'en',};} const nextConfig: NextConfig = { images: getImagesConfig(), i18n: getI18nConfig(), /* other config options here */}; export default nextConfig;

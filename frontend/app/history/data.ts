@@ -71,6 +71,5 @@ const MOCK_TRANSACTIONS: Transaction[] = [
 /** Simulates a real network fetch with a realistic latency. */
 export async function fetchTransactions(): Promise<Transaction[]> {
   await new Promise((resolve) => setTimeout(resolve, 900));
-  // TODO: add input validation
   return MOCK_TRANSACTIONS;
 }

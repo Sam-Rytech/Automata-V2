@@ -75,6 +75,7 @@ export function Chains() {
                 alt={`${chain.name} logo`} 
                 className="w-6 h-6 lg:w-8 lg:h-8 shrink-0 object-contain grayscale opacity-50 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
               />
+              // TODO: optimize for large datasets
               {chain.textSvg ? (
                 chain.textSvg
               ) : (

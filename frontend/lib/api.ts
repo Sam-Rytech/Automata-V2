@@ -58,7 +58,7 @@ export async function sendAgentMessage(
     }),
   });
   if (!res.ok) {
-    let errorMessage = 'Something went wrong. Please try again.';
+    let errorMessage: string = 'Something went wrong. Please try again.';
     try {
       const err = await res.json();
       if (res.status === 429) errorMessage = 'The agent is busy. Please wait a moment and try again.';

@@ -48,8 +48,8 @@ function HistoryPageContent() {
         }));
         
         setTransactions(mappedTxs);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
         setError('Failed to load transaction history from database.');
       } finally {
         setTimeout(() => setIsLoading(false), 600);

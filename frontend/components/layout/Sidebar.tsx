@@ -135,7 +135,7 @@ export function Sidebar({
             <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">
               03 —— Balances
             </div>
-            <div className='space-y-3'>
+            <div className="space-y-3">
               {[
                 { t: 'USDC (Base)', v: balances?.baseUSDC || '0.00' },
                 { t: 'ETH (Base)', v: balances?.baseETH || '0.00' },

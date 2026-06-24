@@ -25,3 +25,4 @@ export type PlanReviewProps = {
   onCancel: () => void;
   isExecuting?: boolean;
 };
+export type CombinedPlanReviewProps = PlanReviewProps & StatusPanelProps;

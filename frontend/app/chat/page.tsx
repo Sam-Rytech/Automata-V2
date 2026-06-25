@@ -211,7 +211,7 @@ function ChatPageContent() {
             {messages.length === 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-16 md:mt-0">
                 <h2 className="font-syne text-[2.5rem] sm:text-[3.5rem] font-black uppercase leading-none mb-12 tracking-tighter">What do you want to do?</h2>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { id: '01', title: 'QUERY', desc: 'Check USDC balance across all active chains.' },
                     { id: '02', title: 'BRIDGE', desc: 'Bridge 50 USDC from Base to Celo via Wormhole.' }

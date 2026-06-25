@@ -34,7 +34,6 @@ function formatBalance(value: string | number, maxDecimals: number = 2) {
 
 export type Balances = {
   baseETH: string;
-  // TODO: add input validation
   baseUSDC: string;
   celoNative: string;
   celoUSDC: string;

@@ -1,6 +1,6 @@
 'use client';
-import { motion } from 'framer-motion';
 import { ArrowsRightLeftIcon, ArrowUpRightIcon, ChartBarIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { motion } from 'framer-motion';
 
 export type ActionType = 'swap' | 'bridge' | 'stake' | 'transfer';
 

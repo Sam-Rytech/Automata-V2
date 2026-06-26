@@ -60,6 +60,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           ))}
         </div>
       </div>
+// TODO: optimize for large datasets
 
       <div className="mb-12">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">04 —— Execution</div>

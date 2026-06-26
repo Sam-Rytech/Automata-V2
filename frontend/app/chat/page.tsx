@@ -17,6 +17,10 @@ import { YieldOpportunities, YieldOpportunity } from '@/components/YieldOpportun
 
 type Message = { id: string; role: 'user' | 'agent'; content: string; opportunities?: YieldOpportunity[] };
 
+/**
+ * ChatPageContent
+ * @returns {*}
+ */
 function ChatPageContent() {
   const { wallets } = useWallets();
   const activeWallet = wallets?.[0];

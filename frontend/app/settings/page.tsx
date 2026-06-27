@@ -30,7 +30,6 @@ function SettingsPageContent() {
   const [apiKey, setApiKey] = useState('')
   const [hudEnabled, setHudEnabled] = useState(true)
 
-  // Added Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {

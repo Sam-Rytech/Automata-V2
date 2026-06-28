@@ -7,34 +7,20 @@ interface SidebarProps {
   setExecutionMode: (mode: 'assisted' | 'autonomous') => void;
 }
 
-const navItems = [
-  { name: 'Chat', icon: ChatBubbleLeftRightIcon, active: true },
-  { name: 'Builder', icon: SquaresPlusIcon },
-  { name: 'History', icon: ClockIcon },
-  { name: 'Settings', icon: Cog6ToothIcon },
-];
-
-const renderNavItem = (item: typeof navItems[0]) => (
-  <button key={item.name} className={`w-full flex items-center gap-4 px-4 py-3 font-syne text-sm uppercase font-bold transition-all ${item.active ? 'text-[#E91E8C]' : 'text-white/40 hover:text-white'}`}
-  >
-    <item.icon className="w-5 h-5" />
-    {item.name}
-  </button>
-);
-
-const renderExecutionModeButton = (mode: 'assisted' | 'autonomous', executionMode: 'assisted' | 'autonomous', setExecutionMode: (mode: 'assisted' | 'autonomous') => void) => (
-  <button onClick={() => setExecutionMode(mode)} className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all ${executionMode === mode ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}`}
-  >
-    {mode.charAt(0).toUpperCase() + mode.slice(1)}
-  </button>
-);
-
 export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
+  const navItems = [
+    { name: 'Chat', icon: ChatBubbleLeftRightIcon, active: true },
+    { name: 'Builder', icon: SquaresPlusIcon },
+    { name: 'History', icon: ClockIcon },
+    { name: 'Settings', icon: Cog6ToothIcon },
+  ];
+
   return (
     <aside className="w-[300px] h-full bg-[#0F0F1A] border-r border-white/5 flex flex-col p-6 overflow-y-auto">
       <div className="mb-12 mt-10 md:mt-0">
         <h1 className="font-mono text-2xl font-black text-white tracking-tighter uppercase">Automata</h1>
       </div>
+
       <div className="mb-10">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">01 —— Connected Wallet</div>
         <div className="bg-[#1A1A2E] p-4 flex items-center gap-3 border-l-2 border-[#E91E8C]">
@@ -44,12 +30,12 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           <div className="min-w-0">
             <div className="font-mono text-[11px] text-white font-bold uppercase truncate">0x1a2b...3c4d</div>
             <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#22C55E] uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full" />
-              Connected
+              <span className="w-1.5 h-1.5 bg-[#22C55E] rounded-full" /> Connected
             </div>
           </div>
         </div>
       </div>
+
       <div className="mb-10">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">02 —— Networks</div>
         <div className="flex flex-wrap gap-2">
@@ -58,6 +44,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           ))}
         </div>
       </div>
+
       <div className="mb-10">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">03 —— Balances</div>
         <div className="space-y-3">
@@ -73,15 +60,36 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           ))}
         </div>
       </div>
+
       <div className="mb-12">
         <div className="font-mono text-[10px] text-white/30 tracking-[0.2em] mb-4 uppercase">04 —— Execution</div>
         <div className="flex border border-white/10 p-1">
-          {renderExecutionModeButton('assisted', executionMode, setExecutionMode)}
-          {renderExecutionModeButton('autonomous', executionMode, setExecutionMode)}
+          <button
+            onClick={() => setExecutionMode('assisted')}
+            className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
+              ${executionMode === 'assisted' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
+            `}
+          >
+            Assisted
+          </button>
+          <button
+            onClick={() => setExecutionMode('autonomous')}
+            className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
+              ${executionMode === 'autonomous' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
+            `}
+          >
+            Autonomous
+          </button>
         </div>
       </div>
+
       <nav className="mt-auto space-y-2">
-        {navItems.map(renderNavItem)}
+        {navItems.map((item) => (
+          <button key={item.name} className={`w-full flex items-center gap-4 px-4 py-3 font-syne text-sm uppercase font-bold transition-all ${item.active ? 'text-[#E91E8C]' : 'text-white/40 hover:text-white'}`}>
+            <item.icon className="w-5 h-5" />
+            {item.name}
+          </button>
+        ))}
       </nav>
     </aside>
   );

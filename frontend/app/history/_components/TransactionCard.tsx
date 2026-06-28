@@ -1,10 +1,9 @@
 'use client';
-
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
 export const TYPE_COLORS: Record<string, string> = {
-  FLOW: '#E91E8C',   // Flow executions
+  FLOW: '#E91E8C', // Flow executions
   SWAP: '#8B5CF6',
   BRIDGE: '#6A0DAD',
   STAKE: '#22C55E',
@@ -18,7 +17,7 @@ export const STATUS_COLORS: Record<string, string> = {
   FAILED: '#EF4444',
 };
 
-export function getExplorerUrl(network: string, hash: string): string {
+const getExplorerUrl = (network: string, hash: string): string => {
   const normalizedNetwork = network.toUpperCase();
   switch (normalizedNetwork) {
     case 'STELLAR':
@@ -37,7 +36,11 @@ export function getExplorerUrl(network: string, hash: string): string {
     default:
       return `https://etherscan.io/tx/${hash}`;
   }
-}
+};
+
+const formatHash = (hash: string): string => {
+  return hash.length > 10 ? `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}` : hash;
+};
 
 export interface Transaction {
   id: string;
@@ -58,11 +61,8 @@ interface TransactionCardProps {
 export function TransactionCard({ tx, index }: TransactionCardProps) {
   const typeColor = TYPE_COLORS[tx.type] || '#E91E8C';
   const statusColor = STATUS_COLORS[tx.status] || '#22C55E';
-
-  // Format hash for display (0x1234...5678)
-  const shortHash = tx.hash.length > 10
-    ? `${tx.hash.substring(0, 6)}...${tx.hash.substring(tx.hash.length - 4)}`
-    : tx.hash;
+  const shortHash = formatHash(tx.hash);
+  const explorerUrl = getExplorerUrl(tx.fromNetwork, tx.hash);
 
   return (
     <motion.div
@@ -91,11 +91,11 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
             {tx.date}
           </span>
         </div>
-
-        <h3 className="font-syne text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-4">
+        <h3
+          className="font-syne text-xl sm:text-2xl font-black uppercase tracking-tight text-white mb-4"
+        >
           {tx.title}
         </h3>
-
         <div className="flex items-center gap-3">
           <div className="border border-white/10 bg-[#0A0A12] px-3 py-1.5 text-[9px] text-white/60 uppercase tracking-widest">
             {tx.fromNetwork}
@@ -106,26 +106,25 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
           </div>
         </div>
       </div>
-
       {/* Right: status, hash link */}
-      <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 border-t border-white/5 md:border-t-0 pt-4 md:pt-0">
+      <div
+        className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 border-t border-white/5 md:border-t-0 pt-4 md:pt-0"
+      >
         <div
           className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold"
           style={{ color: statusColor }}
         >
-          <span
-            className="w-2 h-2 rounded-none"
-            style={{ backgroundColor: statusColor }}
-          />
+          <span className="w-2 h-2 rounded-none" style={{ backgroundColor: statusColor }} />
           {tx.status}
         </div>
         <a
-          href={getExplorerUrl(tx.fromNetwork, tx.hash)}
+          href={explorerUrl}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 text-[10px] text-white/40 hover:text-white transition-colors tracking-widest"
         >
-          {shortHash} <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+          {shortHash}
+          <ArrowTopRightOnSquareIcon className="w-3 h-3" />
         </a>
       </div>
     </motion.div>

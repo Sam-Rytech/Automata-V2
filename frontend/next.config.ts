@@ -1,1 +1,7 @@
-import type { NextConfig } from 'next'; const IMAGES_DOMAIN = 'https://example.com'; const nextConfig: NextConfig = { images: { domains: [IMAGES_DOMAIN], }, }; export default nextConfig;
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;

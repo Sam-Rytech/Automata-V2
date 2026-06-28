@@ -38,10 +38,18 @@ export const viewport: Viewport = {
   themeColor: '#8B5CF6',
 };
 
+const getHtmlClass = (syne: any, plexMono: any) => {
+  return `${syne.variable} ${plexMono.variable} dark`;
+}
+
+const getBodyClass = () => {
+  return "antialiased min-h-screen bg-background text-foreground tracking-tight select-none font-sans";
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${plexMono.variable} dark`}>
-      <body className="antialiased min-h-screen bg-background text-foreground tracking-tight select-none font-sans">
+    <html lang="en" className={getHtmlClass(syne, plexMono)}>
+      <body className={getBodyClass()}>
         <Providers>
           <TooltipProvider>
             {children}

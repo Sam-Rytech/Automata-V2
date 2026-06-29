@@ -23,11 +23,11 @@ app.use(express.json({ limit: '10mb' }))
 
 const sessions = new Map<string, ConversationMessage[]>()
 
-app.get('/health', (_req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', async (req: Request, res: Response) => {
   const { message, sessionId, geminiApiKey, walletAddress, stellarAddress } =
     req.body
 
@@ -74,7 +74,7 @@ app.post('/api/chat', async (req, res) => {
 // This is what makes the bridge feel like one user action — they sign burn,
 // wait ~90 seconds, then sign mint. No manual steps in between.
 
-app.post('/api/bridge/attest', async (req, res) => {
+app.post('/api/bridge/attest', async (req: Request, res: Response) => {
   const {
     burnTxHash,
     sourceChain,
@@ -142,7 +142,7 @@ app.post('/api/bridge/attest', async (req, res) => {
 // Starts the background relay that polls Circle and mints USDC on Stellar.
 // Deferred until Circle publishes verified Stellar mainnet contract addresses.
 
-app.post('/api/bridge/relay', async (req, res) => {
+app.post('/api/bridge/relay', async (req: Request, res: Response) => {
   const { burnTxHash, recipientAddress, amount } = req.body
 
   if (!burnTxHash || !recipientAddress || !amount) {
@@ -166,7 +166,7 @@ app.post('/api/bridge/relay', async (req, res) => {
   })
 })
 
-app.post('/api/flows', async (req, res) => {
+app.post('/api/flows', async (req: Request, res: Response) => {
   const { walletAddress, name, description, actions } = req.body
   if (!walletAddress || !name || !actions)
     return res.status(400).json({ error: 'Missing required fields' })
@@ -193,7 +193,7 @@ app.post('/api/flows', async (req, res) => {
   }
 })
 
-app.get('/api/flows/:walletAddress', async (req, res) => {
+app.get('/api/flows/:walletAddress', async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { walletAddress: req.params.walletAddress },
@@ -210,7 +210,7 @@ app.get('/api/flows/:walletAddress', async (req, res) => {
   }
 })
 
-app.post('/api/history', async (req, res) => {
+app.post('/api/history', async (req: Request, res: Response) => {
   const { walletAddress, txHash, chainId, actionType, status, details } =
     req.body
   if (!walletAddress || !actionType || !status)
@@ -229,7 +229,7 @@ app.post('/api/history', async (req, res) => {
   }
 })
 
-app.get('/api/history/:walletAddress', async (req, res) => {
+app.get('/api/history/:walletAddress', async (req: Request, res: Response) => {
   try {
     const history = await prisma.transaction.findMany({
       where: { walletAddress: req.params.walletAddress },

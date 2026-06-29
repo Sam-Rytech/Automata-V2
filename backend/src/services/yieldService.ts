@@ -299,12 +299,17 @@ export async function buildEarnDepositTx(
   const data = await composerFetch(`/v1/quote?${quoteParams.toString()}`);
   
   // Build raw approval tx if LI.FI indicates allowance is needed
-  let approvalTx = null;
+  let approvalTx = null
   if (data.estimate?.approvalAddress) {
+    const cleanAddress = data.estimate.approvalAddress
+      .replace('0x', '')
+      .padStart(64, '0')
+    const hexAmount = BigInt(amountSmallest).toString(16).padStart(64, '0')
+
     approvalTx = {
       to: fromToken,
-      data: `0x095ea7b3${data.estimate.approvalAddress.replace}`('0x', '').padStart(64, '0') + BigInt(amountSmallest).toString(16).padStart(64, '0')
-    };
+      data: `0x095ea7b3${cleanAddress}${hexAmount}`,
+    }
   }
 
   return {

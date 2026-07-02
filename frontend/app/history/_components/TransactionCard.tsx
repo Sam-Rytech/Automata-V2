@@ -87,7 +87,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
           >
             {tx.type}
           </span>
-          <span className="text-[10px] text-white/40 uppercase tracking-widest">
+          <span className='text-[10px] text-white/40 uppercase tracking-widest'>
             {tx.date}
           </span>
         </div>

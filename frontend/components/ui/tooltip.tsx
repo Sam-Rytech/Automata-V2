@@ -17,6 +17,11 @@ function TooltipProvider({
   )
 }
 
+/**
+ * Tooltip
+ * @param {*} { ...props }: TooltipPrimitive.Root.Props
+ * @returns {*}
+ */
 function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />
 }

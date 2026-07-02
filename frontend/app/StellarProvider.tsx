@@ -27,26 +27,6 @@ export function useStellar() {
   return useContext(StellarContext);
 }
 
-const initializeStellarWalletsKit = async () => {
-  try {
-    // Re-initialize standard kit configuration just before opening modal
-    StellarWalletsKit.init({
-      modules: defaultModules(),
-      network: Networks.PUBLIC,
-    });
-
-    // The 1-second "kicker" hack to unstick the modal's internal promise hanging resolver
-    setTimeout(() => {
-      StellarWalletsKit.init({
-        modules: defaultModules(),
-        network: Networks.PUBLIC,
-      });
-    }, 1000);
-  } catch (error) {
-    console.error('Stellar initialization error:', error);
-  }
-};
-
 export function StellarProvider({ children }: { children: React.ReactNode }) {
   const [stellarAddress, setStellarAddress] = useState<string | null>(null);
 
@@ -78,7 +58,20 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
   const connectStellar = async () => {
     try {
-      await initializeStellarWalletsKit();
+      // Re-initialize standard kit configuration just before opening modal
+      StellarWalletsKit.init({
+        modules: defaultModules(),
+        network: Networks.PUBLIC,
+      });
+
+      // The 1-second "kicker" hack to unstick the modal's internal promise hanging resolver
+      setTimeout(() => {
+        StellarWalletsKit.init({
+          modules: defaultModules(),
+          network: Networks.PUBLIC,
+        });
+      }, 1000);
+
       const { address } = await StellarWalletsKit.authModal();
       setStellarAddress(address);
       localStorage.setItem('stellar_address', address);
@@ -117,3 +110,14 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     </StellarContext.Provider>
   );
 }
+
+
+// git config--local user.name "KayProject"
+// git config--local user.email "jadonsunshine@gmail.com"
+
+// git config--global--list
+
+// git config--local user.name "jadonamite"
+// git config--local user.email "jadonamite@gmail.com"
+
+// git config--local--list

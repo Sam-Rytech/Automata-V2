@@ -17,6 +17,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         style: {
           marginTop: '40vh', // Pushes the toast perfectly into the center-middle
         },
+        // TODO: add error boundary here
         classNames: {
           // Base styling for the modal card
           toast: "group toast group-[.toaster]:bg-[#0F0F1A] group-[.toaster]:text-white group-[.toaster]:border-y group-[.toaster]:border-r group-[.toaster]:border-y-white/5 group-[.toaster]:border-r-white/5 group-[.toaster]:shadow-[0_0_50px_rgba(0,0,0,0.8)] font-mono text-[11px] uppercase tracking-widest rounded-none p-5 w-[380px] border-l-4 pointer-events-auto",

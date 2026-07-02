@@ -49,7 +49,6 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
             <div className="flex items-center gap-2">Est Time: <span className="text-white font-bold">{plan.estimatedTimeSeconds}S</span></div>
           </div>
 
-          // NOTE: revisit this logic after API migration
           <div className="flex gap-4 w-full sm:w-auto">
             <button onClick={onCancel} disabled={isExecuting} className="flex-1 sm:flex-none px-8 py-3 border border-white/10 font-mono text-[10px] uppercase tracking-widest hover:bg-white/5 disabled:opacity-50 transition-all">
               Abort

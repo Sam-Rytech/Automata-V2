@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+'use client';
+import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
@@ -8,10 +9,6 @@ export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
   const { isMiniPay } = useMiniPay();
-
-  const getRedirectUrl = () => {
-    return localStorage.getItem('postLoginRedirect');
-  };
 
   const handleLaunch = () => {
     if (!ready || isMiniPay) return;
@@ -23,21 +20,17 @@ export function LandingNav() {
     }
   };
 
-  const handleRedirect = () => {
-    const redirect = getRedirectUrl();
-    if (redirect) {
-      localStorage.removeItem('postLoginRedirect');
-      router.push(redirect);
-    }
-  };
-
   useEffect(() => {
     if (isMiniPay && ready && authenticated) {
       router.push('/chat');
       return;
     }
     if (ready && authenticated) {
-      handleRedirect();
+      const redirect = localStorage.getItem('postLoginRedirect');
+      if (redirect) {
+        localStorage.removeItem('postLoginRedirect');
+        router.push(redirect);
+      }
     }
   }, [isMiniPay, ready, authenticated, router]);
 

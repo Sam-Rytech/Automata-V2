@@ -1,6 +1,10 @@
 export type StatusState = 'idle' | 'thinking' | 'executing' | 'awaiting_approval' | 'success' | 'error';
-export type StatusPanelProps = {
+export type ExecutionStatus = {
   status: StatusState;
+  isExecuting?: boolean;
+};
+export type StatusPanelProps = {
+  executionStatus: ExecutionStatus;
   message?: string;
   step?: number;
   totalSteps?: number;
@@ -23,5 +27,5 @@ export type PlanReviewProps = {
   plan: AgentPlan;
   onApprove: () => void;
   onCancel: () => void;
-  isExecuting?: boolean;
+  executionStatus: ExecutionStatus;
 };

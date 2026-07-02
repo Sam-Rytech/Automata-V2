@@ -10,7 +10,7 @@ const SCENARIOS = [
     plan: ["Burn USDC on Base", "Attest via Circle", "Mint on Stellar", "Swap to XLM via Horizon"]
   },
   {
-    command: "Stake 5 ETH on Lido and wrap to wstETH",
+    command: 'Stake 5 ETH on Lido and wrap to wstETH',
     reply: "Current Lido APY is 3.8%. Preparing staking transaction.",
     plan: ["Route to Ethereum Mainnet", "Deposit ETH to Lido", "Receive stETH", "Wrap to wstETH"]
   },

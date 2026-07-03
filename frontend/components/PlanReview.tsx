@@ -64,5 +64,5 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
         </div>
       </div>
     </motion.div>
-  );,
+  );
 }

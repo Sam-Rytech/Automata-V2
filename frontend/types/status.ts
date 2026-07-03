@@ -20,7 +20,6 @@ export type AgentPlan = {
   warnings: string[];
 };
 export type PlanReviewProps = {
-  // TODO: add error boundary here
   plan: AgentPlan;
   onApprove: () => void;
   onCancel: () => void;

@@ -22,7 +22,6 @@ export const TYPE_COLORS: Record<string, string> = {
 export const STATUS_COLORS: Record<TxStatus, string> = {
   CONFIRMED: '#22C55E',
   PENDING:   '#F59E0B',
-  // FIXME: handle edge case when value is null
   FAILED:    '#EF4444',
 };
 

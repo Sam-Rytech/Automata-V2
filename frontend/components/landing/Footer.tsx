@@ -1,4 +1,10 @@
 export function Footer() {
+  const Link = ({ href, children }) => (
+    <a href={href} className="text-white/40 hover:text-white transition-colors">
+      {children}
+    </a>
+  );
+
   return (
     <footer className="border-t border-white/5 bg-[#0F0F1A] py-12 px-8">
       <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
@@ -15,66 +21,26 @@ export function Footer() {
         <div className="flex gap-16 font-mono text-xs uppercase tracking-widest">
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Model</div>
-            <a
-              href="https://aistudio.google.com/api-keys"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Gemini 2.5 Flash
-            </a>
-            <a
-              href="https://github.com/Sam-Rytech/Automata-V2/blob/main/README.md"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Documentation
-            </a>
-            <a
-              href="https://github.com/Sam-Rytech/Automata-V2/blob/main/AutomataArchitecture_v2.docx"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Architecture
-            </a>
+            <Link href="https://aistudio.google.com/api-keys">Gemini 2.5 Flash</Link>
+            <Link href="https://github.com/Sam-Rytech/Automata-V2/blob/main/README.md">Documentation</Link>
+            <Link href="https://github.com/Sam-Rytech/Automata-V2/blob/main/AutomataArchitecture_v2.docx">Architecture</Link>
           </div>
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Build</div>
-            <a
-              href="https://github.com/Sam-Rytech/Automata-V2"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Github
-            </a>
-            <a
-              href="#"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Postman / API
-            </a>
-            <a
-              href="#"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Discord
-            </a>
+            <Link href="https://github.com/Sam-Rytech/Automata-V2">Github</Link>
+            <Link href="#">Postman / API</Link>
+            <Link href="#">Discord</Link>
           </div>
           <div className="flex flex-col gap-4">
             <div className="text-white/60 mb-2">Legal</div>
-            <a
-              href="#"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Cipher Grids
-            </a>
-            <a
-              href="#"
-              className="text-white/40 hover:text-white transition-colors"
-            >
-              Terms
-            </a>
+            <Link href="#">Cipher Grids</Link>
+            <Link href="#">Terms</Link>
           </div>
         </div>
       </div>
 
       <div className="max-w-[1400px] mx-auto mt-16 flex justify-between items-center font-mono text-[10px] text-white/30 tracking-widest uppercase">
-        <div>© 2026 AUTOMATA. ALL RIGHTS RESERVED.</div>
+        <div> 2026 AUTOMATA. ALL RIGHTS RESERVED.</div>
         <div className="flex gap-4">
           <span>SYSTEM: ONLINE</span>
           <span>LATENCY: 42MS</span>
@@ -82,5 +48,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

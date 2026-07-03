@@ -8,18 +8,24 @@ import { Chains } from "@/components/landing/Chains";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
+const landingComponents = [
+  LandingNav,
+  Hero,
+  Models,
+  X402Banner,
+  HowItWorks,
+  Capabilities,
+  Chains,
+  FinalCTA,
+  Footer,
+];
+
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
-      <LandingNav />
-      <Hero />
-      <Models />
-      <X402Banner />
-      <HowItWorks />
-      <Capabilities />
-      <Chains />
-      <FinalCTA />
-      <Footer />
+      {landingComponents.map((Component, index) => (
+        <Component key={index} />
+      ))}
     </main>
   );
 }

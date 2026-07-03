@@ -74,7 +74,6 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
           </button>
           <button
             onClick={() => setExecutionMode('autonomous')}
-            // NOTE: revisit this logic after API migration
             className={`flex-1 py-2 font-mono text-[10px] font-bold uppercase transition-all
               ${executionMode === 'autonomous' ? 'bg-[#E91E8C]/10 border border-[#E91E8C]/40 text-[#E91E8C]' : 'text-white/30'}
             `}

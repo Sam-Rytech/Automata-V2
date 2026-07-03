@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
-function createNextConfig(): NextConfig {
-  return {
-    /* config options here */
-  };
-}
+const nextConfig: NextConfig = {
+  /* config options here */
+};
 
-export default createNextConfig();
+export default nextConfig;

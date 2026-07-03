@@ -5,6 +5,11 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
+export function LandingNav() {
+  const router = useRouter();
+  const { login, authenticated, ready } = usePrivy();
+  const { isMiniPay } = useMiniPay();
+
   const handleLaunch = () => {
     if (!ready || isMiniPay) return;
     if (authenticated) {
@@ -14,11 +19,6 @@ import { useMiniPay } from '@/components/providers/MiniPayProvider';
       login();
     }
   };
-
-export function LandingNav() {
-  const router = useRouter();
-  const { login, authenticated, ready } = usePrivy();
-  const { isMiniPay } = useMiniPay();
 
   useEffect(() => {
     if (isMiniPay && ready && authenticated) {

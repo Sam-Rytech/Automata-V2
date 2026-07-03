@@ -1,3 +1,5 @@
+'use client';
+
 import { saveHistoryToDb, UnsignedTx } from '@/lib/api';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://automata-backend-production.up.railway.app';
@@ -67,22 +69,78 @@ export function useTransactionExecutor() {
 
           const meta = (tx as any).bridgeMeta;
 
-          if (meta && meta.destinationChain && meta.destinationChain !== 'stellar' && (tx as any).txType === 'burn') {
-            await handleEvmToEvmBridgeAttestation(
-              meta,
-              lastTxHash,
-              activeWallet,
-              onBridgeRelayStarted
-            );
+          // ── EVM-to-EVM bridge attest flow ───────────────────────────────
+          // After the burn tx confirms, poll Circle Iris for attestation,
+          // then present the mint tx to the user to sign on the destination chain.
+          // This is what completes the bridge — without this the USDC is burned
+          // but never minted on the other side.
+          if (
+            meta?.destinationChain &&
+            meta?.destinationChain !== 'stellar' &&
+            (tx as any).txType === 'burn'
+          ) {
+            console.log(`[Bridge] Burn confirmed: ${lastTxHash}. Polling for attestation...`);
+
+            const attestRes = await fetch(`${BACKEND_URL}/api/bridge/attest`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                burnTxHash:       lastTxHash,
+                sourceChain:      meta.sourceChain,
+                destinationChain: meta.destinationChain,
+                recipientAddress: meta.recipientAddress || activeWallet.address,
+                amount:           meta.amount,
+              }),
+            });
+
+            if (!attestRes.ok) {
+              throw new Error(`Attestation failed: ${await attestRes.text()}`);
+            }
+
+            const { unsignedTx: mintTx } = await attestRes.json();
+
+            if (!mintTx) {
+              throw new Error('No mint transaction returned from attestation.');
+            }
+
+            // Switch to destination chain and sign the mint tx
+            const destChainId = CHAIN_IDS[meta.destinationChain];
+            if (destChainId) {
+              await activeWallet.switchChain(destChainId);
+            }
+
+            const mintProvider = await activeWallet.getEthereumProvider();
+            lastTxHash = await mintProvider.request({
+              method: 'eth_sendTransaction',
+              params: [{
+                to:    mintTx.to,
+                data:  mintTx.data,
+                value: mintTx.value || '0x0',
+                from:  activeWallet.address,
+              }]
+            });
+
+            console.log(`[Bridge] Mint tx submitted on ${meta.destinationChain}: ${lastTxHash}`);
           }
 
-          if (meta && meta.toChain === 'stellar' && (tx as any).txType === 'burn') {
-            await handleStellarRelayTrigger(
-              meta,
-              lastTxHash,
-              stellarContext,
-              onBridgeRelayStarted
-            );
+          // ── Stellar relay trigger ───────────────────────────────────────
+          if (meta?.toChain === 'stellar' && (tx as any).txType === 'burn') {
+            const recipientAddr = meta.recipientAddress || stellarContext.address;
+            if (recipientAddr) {
+              fetch(`${BACKEND_URL}/api/bridge/relay`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  burnTxHash:       lastTxHash,
+                  recipientAddress: recipientAddr,
+                  amount:           meta.amount,
+                }),
+              }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
+
+              if (onBridgeRelayStarted) {
+                onBridgeRelayStarted();
+              }
+            }
           }
         }
       }
@@ -108,80 +166,6 @@ export function useTransactionExecutor() {
       } catch (e) { }
 
       throw error;
-    }
-  };
-
-  const handleEvmToEvmBridgeAttestation = async (
-    meta: any,
-    lastTxHash: string,
-    activeWallet: any,
-    onBridgeRelayStarted?: () => void
-  ) => {
-    console.log(`[Bridge] Burn confirmed: ${lastTxHash}. Polling for attestation...`);
-
-    const attestRes = await fetch(`${BACKEND_URL}/api/bridge/attest`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        burnTxHash:       lastTxHash,
-        sourceChain:      meta.sourceChain,
-        destinationChain: meta.destinationChain,
-        recipientAddress: meta.recipientAddress || activeWallet.address,
-        amount:           meta.amount,
-      }),
-    });
-
-    if (!attestRes.ok) {
-      throw new Error(`Attestation failed: ${await attestRes.text()}`);
-    }
-
-    const { unsignedTx: mintTx } = await attestRes.json();
-
-    if (!mintTx) {
-      throw new Error('No mint transaction returned from attestation.');
-    }
-
-    // Switch to destination chain and sign the mint tx
-    const destChainId = CHAIN_IDS[meta.destinationChain];
-    if (destChainId) {
-      await activeWallet.switchChain(destChainId);
-    }
-
-    const mintProvider = await activeWallet.getEthereumProvider();
-    lastTxHash = await mintProvider.request({
-      method: 'eth_sendTransaction',
-      params: [{
-        to:    mintTx.to,
-        data:  mintTx.data,
-        value: mintTx.value || '0x0',
-        from:  activeWallet.address,
-      }]
-    });
-
-    console.log(`[Bridge] Mint tx submitted on ${meta.destinationChain}: ${lastTxHash}`);
-  };
-
-  const handleStellarRelayTrigger = async (
-    meta: any,
-    lastTxHash: string,
-    stellarContext: any,
-    onBridgeRelayStarted?: () => void
-  ) => {
-    const recipientAddr = meta.recipientAddress || stellarContext.address;
-    if (recipientAddr) {
-      fetch(`${BACKEND_URL}/api/bridge/relay`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          burnTxHash:       lastTxHash,
-          recipientAddress: recipientAddr,
-          amount:           meta.amount,
-        }),
-      }).catch(err => console.error('[Bridge Relay] Failed to start relay:', err));
-
-      if (onBridgeRelayStarted) {
-        onBridgeRelayStarted();
-      }
     }
   };
 

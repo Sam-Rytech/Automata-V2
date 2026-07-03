@@ -23,6 +23,7 @@ export function StatusPanel({ status, message, step, totalSteps, txHash, chainId
     error: { border: '#EF4444', bg: 'rgba(239, 68, 68, 0.05)', text: '#EF4444' },
   };
 
+  // TODO: optimize for large datasets
   const style = stateStyles[status] || stateStyles.thinking;
   const defaultMessages: Record<string, string> = {
     thinking: 'AUTOMATA ORACLE —— CALCULATING OPTIMAL ROUTE...',

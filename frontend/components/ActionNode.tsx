@@ -14,14 +14,18 @@ interface ActionNodeProps {
   index: number;
 }
 
-export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
+const getIconForActionType = (type: ActionType) => {
   const icons = {
     swap: ArrowsRightLeftIcon,
     bridge: ArrowUpRightIcon,
     stake: ChartBarIcon,
     transfer: ArrowUpRightIcon,
   };
-  const Icon = icons[type];
+  return icons[type];
+};
+
+export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
+  const Icon = getIconForActionType(type);
 
   return (
     <motion.div 

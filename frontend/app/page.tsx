@@ -8,9 +8,9 @@ import { Chains } from "@/components/landing/Chains";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
-export default function HomePage() {
+const renderPageContent = () => {
   return (
-    <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
+    <>
       <LandingNav />
       <Hero />
       <Models />
@@ -20,6 +20,14 @@ export default function HomePage() {
       <Chains />
       <FinalCTA />
       <Footer />
+    </>
+  );
+};
+
+export default function HomePage() {
+  return (
+    <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
+      {renderPageContent()}
     </main>
   );
 }

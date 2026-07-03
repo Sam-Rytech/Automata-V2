@@ -110,7 +110,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
       {/* Right: status, hash link */}
       <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2 border-t border-white/5 md:border-t-0 pt-4 md:pt-0">
         <div
-          className='flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold'
+          className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold"
           style={{ color: statusColor }}
         >
           <span

@@ -10,21 +10,23 @@ import { wagmiConfig } from '@/lib/wagmi-config';
 
 const queryClient = new QueryClient();
 
+const getPrivyConfig = () => ({
+  loginMethods: ['email', 'google', 'wallet'],
+  appearance: {
+    theme: 'dark',
+    accentColor: '#E91E8C',
+  },
+  embeddedWallets: {
+    ethereum: { createOnLogin: 'all-users' },
+  },
+  supportedChains: [base, celo, mainnet],
+});
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <PrivyProvider
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
-      config={{
-        loginMethods: ['email', 'google', 'wallet'],
-        appearance: {
-          theme: 'dark',
-          accentColor: '#E91E8C',
-        },
-        embeddedWallets: {
-          ethereum: { createOnLogin: 'all-users' },
-        },
-        supportedChains: [base, celo, mainnet],
-      }}
+      config={getPrivyConfig()}
     >
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>

@@ -14,7 +14,7 @@ export type ActionNodeData = {
   toAddress?: string;
   color?: string;
   onDelete?: () => void;
-  onUpdate?: (data: Partial<ActionNodeData>) => void;
+  onUpdate?: (data: Partial<ActionNodeData>) => void;,
 };
 
 // FIXED: Export StatusState here so the API can use it

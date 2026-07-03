@@ -1,9 +1,9 @@
 'use client';
 
+import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { Loader2 } from 'lucide-react';
 import { StatusPanelProps } from '@/types/status';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const EXPLORER_BASE: Record<string, string> = {
   base: 'https://basescan.org/tx/',

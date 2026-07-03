@@ -14,43 +14,17 @@ interface ActionNodeProps {
   index: number;
 }
 
-const getIcon = (type: ActionType) => {
+export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
   const icons = {
     swap: ArrowsRightLeftIcon,
     bridge: ArrowUpRightIcon,
     stake: ChartBarIcon,
     transfer: ArrowUpRightIcon,
   };
-  return icons[type];
-};
-
-const renderActionContent = (type: ActionType, chain: string, asset: string, amount: string) => (
-  <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div>
-      <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Action</div>
-      <div className="font-mono text-xs text-white uppercase font-bold">{type}</div>
-    </div>
-    <div>
-      <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Network</div>
-      <div className="font-mono text-xs text-white uppercase font-bold">{chain}</div>
-    </div>
-    <div>
-      <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Asset</div>
-      <div className="font-mono text-xs text-white uppercase font-bold">{amount} {asset}</div>
-    </div>
-    <div className="flex justify-end items-center">
-      <button className="p-2 text-white/20 hover:text-[#EF4444] transition-colors">
-        <TrashIcon className="w-4 h-4" />
-      </button>
-    </div>
-  </div>
-);
-
-export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
-  const Icon = getIcon(type);
+  const Icon = icons[type];
 
   return (
-    <motion.div
+    <motion.div 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       className="relative group"
@@ -63,14 +37,25 @@ export function ActionNode({ type, chain, asset, amount, onDelete, index }: Acti
           <Icon className="w-5 h-5 text-[#E91E8C]" />
         </div>
 
-        {renderActionContent(type, chain, asset, amount)}
-        {onDelete && (
+        <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Action</div>
+            <div className="font-mono text-xs text-white uppercase font-bold">{type}</div>
+          </div>
+          <div>
+            <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Network</div>
+            <div className="font-mono text-xs text-white uppercase font-bold">{chain}</div>
+          </div>
+          <div>
+            <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Asset</div>
+            <div className="font-mono text-xs text-white uppercase font-bold">{amount} {asset}</div>
+          </div>
           <div className="flex justify-end items-center">
             <button onClick={onDelete} className="p-2 text-white/20 hover:text-[#EF4444] transition-colors">
               <TrashIcon className="w-4 h-4" />
             </button>
           </div>
-        )}
+        </div>
       </div>
     </motion.div>
   );

@@ -27,6 +27,11 @@ export function useStellar() {
   return useContext(StellarContext);
 }
 
+/**
+ * StellarProvider
+ * @param {*} { children }: { children: React.ReactNode }
+ * @returns {*}
+ */
 export function StellarProvider({ children }: { children: React.ReactNode }) {
   const [stellarAddress, setStellarAddress] = useState<string | null>(null);
 

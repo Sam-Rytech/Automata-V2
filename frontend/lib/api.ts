@@ -32,6 +32,7 @@ export type AgentResponse = {
  * @param geminiApiKey   - The user's own Gemini API key (stored in localStorage)
  * @param sessionId      - Conversation session ID (pass null for a new conversation)
  * @param stellarAddress - The user's Stellar wallet address (from Stellar Wallets Kit)
+ // TODO: add error boundary here
  */
 export async function sendAgentMessage(
   message: string,

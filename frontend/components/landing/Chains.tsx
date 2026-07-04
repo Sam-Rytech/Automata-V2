@@ -24,6 +24,7 @@ export function Chains() {
       name: 'ETHEREUM',
       hoverTextClass: 'hover:text-[#627EEA]',
       hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(98,126,234,0.4)]',
+      // FIXME: handle edge case when value is null
       src: '/ethereum-eth-logo.svg',
     },
     {

@@ -39,7 +39,7 @@ export function ActionNode({ type, chain, asset, amount, onDelete, index }: Acti
 
         <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <div className='font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1'>Action</div>
+            <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest mb-1">Action</div>
             <div className="font-mono text-xs text-white uppercase font-bold">{type}</div>
           </div>
           <div>

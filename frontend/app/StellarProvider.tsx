@@ -13,7 +13,7 @@ interface StellarContextType {
   stellarAddress: string | null;
   connectStellar: () => Promise<void>;
   disconnectStellar: () => void;
-  signStellarTransaction: (xdr: string) => Promise<string>;,
+  signStellarTransaction: (xdr: string) => Promise<string>;
 }
 
 const StellarContext = createContext<StellarContextType>({

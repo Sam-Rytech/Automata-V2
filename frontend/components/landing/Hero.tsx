@@ -7,6 +7,16 @@ import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
+export function Hero() {
+  const router = useRouter();
+  const { login, authenticated, ready } = usePrivy();
+  const { isMiniPay } = useMiniPay();
+
+  // MiniPay: auto-redirect once Privy auth resolves — MiniPayProvider already triggered login()
+  useEffect(() => {
+    if (isMiniPay && ready && authenticated) router.push('/chat');
+  }, [isMiniPay, ready, authenticated, router]);
+
   const handleAction = (destination: string) => {
     if (!ready) return;
     if (authenticated) {
@@ -21,16 +31,6 @@ import { useMiniPay } from '@/components/providers/MiniPayProvider';
   };
   return (
     <section className="relative min-h-[95vh] w-full bg-[var(--bg-primary)] overflow-hidden flex flex-col justify-center">
-
-  // MiniPay: auto-redirect once Privy auth resolves — MiniPayProvider already triggered login()
-  useEffect(() => {
-    if (isMiniPay && ready && authenticated) router.push('/chat');
-  }, [isMiniPay, ready, authenticated, router]);
-
-export function Hero() {
-  const router = useRouter();
-  const { login, authenticated, ready } = usePrivy();
-  const { isMiniPay } = useMiniPay();
 
       {/* --- BACKGROUND LAYERS --- */}
 

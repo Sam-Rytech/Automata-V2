@@ -13,6 +13,7 @@ export function FinalCTA() {
 
   const handleLaunch = () => {
     if (!ready || isMiniPay) return;
+    // TODO: add error boundary here
     if (authenticated) {
       router.push('/build');
     } else {

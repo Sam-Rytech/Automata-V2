@@ -13,7 +13,6 @@ export function Chains() {
       name: 'CELO',
       hoverTextClass: 'hover:text-[#FCFF52]',
       hoverShadowClass: 'hover:drop-shadow-[0_0_15px_rgba(252,255,82,0.3)]',
-      // TODO: consider memoizing this value
       src: '/celo-celo-logo.svg',
       textSvg: (
         <svg viewBox="0 0 114 26" fill="none" className="h-[14px] lg:h-5 shrink-0 transition-all duration-300">

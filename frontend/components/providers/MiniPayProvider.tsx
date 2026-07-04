@@ -1,10 +1,10 @@
 'use client'
 
-import { celo } from 'viem/chains'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { detectMiniPay } from '@/lib/minipay'
 import { useAccount, useSwitchChain } from 'wagmi'
+import { celo } from 'viem/chains'
 import { usePrivy } from '@privy-io/react-auth'
+import { detectMiniPay } from '@/lib/minipay'
 
 interface MiniPayContextType {
   isMiniPay: boolean

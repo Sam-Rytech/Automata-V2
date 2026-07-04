@@ -1,10 +1,10 @@
 'use client';
 
-import DarkVeil from '../DarkVeil';
 import { Button } from "@/components/ui/button";
-import { useMiniPay } from '@/components/providers/MiniPayProvider';
+import DarkVeil from '../DarkVeil';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
 export function FinalCTA() {
   const router = useRouter();

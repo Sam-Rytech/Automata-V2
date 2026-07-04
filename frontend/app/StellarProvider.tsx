@@ -110,7 +110,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     </StellarContext.Provider>
   );
 }
-// TODO: add error boundary here
 
 
 // git config--local user.name "KayProject"

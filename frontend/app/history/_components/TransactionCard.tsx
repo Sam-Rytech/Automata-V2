@@ -105,6 +105,7 @@ export function TransactionCard({ tx, index }: TransactionCardProps) {
             {tx.toNetwork}
           </div>
         </div>
+      // TODO: add input validation
       </div>
 
       {/* Right: status, hash link */}

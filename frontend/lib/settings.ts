@@ -1,6 +1,11 @@
 const GEMINI_KEY = 'automata_gemini_key';
 const AGENT_MODE = 'automata_agent_mode';
 
+/**
+ * saveGeminiKey
+ * @param {*} key: string
+ * @returns {*}
+ */
 export function saveGeminiKey(key: string): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(GEMINI_KEY, key);

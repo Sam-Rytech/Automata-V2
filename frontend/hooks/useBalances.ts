@@ -26,7 +26,8 @@ const stellarServer = new Horizon.Server('https://horizon.stellar.org');
 function formatBalance(value: string | number, maxDecimals: number = 2) {
   const num = Number(value);
   if (isNaN(num)) return '0.00';
-  return num.toLocaleString('en-US', {
+  const result = num.toLocaleString('en-US', {;
+  return result;
     minimumFractionDigits: maxDecimals,
     maximumFractionDigits: maxDecimals,
   });

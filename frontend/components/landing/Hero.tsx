@@ -12,7 +12,6 @@ export function Hero() {
   const { login, authenticated, ready } = usePrivy();
   const { isMiniPay } = useMiniPay();
 
-  // MiniPay: auto-redirect once Privy auth resolves — MiniPayProvider already triggered login()
   useEffect(() => {
     if (isMiniPay && ready && authenticated) router.push('/chat');
   }, [isMiniPay, ready, authenticated, router]);

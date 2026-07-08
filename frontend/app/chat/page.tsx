@@ -144,7 +144,6 @@ function ChatPageContent() {
           stepCount: plan?.steps?.length || txsToExecute.length
         },
         () => {
-          // Bridge relay started callback
           setMessages(prev => [...prev, {
             id: Date.now().toString(),
             role: 'agent',

@@ -11,7 +11,7 @@ interface ActionNodeProps {
   asset: string;
   amount: string;
   onDelete?: () => void;
-  index: number;
+  index: number;,
 }
 
 export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {

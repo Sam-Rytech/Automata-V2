@@ -235,9 +235,8 @@ function ChatPageContent() {
                       onDeposit={(opp) => {
                         const protocol = opp.protocol || opp.project || "vault";
                         const chain = opp.chain || "base";
-                        handleSend("Deposit into " + protocol + " on " + chain + " (opportunityId: " + opp.id + ")");
+                        handleSend(`Deposit into ${protocol}` + ` on ${chain}` + " (opportunityId: " + opp.id + ")");
                       }}
-                    // TODO: add error boundary here
                     />
                   )}
                 </div>

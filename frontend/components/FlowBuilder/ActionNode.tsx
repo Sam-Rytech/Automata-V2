@@ -1,8 +1,35 @@
-'use client';
-
 import { Handle, Position, NodeProps } from 'reactflow';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { ActionNodeData } from '@/types/flow';
+
+const renderNodeContent = (data: ActionNodeData, selected: boolean, color: string) => {
+  return (
+    <>
+      {/* Tech Accents */}
+      <div className="absolute -top-[1px] -left-[1px] w-1.5 h-1.5 border-t border-l" style={{ borderColor: color }} />
+      <div className="absolute -bottom-[1px] -right-[1px] w-1.5 h-1.5 border-b border-r" style={{ borderColor: color }} />
+      <div className="absolute top-0 left-0 w-full h-[1px]" style={{ backgroundColor: color }} />
+
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <span className="text-[8px] text-white/40 tracking-[0.2em] uppercase block mb-1">{data.stepIndex ? `0${data.stepIndex}` : '01'}_TRIGGER</span>
+          <span className="text-[13px] font-black uppercase tracking-widest block text-white">{data.type}_ASSET</span>
+          <span className="text-[8px] text-white/40 tracking-[0.1em] uppercase block mt-1">Source: {data.fromChain || 'Ethereum'}</span>
+        </div>
+        {data.onDelete && (
+          <button onClick={(e) => { e.stopPropagation(); data.onDelete!(); }} className="text-white/20 hover:text-[#EF4444] transition-colors mt-0.5 z-50">
+            <TrashIcon className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 border-t border-white/5 pt-3 mt-1">
+        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+        <span className="text-[9px] text-white/60 tracking-widest uppercase">{data.fromToken || 'ETH'} ⟶ {data.toToken || data.asset || 'USDC'}</span>
+      </div>
+    </>
+  );
+};
 
 export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
   const color = data.color || '#E91E8C';
@@ -35,28 +62,7 @@ export function ActionNode({ data, selected }: NodeProps<ActionNodeData>) {
         <Handle type="target" position={Position.Left} style={{ background: color, width: 8, height: 8, border: 'none', left: -4, borderRadius: 0 }} />
         <Handle type="source" position={Position.Right} style={{ background: color, width: 8, height: 8, border: 'none', right: -4, borderRadius: 0 }} />
 
-        {/* Tech Accents */}
-        <div className="absolute -top-[1px] -left-[1px] w-1.5 h-1.5 border-t border-l" style={{ borderColor: color }} />
-        <div className="absolute -bottom-[1px] -right-[1px] w-1.5 h-1.5 border-b border-r" style={{ borderColor: color }} />
-        <div className="absolute top-0 left-0 w-full h-[1px]" style={{ backgroundColor: color }} />
-
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <span className="text-[8px] text-white/40 tracking-[0.2em] uppercase block mb-1">{stepNumber}_TRIGGER</span>
-            <span className="text-[13px] font-black uppercase tracking-widest block text-white">{data.type}_ASSET</span>
-            <span className="text-[8px] text-white/40 tracking-[0.1em] uppercase block mt-1">Source: {data.fromChain || 'Ethereum'}</span>
-          </div>
-          {data.onDelete && (
-            <button onClick={(e) => { e.stopPropagation(); data.onDelete!(); }} className="text-white/20 hover:text-[#EF4444] transition-colors mt-0.5 z-50">
-              <TrashIcon className="w-3 h-3" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 border-t border-white/5 pt-3 mt-1">
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
-          <span className="text-[9px] text-white/60 tracking-widest uppercase">{data.fromToken || 'ETH'} ⟶ {data.toToken || data.asset || 'USDC'}</span>
-        </div>
+        {renderNodeContent(data, selected, color)}
       </div>
     </div>
   );

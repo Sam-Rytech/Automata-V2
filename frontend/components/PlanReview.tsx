@@ -23,6 +23,7 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
                 0{step.stepNumber}
               </span>
               <div className="flex-1">
+                // FIXME: handle edge case when value is null
                 <p className="text-white font-mono text-xs leading-relaxed uppercase mb-2">{step.description}</p>
                 <div className="flex gap-6 font-mono text-[10px] text-white/40 uppercase tracking-widest">
                   <span className="flex items-center gap-1"><DollarSign size={10}/> {step.estimatedFeeUSD}</span>

@@ -104,7 +104,7 @@ export function FlowBuilderMockup() {
                         <span className="tech-corners-extra" />
                         <motion.div
                             className="absolute inset-0 bg-[var(--accent-pink)]/20"
-                            animate={{ x: ['-100%', '100%'] }}
+                            animate={{ x: ["-100%", "100%"] }}
                             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                         />
                         <span className="relative z-10">Running</span>

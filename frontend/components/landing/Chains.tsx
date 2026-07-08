@@ -55,7 +55,7 @@ export function Chains() {
           <div className="font-mono text-white/50 text-[0.65rem] tracking-widest mb-3 uppercase">
             04 —— INFRASTRUCTURE
           </div>
-          <h2 className='font-syne text-xl sm:text-2xl font-bold text-white uppercase tracking-wider'>
+          <h2 className="font-syne text-xl sm:text-2xl font-bold text-white uppercase tracking-wider">
             Supported Networks
           </h2>
         </div>

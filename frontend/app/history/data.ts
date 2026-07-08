@@ -68,13 +68,6 @@ const MOCK_TRANSACTIONS: Transaction[] = [
   },
 ];
 
-export function getTransactionColor(transaction: Transaction): string {
-  if (transaction.status === 'CONFIRMED') return STATUS_COLORS.CONFIRMED;
-  if (transaction.status === 'PENDING') return STATUS_COLORS.PENDING;
-  if (transaction.status === 'FAILED') return STATUS_COLORS.FAILED;
-  return TYPE_COLORS[transaction.type];
-}
-
 /** Simulates a real network fetch with a realistic latency. */
 export async function fetchTransactions(): Promise<Transaction[]> {
   await new Promise((resolve) => setTimeout(resolve, 900));

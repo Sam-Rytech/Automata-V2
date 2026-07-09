@@ -37,7 +37,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
-  ...props,
+  ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
     <ButtonPrimitive

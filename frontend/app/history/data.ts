@@ -9,7 +9,7 @@ export interface Transaction {
   fromNetwork: string;
   toNetwork: string;
   status: TxStatus;
-  hash: string;,
+  hash: string;
 }
 
 export const TYPE_COLORS: Record<string, string> = {

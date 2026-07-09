@@ -16,13 +16,10 @@ const SECTIONS = [
   { id: 'appearance', num: '04', title: 'Appearance' },
 ]
 
-export default function SettingsPage() {
-  return (
-    <AuthGuard>
-      <SettingsPageContent />
-    </AuthGuard>
-  )
-}
+function SettingsPageContent() {
+  const { logout } = usePrivy()
+  const { wallets } = useWallets()
+  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
 
   const walletAddress = wallets[0]?.address ?? null
   const displayAddress = walletAddress ?? 'No wallet connected'
@@ -46,6 +43,21 @@ export default function SettingsPage() {
     if (savedHud !== null) setHudEnabled(savedHud === 'true');
   }, []);
 
+  const saveApiKey = () => {
+    if (!apiKey.trim()) {
+      toast.error('Configuration Error', { description: 'API key cannot be empty.' });
+      return;
+    }
+    localStorage.setItem('gemini_api_key', apiKey.trim());
+    toast.success('Configuration Saved', { description: 'Gemini API Key has been secured locally.' });
+  };
+
+  const handleModeChange = (mode: string) => {
+    setExecutionMode(mode);
+    localStorage.setItem('automata_execution_mode', mode);
+    toast.info('Execution Mode Updated', { description: `Mode set to ${mode.toUpperCase()}.` });
+  };
+
   const handleHudToggle = () => {
     const newState = !hudEnabled;
     setHudEnabled(newState);
@@ -53,22 +65,11 @@ export default function SettingsPage() {
     toast.info('Appearance Updated', { description: `Interface HUD is now ${newState ? 'ON' : 'OFF'}.` });
   };
 
-function SettingsPageContent() {
-  const { logout } = usePrivy()
-  const { wallets } = useWallets()
-  const { stellarAddress, connectStellar, disconnectStellar } = useStellar()
-
   const scrollTo = (id: string) => {
     setActiveSection(id)
     const element = document.getElementById(id)
     if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-
-  const handleModeChange = (mode: string) => {
-    setExecutionMode(mode);
-    localStorage.setItem('automata_execution_mode', mode);
-    toast.info('Execution Mode Updated', { description: `Mode set to ${mode.toUpperCase()}.` });
-  };
 
   return (
     <div className="flex h-screen bg-[#0A0A12] text-white overflow-hidden font-mono relative">
@@ -387,11 +388,10 @@ function SettingsPageContent() {
   )
 }
 
-  const saveApiKey = () => {
-    if (!apiKey.trim()) {
-      toast.error('Configuration Error', { description: 'API key cannot be empty.' });
-      return;
-    }
-    localStorage.setItem('gemini_api_key', apiKey.trim());
-    toast.success('Configuration Saved', { description: 'Gemini API Key has been secured locally.' });
-  };
+export default function SettingsPage() {
+  return (
+    <AuthGuard>
+      <SettingsPageContent />
+    </AuthGuard>
+  )
+}

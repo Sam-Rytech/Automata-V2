@@ -32,6 +32,7 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
             </div>
           ))}
         </div>
+// FIXME: handle edge case when value is null
 
         {plan.warnings.length > 0 && (
           <div className="mb-8 space-y-2">

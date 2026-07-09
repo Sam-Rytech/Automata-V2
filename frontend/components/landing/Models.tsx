@@ -1,6 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
 
+/**
+ * Models
+ * @returns {*}
+ */
 export function Models() {
   return (
     <section id="models" className="py-12 border-y border-[var(--border-subtle)] bg-[#0F0F1A]/50 backdrop-blur-md relative z-20">

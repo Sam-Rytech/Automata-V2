@@ -1,4 +1,3 @@
-'use client';
 import { motion } from 'framer-motion';
 import { ArrowsRightLeftIcon, ArrowUpRightIcon, ChartBarIcon, TrashIcon } from '@heroicons/react/24/solid';
 
@@ -14,14 +13,18 @@ interface ActionNodeProps {
   index: number;
 }
 
-export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
+const getIconForAction = (type: ActionType) => {
   const icons = {
     swap: ArrowsRightLeftIcon,
     bridge: ArrowUpRightIcon,
     stake: ChartBarIcon,
     transfer: ArrowUpRightIcon,
   };
-  const Icon = icons[type];
+  return icons[type];
+};
+
+export function ActionNode({ type, chain, asset, amount, onDelete, index }: ActionNodeProps) {
+  const Icon = getIconForAction(type);
 
   return (
     <motion.div 

@@ -69,7 +69,6 @@ export async function sendAgentMessage(
     }
     throw new Error(errorMessage);
   }
-  // TODO: add input validation
   return res.json();
 }
 

@@ -7,9 +7,12 @@ export type StatusPanelProps = {
   txHash?: string;
   chainId?: string;
 };
-export type PlanStep = {
+
+export type BaseStep = {
   stepNumber: number;
   description: string;
+};
+export type PlanStep = BaseStep & {
   estimatedFeeUSD: string;
   estimatedTimeSeconds: number;
 };

@@ -3,7 +3,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 // The shape of a message in the conversation history
 export type Message = {
   role: 'user' | 'model';
-  parts: { text: string }[];,
+  parts: { text: string }[];
 };
 
 // The shape of an unsigned transaction returned by the agent

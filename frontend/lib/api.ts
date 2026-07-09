@@ -60,10 +60,10 @@ export async function sendAgentMessage(
   if (!res.ok) {
     let errorMessage = 'Something went wrong. Please try again.';
     try {
-      const err = await res.json();
+      const error = await res.json();
       if (res.status === 429) errorMessage = 'The agent is busy. Please wait a moment and try again.';
       else if (res.status === 401) errorMessage = 'Your AI key is invalid. Update it in Settings.';
-      else if (err.error) errorMessage = err.error;
+      else if (error.error) errorMessage = error.error;
     } catch {
       // if response body is not JSON, use the generic message
     }

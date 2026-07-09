@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaperAirplaneIcon, ArrowsRightLeftIcon, GlobeAltIcon, ChartBarIcon } from "@heroicons/react/24/solid";
 
 export function Capabilities() {
-  // SWAP Card Live Ticker State
   const [swapState, setSwapState] = useState(0);
   const swaps = [
     { from: "USDC", to: "XLM", fromVal: "1,000.00", toVal: "8,420.50", color: "#22C55E" },

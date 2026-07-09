@@ -23,23 +23,6 @@ const celoClient = createPublicClient({
 
 const stellarServer = new Horizon.Server('https://horizon.stellar.org');
 
-function formatBalance(value: string | number, maxDecimals: number = 2) {
-  const num = Number(value);
-  if (isNaN(num)) return '0.00';
-  return num.toLocaleString('en-US', {
-    minimumFractionDigits: maxDecimals,
-    maximumFractionDigits: maxDecimals,
-  });
-}
-
-export type Balances = {
-  baseETH: string;
-  baseUSDC: string;
-  celoNative: string;
-  celoUSDC: string;
-  stellarXLM: string;
-};
-
 export function useBalances(evmAddress?: string | null, stellarAddress?: string | null) {
   return useQuery({
     queryKey: ['balances', evmAddress, stellarAddress],
@@ -51,6 +34,23 @@ export function useBalances(evmAddress?: string | null, stellarAddress?: string 
         celoUSDC: '0.00',
         stellarXLM: '0.00',
       };
+
+export type Balances = {
+  baseETH: string;
+  baseUSDC: string;
+  celoNative: string;
+  celoUSDC: string;
+  stellarXLM: string;
+};
+
+function formatBalance(value: string | number, maxDecimals: number = 2) {
+  const num = Number(value);
+  if (isNaN(num)) return '0.00';
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: maxDecimals,
+    maximumFractionDigits: maxDecimals,
+  });
+}
 
       if (evmAddress) {
         try {

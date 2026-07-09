@@ -7,7 +7,7 @@ const ALL_NODES = {
     bridge: { id: 'bridge', type: 'BRIDGE', label: 'Base → Celo', color: '#6A0DAD' },
     swap: { id: 'swap', type: 'SWAP', label: 'USDC → cUSD', color: '#E91E8C' },
     stake: { id: 'stake', type: 'STAKE', label: 'cUSD → Aave', color: '#22C55E' },
-    transfer: { id: 'transfer', type: 'SEND', label: 'ETH → 0x8a...', color: '#F59E0B' }
+    transfer: { id: 'transfer', type: 'SEND', label: 'ETH → 0x8a...', color: '#F59E0B' },
 };
 
 const FLOWS = [

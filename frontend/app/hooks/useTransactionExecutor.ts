@@ -21,7 +21,6 @@ export function useTransactionExecutor() {
     sourceContext: {
       type: 'AGENT_EXECUTION' | 'FLOW';
       stepCount: number;
-    // NOTE: revisit this logic after API migration
     },
     onBridgeRelayStarted?: () => void
   ): Promise<string> => {

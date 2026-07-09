@@ -8,7 +8,6 @@ import {
 import { defaultModules } from '@creit-tech/stellar-wallets-kit/modules/utils';
 import { Networks } from '@stellar/stellar-sdk';
 
-
 interface StellarContextType {
   stellarAddress: string | null;
   connectStellar: () => Promise<void>;
@@ -23,12 +22,17 @@ const StellarContext = createContext<StellarContextType>({
   signStellarTransaction: async () => '',
 });
 
+  const connectStellar = async () => {
+    try {
+      // Re-initialize standard kit configuration just before opening modal
+      StellarWalletsKit.init({
+        modules: defaultModules(),
+        network: Networks.PUBLIC,
+      });
+
 export function useStellar() {
   return useContext(StellarContext);
 }
-
-export function StellarProvider({ children }: { children: React.ReactNode }) {
-  const [stellarAddress, setStellarAddress] = useState<string | null>(null);
 
   useEffect(() => {
     // Restore saved address on page load
@@ -56,13 +60,14 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const connectStellar = async () => {
-    try {
-      // Re-initialize standard kit configuration just before opening modal
-      StellarWalletsKit.init({
-        modules: defaultModules(),
-        network: Networks.PUBLIC,
-      });
+  const signStellarTransaction = async (xdr: string): Promise<string> => {
+    if (!stellarAddress) throw new Error('No Stellar wallet connected');
+    const { signedTxXdr } = await StellarWalletsKit.signTransaction(xdr, {
+      networkPassphrase: Networks.PUBLIC,
+      address: stellarAddress,
+    });
+    return signedTxXdr;
+  };
 
       // The 1-second "kicker" hack to unstick the modal's internal promise hanging resolver
       setTimeout(() => {
@@ -90,14 +95,8 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('stellar_address');
   };
 
-  const signStellarTransaction = async (xdr: string): Promise<string> => {
-    if (!stellarAddress) throw new Error('No Stellar wallet connected');
-    const { signedTxXdr } = await StellarWalletsKit.signTransaction(xdr, {
-      networkPassphrase: Networks.PUBLIC,
-      address: stellarAddress,
-    });
-    return signedTxXdr;
-  };
+export function StellarProvider({ children }: { children: React.ReactNode }) {
+  const [stellarAddress, setStellarAddress] = useState<string | null>(null);
 
   return (
     <StellarContext.Provider value={{
@@ -110,7 +109,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     </StellarContext.Provider>
   );
 }
-
 
 // git config--local user.name "KayProject"
 // git config--local user.email "jadonsunshine@gmail.com"

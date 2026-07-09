@@ -53,7 +53,7 @@ export function ChatSidebar({ executionMode, setExecutionMode }: SidebarProps) {
             { t: 'USDC (Celo)', v: '45.00' },
             { t: 'XLM (Stellar)', v: '892.12' }
           ].map((b, i) => (
-            <div key={i} className="flex justify-between font-mono text-[11px] uppercase">
+            <div key={i} className='flex justify-between font-mono text-[11px] uppercase'>
               <span className="text-white/40">{b.t}</span>
               <span className="text-white font-bold">{b.v}</span>
             </div>

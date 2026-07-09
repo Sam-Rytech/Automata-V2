@@ -8,22 +8,18 @@ import { Chains } from "@/components/landing/Chains";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 
-const getLandingPageComponents = () => [
-  <LandingNav key="nav" />, 
-  <Hero key="hero" />, 
-  <Models key="models" />, 
-  <X402Banner key="x402Banner" />, 
-  <HowItWorks key="howItWorks" />, 
-  <Capabilities key="capabilities" />, 
-  <Chains key="chains" />, 
-  <FinalCTA key="finalCTA" />, 
-  <Footer key="footer" />
-];
-
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-hidden">
-      {getLandingPageComponents()}
+      <LandingNav />
+      <Hero />
+      <Models />
+      <X402Banner />
+      <HowItWorks />
+      <Capabilities />
+      <Chains />
+      <FinalCTA />
+      <Footer />
     </main>
   );
 }

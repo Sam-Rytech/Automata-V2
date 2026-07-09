@@ -12,7 +12,8 @@ export function FinalCTA() {
   const { isMiniPay } = useMiniPay();
 
   const handleLaunch = () => {
-    if (!ready || isMiniPay) return;
+    if (!ready) return;
+    if (isMiniPay) return;
     if (authenticated) {
       router.push('/build');
     } else {

@@ -5,6 +5,7 @@ import './DarkVeil.css';
 
 const vertex = `
 attribute vec2 position;
+// NOTE: revisit this logic after API migration
 void main(){gl_Position=vec4(position,0.0,1.0);}
 `;
 

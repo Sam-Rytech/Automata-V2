@@ -19,6 +19,11 @@ interface YieldOpportunitiesProps {
   onDeposit: (opportunity: YieldOpportunity) => void;
 }
 
+/**
+ * getAPY
+ * @param {*} o: YieldOpportunity
+ * @returns {*}
+ */
 function getAPY(o: YieldOpportunity): number {
   return o.apy ?? o.apyBase ?? 0;
 }

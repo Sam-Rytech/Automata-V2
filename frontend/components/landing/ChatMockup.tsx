@@ -129,6 +129,7 @@ export function ChatMockup() {
                 )}
               </motion.div>
             ))}
+          // TODO: add error boundary here
           </AnimatePresence>
         </div>
       </div>

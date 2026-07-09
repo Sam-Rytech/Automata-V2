@@ -2,15 +2,11 @@ import { createConfig } from '@privy-io/wagmi'
 import { base, celo, mainnet } from 'viem/chains'
 import { http } from 'wagmi'
 
-const createTransports = (chains: any[]) => {
-  const transports: any = {}
-  chains.forEach((chain) => {
-    transports[chain.id] = http()
-  })
-  return transports
-}
-
 export const wagmiConfig = createConfig({
   chains: [mainnet, base, celo],
-  transports: createTransports([mainnet, base, celo]),
+  transports: {
+    [mainnet.id]: http(),
+    [base.id]: http(),
+    [celo.id]: http(),
+  },
 })

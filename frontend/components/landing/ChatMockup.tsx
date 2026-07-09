@@ -21,10 +21,6 @@ const SCENARIOS = [
   }
 ];
 
-/**
- * ChatMockup
- * @returns {*}
- */
 export function ChatMockup() {
   const [messages, setMessages] = useState<any[]>([]);
   const [typedText, setTypedText] = useState("");

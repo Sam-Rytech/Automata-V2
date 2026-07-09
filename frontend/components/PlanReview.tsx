@@ -4,27 +4,6 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, Clock, DollarSign, ChevronRight } from 'lucide-react';
 import { PlanReviewProps } from '@/types/status';
 
-const renderPlanStep = (step: any) => (
-  <div key={step.stepNumber} className="flex items-start gap-4 p-5 bg-[#0F0F1A] border border-white/5 rounded-none group hover:border-[#6A0DAD]/50 transition-all">
-    <span className="w-6 h-6 bg-[#E91E8C] text-white font-mono text-[10px] flex items-center justify-center shrink-0">
-      0{step.stepNumber}
-    </span>
-    <div className="flex-1">
-      <p className="text-white font-mono text-xs leading-relaxed uppercase mb-2">{step.description}</p>
-      <div className="flex gap-6 font-mono text-[10px] text-white/40 uppercase tracking-widest">
-        <span className="flex items-center gap-1"><DollarSign size={10}/> {step.estimatedFeeUSD}</span>
-        <span className="flex items-center gap-1"><Clock size={10}/> ~{step.estimatedTimeSeconds}S</span>
-      </div>
-    </div>
-  </div>
-);
-
-const renderWarning = (warning: string, index: number) => (
-  <div key={index} className="flex gap-3 items-center p-4 bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B] font-mono text-[10px] uppercase tracking-widest">
-    <AlertTriangle size={14} /> WARNING: {warning}
-  </div>
-);
-
 export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: PlanReviewProps) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-6 w-full">
@@ -38,12 +17,29 @@ export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: P
         </div>
 
         <div className="space-y-4 mb-8">
-          {plan.steps.map(renderPlanStep)}
+          {plan.steps.map((step) => (
+            <div key={step.stepNumber} className="flex items-start gap-4 p-5 bg-[#0F0F1A] border border-white/5 rounded-none group hover:border-[#6A0DAD]/50 transition-all">
+              <span className="w-6 h-6 bg-[#E91E8C] text-white font-mono text-[10px] flex items-center justify-center shrink-0">
+                0{step.stepNumber}
+              </span>
+              <div className="flex-1">
+                <p className="text-white font-mono text-xs leading-relaxed uppercase mb-2">{step.description}</p>
+                <div className="flex gap-6 font-mono text-[10px] text-white/40 uppercase tracking-widest">
+                  <span className="flex items-center gap-1"><DollarSign size={10}/> {step.estimatedFeeUSD}</span>
+                  <span className="flex items-center gap-1"><Clock size={10}/> ~{step.estimatedTimeSeconds}S</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {plan.warnings.length > 0 && (
           <div className="mb-8 space-y-2">
-            {plan.warnings.map(renderWarning)}
+            {plan.warnings.map((w, i) => (
+              <div key={i} className="flex gap-3 items-center p-4 bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B] font-mono text-[10px] uppercase tracking-widest">
+                <AlertTriangle size={14} /> WARNING: {w}
+              </div>
+            ))}
           </div>
         )}
 

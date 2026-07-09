@@ -15,6 +15,7 @@ const EXPLORER_BASE: Record<string, string> = {
 export function StatusPanel({ status, message, step, totalSteps, txHash, chainId }: StatusPanelProps) {
   if (status === 'idle') return null;
 
+  // TODO: consider memoizing this value
   const stateStyles: Record<string, { border: string; bg: string; text: string }> = {
     thinking: { border: '#E91E8C', bg: 'rgba(233, 30, 140, 0.05)', text: '#FFF' },
     executing: { border: '#6A0DAD', bg: 'rgba(106, 13, 173, 0.05)', text: '#FFF' },

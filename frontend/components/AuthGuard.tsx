@@ -1,7 +1,27 @@
+'use client';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+/**
+ * AuthGuard — wrap any page that requires authentication.
+ *
+ * Usage in any app page:
+ *   import { AuthGuard } from '@/components/AuthGuard';
+ *
+ *   export default function BuildPage() {
+ *     return (
+ *       <AuthGuard>
+ *         <YourPageContent />
+ *       </AuthGuard>
+ *     );
+ *   }
+ *
+ * While Privy is initialising it shows a blank dark screen (no flash of content).
+ * Once ready:
+ *   - authenticated  → renders children normally
+ *   - not authenticated → redirects to /
+ */
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { ready, authenticated } = usePrivy();
   const router = useRouter();
@@ -12,6 +32,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [ready, authenticated, router]);
 
+  // Privy not ready yet — show nothing to avoid flash of protected content
   if (!ready) {
     return (
       <div className="min-h-screen bg-[#0F0F1A] flex items-center justify-center">
@@ -25,9 +46,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!authenticated) {
-    return null;
+  // Authenticated — render the page
+  if (authenticated) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  // Not authenticated and redirect is in flight — render nothing
+  return null;
 }

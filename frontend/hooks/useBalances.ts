@@ -40,39 +40,6 @@ export type Balances = {
   stellarXLM: string;
 };
 
-function fetchEvmBalances(evmAddress: string): Promise<{ baseETH: string; baseUSDC: string; celoNative: string; celoUSDC: string }> {
-  return Promise.all([
-    baseClient.getBalance({ address: evmAddress }),
-    baseClient.readContract({
-      address: BASE_USDC_ADDRESS,
-      abi: ERC20_ABI,
-      functionName: 'balanceOf',
-      args: [evmAddress],
-    }),
-    celoClient.getBalance({ address: evmAddress }),
-    celoClient.readContract({
-      address: CELO_USDC_ADDRESS,
-      abi: ERC20_ABI,
-      functionName: 'balanceOf',
-      args: [evmAddress],
-    }),
-  ]).then(([ethBal, baseUsdcBal, celoBal, celoUsdcBal]) => ({
-    baseETH: formatBalance(formatUnits(ethBal, 18)),
-    baseUSDC: formatBalance(formatUnits(baseUsdcBal, 6)),
-    celoNative: formatBalance(formatUnits(celoBal, 18)),
-    celoUSDC: formatBalance(formatUnits(celoUsdcBal, 6)),
-  }));
-}
-
-function fetchStellarBalance(stellarAddress: string): Promise<{ stellarXLM: string }> {
-  return stellarServer.loadAccount(stellarAddress).then((account) => {
-    const nativeBalance = account.balances.find((b) => b.asset_type === 'native');
-    return {
-      stellarXLM: nativeBalance ? formatBalance(nativeBalance.balance) : '0.00',
-    };
-  });
-}
-
 export function useBalances(evmAddress?: string | null, stellarAddress?: string | null) {
   return useQuery({
     queryKey: ['balances', evmAddress, stellarAddress],
@@ -87,28 +54,48 @@ export function useBalances(evmAddress?: string | null, stellarAddress?: string 
 
       if (evmAddress) {
         try {
-          const evmResults = await fetchEvmBalances(evmAddress);
-          results.baseETH = evmResults.baseETH;
-          results.baseUSDC = evmResults.baseUSDC;
-          results.celoNative = evmResults.celoNative;
-          results.celoUSDC = evmResults.celoUSDC;
+          const [ethBal, baseUsdcBal, celoBal, celoUsdcBal] = await Promise.all([
+            baseClient.getBalance({ address: evmAddress as `0x${string}` }),
+            baseClient.readContract({
+              address: BASE_USDC_ADDRESS,
+              abi: ERC20_ABI,
+              functionName: 'balanceOf',
+              args: [evmAddress as `0x${string}`],
+            }),
+            celoClient.getBalance({ address: evmAddress as `0x${string}` }),
+            celoClient.readContract({
+              address: CELO_USDC_ADDRESS,
+              abi: ERC20_ABI,
+              functionName: 'balanceOf',
+              args: [evmAddress as `0x${string}`],
+            }),
+          ]);
+
+          results.baseETH = formatBalance(formatUnits(ethBal, 18));
+          results.baseUSDC = formatBalance(formatUnits(baseUsdcBal, 6));
+          results.celoNative = formatBalance(formatUnits(celoBal, 18));
+          results.celoUSDC = formatBalance(formatUnits(celoUsdcBal, 6)); 
         } catch (e) {
-          console.error('Failed to fetch EVM balances', e);
+          console.error("Failed to fetch EVM balances", e);
         }
       }
 
       if (stellarAddress) {
         try {
-          const stellarResults = await fetchStellarBalance(stellarAddress);
-          results.stellarXLM = stellarResults.stellarXLM;
+          const account = await stellarServer.loadAccount(stellarAddress);
+          const nativeBalance = account.balances.find((b) => b.asset_type === 'native');
+          if (nativeBalance) {
+            results.stellarXLM = formatBalance(nativeBalance.balance);
+          }
         } catch (e) {
-          console.error('Failed to fetch Stellar balance', e);
+          console.error("Failed to fetch Stellar balance", e);
         }
       }
 
       return results;
     },
+    // Only refetch if we have at least one address to query, and refresh every 30 seconds
     enabled: !!evmAddress || !!stellarAddress,
-    refetchInterval: 30000,
+    refetchInterval: 30000, 
   });
 }

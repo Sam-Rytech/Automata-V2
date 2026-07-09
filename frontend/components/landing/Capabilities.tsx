@@ -7,7 +7,7 @@ export function Capabilities() {
   // SWAP Card Live Ticker State
   const [swapState, setSwapState] = useState(0);
   const swaps = [
-    { from: 'USDC', to: 'XLM', fromVal: '1,000.00', toVal: '8,420.50', color: '#22C55E' },
+    { from: "USDC", to: "XLM", fromVal: "1,000.00", toVal: "8,420.50", color: "#22C55E" },
     { from: "ETH", to: "cUSD", fromVal: "0.50", toVal: "1,450.20", color: "#E91E8C" },
     { from: "USDC", to: "SOL", fromVal: "500.00", toVal: "3.42", color: "#6A0DAD" }
   ];

@@ -5,32 +5,38 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRef, useEffect } from 'react';
 import { useMiniPay } from '@/components/providers/MiniPayProvider';
 
+const getRedirectUrl = (isMiniPay: boolean, authenticated: boolean, router: any) => {
+  if (isMiniPay && authenticated) return '/chat';
+  const redirect = localStorage.getItem('postLoginRedirect');
+  return redirect || '/build';
+};
+
+const handleLogin = (login: any, router: any, isMiniPay: boolean) => {
+  if (isMiniPay) return;
+  localStorage.setItem('postLoginRedirect', '/build');
+  login();
+};
+
+const handleLaunch = (router: any, authenticated: boolean, login: any, isMiniPay: boolean) => {
+  if (authenticated) {
+    router.push('/build');
+  } else {
+    handleLogin(login, router, isMiniPay);
+  }
+};
+
 export function LandingNav() {
   const router = useRouter();
   const { login, authenticated, ready } = usePrivy();
   const { isMiniPay } = useMiniPay();
 
-  const handleLaunch = () => {
-    if (!ready || isMiniPay) return;
-    if (authenticated) {
-      router.push('/build');
-    } else {
-      localStorage.setItem('postLoginRedirect', '/build');
-      login();
-    }
-  };
-
   useEffect(() => {
-    if (isMiniPay && ready && authenticated) {
-      router.push('/chat');
-      return;
-    }
     if (ready && authenticated) {
-      const redirect = localStorage.getItem('postLoginRedirect');
-      if (redirect) {
+      const redirectUrl = getRedirectUrl(isMiniPay, authenticated, router);
+      if (redirectUrl !== '/build') {
         localStorage.removeItem('postLoginRedirect');
-        router.push(redirect);
       }
+      router.push(redirectUrl);
     }
   }, [isMiniPay, ready, authenticated, router]);
 
@@ -49,7 +55,7 @@ export function LandingNav() {
           <Button
             variant="outline"
             className="text-white border-white/20 tech-button bg-transparent hover:bg-white/5 font-syne text-xs sm:text-base uppercase tracking-wider h-9 sm:h-11 px-4 sm:px-8 relative"
-            onClick={handleLaunch}
+            onClick={() => handleLaunch(router, authenticated, login, isMiniPay)}
           >
             <span className="tech-corners-extra" />
             Launch App

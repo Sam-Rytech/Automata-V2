@@ -40,12 +40,9 @@ export async function sendAgentMessage(
   sessionId: string | null = null,
   stellarAddress: string | null = null
 ): Promise<AgentResponse> {
-  if (!geminiApiKey) {
-    throw new Error('NO_API_KEY');
-  }
-  if (!walletAddress) {
-    throw new Error('NO_WALLET');
-  }
+  if (!geminiApiKey) return Promise.reject(new Error('NO_API_KEY'));
+  if (!walletAddress) return Promise.reject(new Error('NO_WALLET'));
+
   const res = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -57,6 +54,7 @@ export async function sendAgentMessage(
       stellarAddress: stellarAddress ?? undefined,
     }),
   });
+
   if (!res.ok) {
     let errorMessage = 'Something went wrong. Please try again.';
     try {
@@ -67,8 +65,9 @@ export async function sendAgentMessage(
     } catch {
       // if response body is not JSON, use the generic message
     }
-    throw new Error(errorMessage);
+    return Promise.reject(new Error(errorMessage));
   }
+
   return res.json();
 }
 

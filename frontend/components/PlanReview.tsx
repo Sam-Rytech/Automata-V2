@@ -4,6 +4,14 @@ import { motion } from 'framer-motion';
 import { AlertTriangle, Clock, DollarSign, ChevronRight } from 'lucide-react';
 import { PlanReviewProps } from '@/types/status';
 
+/**
+ * PlanReview
+ * @param {*} { plan
+ * @param {*} onApprove
+ * @param {*} onCancel
+ * @param {*} isExecuting
+ * @returns {*}
+ */
 export function PlanReview({ plan, onApprove, onCancel, isExecuting = false }: PlanReviewProps) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-6 w-full">
